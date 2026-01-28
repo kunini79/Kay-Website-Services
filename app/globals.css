@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-display: var(--font-bebas-neue);
+  --font-sans: var(--font-inter-tight);
+  --font-body: var(--font-plus-jakarta-sans);
+
+  --animate-text: text-reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) 0.5s;
+  --animate-spin-slow: spin 8s linear infinite;
+  --animate-spin-slow-reverse: spin 8s linear infinite reverse;
+}
+
+@layer utilities {
+  .animate-text {
+    animation: text-reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) 0.5s forwards;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  .animate-spin-slow-reverse {
+    animation: spin 8s linear infinite reverse;
+  }
+
+  .animate-wheel-spin {
+    animation: wheel-spin 5s linear infinite;
+  }
+}
+
+@keyframes text-reveal {
+  0% {
+    transform: translate(0, 100%);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes wheel-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  60% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Custom classes structure from HTML */
+.reveal-text {
+  overflow: hidden;
+}
+
+.reveal-text>div {
+  overflow: hidden;
+}
+
+.reveal-text p,
+.reveal-text h1,
+.reveal-text h2,
+.reveal-text h3 {
+  animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(110%);
+}
+
+@keyframes reveal-up {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.fall-text {
+  overflow: hidden;
+}
+
+.fall-text>div {
+  overflow: hidden;
+}
+
+.fall-text h1,
+.fall-text h2,
+.fall-text h3 {
+  animation: fall-down 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(-110%);
+}
+
+@keyframes fall-down {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Initial body styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
