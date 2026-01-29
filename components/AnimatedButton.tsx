@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { magneticEffect, createRipple } from "@/utils/animations";
 
 interface AnimatedButtonProps {
@@ -56,14 +57,15 @@ export default function AnimatedButton({
 
     if (href) {
         return (
-            <a
-                ref={linkRef}
+            <Link
                 href={href}
                 className={combinedClassName}
                 onClick={handleClick}
             >
-                <span className="relative z-10">{children}</span>
-            </a>
+                <div ref={linkRef as any} className="w-full h-full flex items-center justify-center">
+                    <span className="relative z-10">{children}</span>
+                </div>
+            </Link>
         );
     }
 

@@ -85,8 +85,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
             const href = link.getAttribute("href");
             if (!href || !href.startsWith("/") || href.startsWith("#")) return;
 
-            // If it's the current page, do nothing
-            if (href === pathname || href === window.location.pathname) return;
+            // Strip hash and trailing slash for comparison
+            const targetPath = href.split('#')[0].replace(/\/$/, "") || "/";
+            const currentPath = pathname.replace(/\/$/, "") || "/";
+
+            // If it's the current page (even with a hash), do nothing
+            if (targetPath === currentPath) return;
 
             e.preventDefault();
             if (isTransitioning) return;
@@ -105,25 +109,18 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
     // When pathname changes (after navigation), animate in
     useEffect(() => {
-        // If we just navigated, we should animate in
-        // But animateIn is also called on initial mount.
-        // We can rely on router event flow:
-        // 1. Link click -> animateOut -> router.push
-        // 2. Pathname changes -> Component re-renders (or not if layout persists) -> useEffect triggered
-
-        // Wait, if this component is in Layout, it doesn't unmount.
-        // So on pathname change, we should animateIn?
-        // animateOut ends with router.push.
-        // Then pathname updates.
-        // Then we should animateIn.
-
-        // However, we need to ensure the bars are ALREADY there (scaleY: 1) effectively.
-        // If animateOut finished, scaleY is 1.
-        // So we just need to animateIn.
-
         animateIn();
-
     }, [pathname]);
+
+    // Safety fallback: if hash changes (same page nav), ensure we animate in
+    useEffect(() => {
+        const handleHashChange = () => {
+            animateIn();
+            setIsTransitioning(false);
+        };
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
+    }, []);
 
     return (
         <>

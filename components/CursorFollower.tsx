@@ -28,7 +28,7 @@ export default function CursorFollower() {
             gsap.to(cursor, {
                 x: e.clientX,
                 y: e.clientY,
-                duration: 0.3,
+                duration: 0,
                 ease: "power2.out",
             });
         };
@@ -65,7 +65,7 @@ export default function CursorFollower() {
     return (
         <div
             ref={cursorRef}
-            className={`fixed top-0 left-0 pointer-events-none z-[10000] mix-blend-difference transition-all duration-200 ${isVisible ? "opacity-100" : "opacity-0"
+            className={`fixed top-0 left-0 pointer-events-none z-[10000] mix-blend-difference transition-opacity duration-200 ${isVisible ? "opacity-100" : "opacity-0"
                 }`}
             style={{
                 transform: "translate(-50%, -50%)",

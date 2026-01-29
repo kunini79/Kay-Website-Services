@@ -6,6 +6,8 @@ import SplitText from "./SplitText";
 import { gsap } from "gsap";
 import { shouldReduceMotion } from "@/utils/animations";
 
+import Scene3D from "./Scene3D";
+
 export default function Hero() {
     const shape1Ref = useParallax(-0.3);
     const shape2Ref = useParallax(0.2);
@@ -32,6 +34,7 @@ export default function Hero() {
 
     return (
         <section className="relative overflow-clip w-full px-[3vw] max-md:px-[6vw]">
+            <Scene3D />
             <div className="h-screen relative overflow-y-clip flex items-center">
                 {/* Abstract 3D shape placeholders with parallax */}
                 <div
