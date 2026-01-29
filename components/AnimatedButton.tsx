@@ -58,13 +58,12 @@ export default function AnimatedButton({
     if (href) {
         return (
             <Link
+                ref={linkRef as any}
                 href={href}
                 className={combinedClassName}
                 onClick={handleClick}
             >
-                <div ref={linkRef as any} className="w-full h-full flex items-center justify-center">
-                    <span className="relative z-10">{children}</span>
-                </div>
+                <span className="relative z-10">{children}</span>
             </Link>
         );
     }
