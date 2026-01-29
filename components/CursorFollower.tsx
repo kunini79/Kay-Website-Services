@@ -8,9 +8,17 @@ export default function CursorFollower() {
     const cursorRef = useRef<HTMLDivElement>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [isPointer, setIsPointer] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
-        if (shouldReduceMotion() || "ontouchstart" in window) return;
+        // Check if we should render (client-side only, motion preference, touch capability)
+        if (!shouldReduceMotion() && typeof window !== "undefined" && !("ontouchstart" in window)) {
+            setShouldRender(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!shouldRender) return;
 
         const cursor = cursorRef.current;
         if (!cursor) return;
@@ -50,9 +58,9 @@ export default function CursorFollower() {
             document.removeEventListener("mouseenter", handleMouseEnter, true);
             document.removeEventListener("mouseleave", handleMouseLeave);
         };
-    }, []);
+    }, [shouldRender]);
 
-    if (shouldReduceMotion() || "ontouchstart" in window) return null;
+    if (!shouldRender) return null;
 
     return (
         <div
