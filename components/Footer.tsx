@@ -11,16 +11,6 @@ export default function Footer() {
 
             {/* Footer Content */}
             <div className="w-full bg-black pb-[10vh] pt-0 max-md:pt-[5vh] overflow-clip relative min-h-screen flex flex-col justify-end px-4 md:px-[3vw]">
-                {/* Scrolling Sticky Text Placeholder */}
-                <div className="h-screen w-full absolute inset-0 flex justify-center items-center z-10 opacity-50 pointer-events-none">
-                    <div className="absolute text-white/10 text-[6vw] md:text-[5vw] font-display top-20 md:top-10 uppercase tracking-wider">
-                        Built Different
-                    </div>
-                    <div className="absolute text-white/10 text-[6vw] md:text-[5vw] font-display bottom-20 md:bottom-10 uppercase tracking-wider">
-                        Innovate Always
-                    </div>
-                </div>
-
                 <h2 className="text-white text-[22vw] md:text-[29vw] leading-none font-display uppercase text-center relative z-20 font-bold">
                     KayCorp
                 </h2>

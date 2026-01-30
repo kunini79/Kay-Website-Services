@@ -7,6 +7,7 @@ import Services from "@/components/Services";
 import ConceptSection from "@/components/ConceptSection";
 import Process from "@/components/Process";
 import Work from "@/components/Work";
+import PreFooterStatements from "@/components/PreFooterStatements";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 
@@ -24,6 +25,7 @@ export default function Home() {
         <ConceptSection />
         <Process />
         <Work />
+        <PreFooterStatements />
         <Footer />
         <Navigation />
       </div>

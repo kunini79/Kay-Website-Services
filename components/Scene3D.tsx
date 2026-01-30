@@ -99,6 +99,50 @@ function Particles() {
     );
 }
 
+function FallingBlocks() {
+    const count = 120;
+    const mesh = useRef<ONE.InstancedMesh>(null);
+    const dummy = useMemo(() => new ONE.Object3D(), []);
+    const blocks = useMemo(() => {
+        const temp = [];
+        for (let i = 0; i < count; i++) {
+            temp.push({
+                x: -8 + Math.random() * 16,
+                y: -6 + Math.random() * 12,
+                z: -6 + Math.random() * 12,
+                speed: 0.005 + Math.random() * 0.01,
+                size: 0.1 + Math.random() * 0.25,
+                rot: Math.random() * Math.PI,
+            });
+        }
+        return temp;
+    }, []);
+
+    useFrame(() => {
+        if (!mesh.current) return;
+        blocks.forEach((block, i) => {
+            block.y -= block.speed;
+            block.rot += block.speed * 2;
+            if (block.y < -7) {
+                block.y = 7;
+            }
+            dummy.position.set(block.x, block.y, block.z);
+            dummy.rotation.set(block.rot, block.rot, block.rot);
+            dummy.scale.set(block.size, block.size, block.size);
+            dummy.updateMatrix();
+            mesh.current!.setMatrixAt(i, dummy.matrix);
+        });
+        mesh.current.instanceMatrix.needsUpdate = true;
+    });
+
+    return (
+        <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color="#BBFD6A" roughness={0.4} metalness={0.6} />
+        </instancedMesh>
+    );
+}
+
 export default function Scene3D() {
     return (
         <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
@@ -108,6 +152,7 @@ export default function Scene3D() {
                 <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
                 <AbstractShape />
                 <Particles />
+                <FallingBlocks />
                 <Environment preset="city" />
             </Canvas>
         </div>
