@@ -1,27 +1,32 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import gsap from "gsap";
 
 export default function Loader({ onFinish }: { onFinish?: () => void }) {
     const [progress, setProgress] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [shouldRender, setShouldRender] = useState(true);
+    const [loadingText, setLoadingText] = useState("PREPARING EXPERIENCE");
 
     useEffect(() => {
-        // Simulate loading
+        // Enhanced loading sequence
         const interval = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) {
                     clearInterval(interval);
+                    setLoadingText("READY");
                     setIsComplete(true);
                     setTimeout(() => {
                         if (onFinish) onFinish();
-                        setTimeout(() => setShouldRender(false), 1000); // Unmount after animation
-                    }, 500);
+                        setTimeout(() => setShouldRender(false), 1000);
+                    }, 800);
                     return 100;
                 }
-                return prev + 2;
+                // Slightly faster progression
+                const increment = prev < 60 ? 3 : prev < 90 ? 2 : 1;
+                return Math.min(prev + increment, 100);
             });
-        }, 30);
+        }, 40);
 
         return () => clearInterval(interval);
     }, [onFinish]);
@@ -78,13 +83,13 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
                         </div>
                         <div className="flex justify-between items-end">
                             <div className="overflow-hidden">
-                                <p className="animate-text text-[3vw] md:text-[1vw] font-sans text-black/60 uppercase tracking-wider">
-                                    Preparing experience
+                                <p className="animate-text text-[3vw] md:text-[1vw] font-sans text-black/60 uppercase tracking-wider transition-all duration-300">
+                                    {loadingText}
                                 </p>
                             </div>
                             <div className="text-right overflow-hidden">
-                                <p className="animate-text text-[4vw] md:text-[1.5vw] font-display text-black">
-                                    LOADING ASSETS
+                                <p className="animate-text text-[4vw] md:text-[1.5vw] font-display text-black uppercase tracking-wide">
+                                    {progress < 100 ? "KayCorp" : "Ready"}
                                 </p>
                             </div>
                         </div>

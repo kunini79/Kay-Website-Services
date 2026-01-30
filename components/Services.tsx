@@ -1,14 +1,31 @@
 "use client";
 
+import { useRef } from "react";
 import AnimatedSection from "./AnimatedSection";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 
 export default function Services() {
+    const wheelRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        if (!wheelRef.current) return;
+
+        // Add rotation animation on scroll
+        gsap.to(wheelRef.current, {
+            rotation: 360,
+            duration: 20,
+            repeat: -1,
+            ease: "none"
+        });
+    }, { scope: wheelRef });
+
     return (
-        <section className="overflow-y-clip relative w-full flex flex-col items-center justify-between">
-            <div id="services" className="h-[20vh] md:h-[30vw] flex items-center justify-center w-full">
+        <section className="overflow-y-clip relative w-full flex flex-col items-center justify-between py-[8vh] md:py-[10vh]">
+            <div id="services" className="h-[15vh] md:h-[30vw] flex items-center justify-center w-full px-4">
                 <AnimatedSection animation="fade">
                     <div>
-                        <h2 className="text-[16vw] relative z-10 md:text-[10vw] leading-none font-semibold font-display uppercase text-center">
+                        <h2 className="text-[14vw] relative z-10 md:text-[10vw] leading-none font-semibold font-display uppercase text-center">
                             We are <span className="text-lime-400">Good</span> at
                         </h2>
                     </div>
@@ -50,15 +67,35 @@ export default function Services() {
                 <div className="h-[300vh] w-px absolute top-[-70%] left-1/2 -translate-x-1/2 bg-zinc-500/30"></div>
 
                 {/* Central Rotating Wheel Simulation */}
-                <AnimatedSection animation="scale" className="relative max-md:size-[50vw] md:size-[35vw] mx-auto flex items-center justify-center animate-wheel-spin">
-                    <div className="absolute inset-0 rounded-full border-2 border-lime-400 border-dashed flex items-center justify-center opacity-50"></div>
+                <AnimatedSection animation="scale" className="relative max-md:size-[50vw] md:size-[35vw] mx-auto flex items-center justify-center">
+                    <div ref={wheelRef} className="w-full h-full">
+                        <div className="absolute inset-0 rounded-full border-2 border-lime-400 border-dashed flex items-center justify-center opacity-50"></div>
 
-                    {/* Spikes */}
-                    {[...Array(12)].map((_, i) => (
-                        <div key={i} className="absolute" style={{ transform: `rotate(${i * 30}deg)`, width: '36vw', height: '2px', transformOrigin: 'center' }}>
-                            <div className="absolute right-0 max-md:w-[2.5vw] md:w-[1.5vw] h-full bg-lime-400"></div>
+                        {/* Spokes with more dynamic styling */}
+                        {[...Array(12)].map((_, i) => (
+                            <div 
+                                key={i} 
+                                className="absolute" 
+                                style={{ 
+                                    transform: `rotate(${i * 30}deg)`, 
+                                    width: '50%', 
+                                    height: '2px', 
+                                    transformOrigin: 'center',
+                                    left: '25%',
+                                    top: '50%'
+                                }}
+                            >
+                                <div className="absolute right-0 w-[15%] h-full bg-lime-400"></div>
+                            </div>
+                        ))}
+
+                        {/* Center hub */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="size-[20%] rounded-full bg-lime-400 flex items-center justify-center">
+                                <div className="size-[60%] rounded-full bg-white"></div>
+                            </div>
                         </div>
-                    ))}
+                    </div>
                 </AnimatedSection>
 
                 {/* Floating Labels */}

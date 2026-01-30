@@ -138,11 +138,13 @@ export default function Process() {
                     {visible && (
                         <motion.button
                             onClick={applyLayout}
-                            className="absolute bottom-8 right-8 bg-lime-400 text-black font-display font-bold uppercase px-6 py-3 rounded-full"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
+                            className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-lime-400 hover:bg-lime-300 text-black font-display font-bold uppercase px-4 py-2 md:px-6 md:py-3 rounded-full text-sm md:text-base transition-colors shadow-lg"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            RESET
+                            RE-ARRANGE
                         </motion.button>
                     )}
                 </div>

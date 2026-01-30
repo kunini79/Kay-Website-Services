@@ -120,7 +120,7 @@ export default function Hero() {
             {/* INTRO OVERLAY */}
             <div ref={introRef} className="fixed inset-0 z-[100] flex items-center justify-center bg-white pointer-events-none">
                 <div className="intro-text opacity-0 font-display font-bold text-[10vw] md:text-[5vw] uppercase tracking-tighter text-black">
-                    Design With
+                    KayCorp
                 </div>
             </div>
 
@@ -148,7 +148,7 @@ export default function Hero() {
                         <div className="w-full md:w-4/5 animate-in opacity-0">
                             <div className="reveal-text">
                                 <div>
-                                    <p className="font-sans w-full text-[4.5vw] max-md:text-base max-md:leading-relaxed max-md:w-full md:text-[1.3vw] font-medium">
+                                    <p className="font-sans w-full text-[4.5vw] max-md:text-base max-md:leading-relaxed max-md:w-full md:text-[1.3vw] font-medium leading-relaxed">
                                         We design immersive, motion-driven websites that command attention and guide users to act. Clean builds. Sharp strategy. Zero fluff.
                                     </p>
                                 </div>
@@ -176,6 +176,27 @@ export default function Hero() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Marquee Text Section */}
+            <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden py-[6vh] md:py-[8vh] border-y border-zinc-200 bg-white">
+                <div className="flex whitespace-nowrap animate-marquee">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="flex items-center shrink-0">
+                            <AnimatedButton
+                                href="/contact"
+                                variant="primary"
+                                magnetic={false}
+                                className="text-[8vw] md:text-[3vw] mx-[3vw] md:mx-[4vw] shrink-0"
+                            >
+                                LET'S TALK
+                            </AnimatedButton>
+                            <span className="text-[8vw] md:text-[3vw] font-display uppercase font-bold mx-[3vw] md:mx-[4vw]">
+                                •
+                            </span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

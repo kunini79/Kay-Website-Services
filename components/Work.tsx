@@ -74,28 +74,42 @@ export default function Work() {
                                     rel="noopener noreferrer"
                                     className="block rounded-[2vw] md:rounded-[1vw] overflow-hidden relative aspect-[4/3] group"
                                 >
-                                    <div className="relative w-full h-full bg-black/10">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-black/80 to-black/60 group-hover:from-black/70 group-hover:to-black/50 transition-all duration-500"></div>
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="text-center p-8">
+                                    <div className="relative w-full h-full bg-black/5 overflow-hidden">
+                                        {/* Image placeholder with gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-lime-400/20 via-lime-400/10 to-transparent"></div>
+                                        
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                            <div className="text-center p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                                                 <h3 className="text-white font-display font-bold text-[5vw] md:text-[2.5vw] mb-4 leading-tight">
                                                     {project.title}
                                                 </h3>
-                                                <p className="text-white/80 font-sans text-[3vw] md:text-[1.2vw] max-w-md mx-auto">
+                                                <p className="text-white/90 font-sans text-[3vw] md:text-[1.2vw] max-w-md mx-auto leading-relaxed">
                                                     {project.description}
                                                 </p>
+                                                <div className="mt-6 inline-flex items-center gap-2 text-lime-400 font-display uppercase text-sm font-bold">
+                                                    <span>View Project</span>
+                                                    <svg className="w-4 h-4 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                    </svg>
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        {/* Project number badge */}
+                                        <div className="absolute top-4 right-4 size-12 md:size-16 rounded-full bg-lime-400 flex items-center justify-center font-display font-bold text-black text-lg md:text-2xl group-hover:scale-110 transition-transform duration-300">
+                                            0{project.id}
                                         </div>
                                     </div>
                                 </a>
                                 <div className="mt-4 px-2 w-full flex justify-between items-center text-black">
                                     <div className="fall-text">
-                                        <h3 className="text-[2vw] max-md:text-[6vw] tracking-wide font-semibold font-display">
+                                        <h3 className="text-[4vw] max-md:text-[6vw] md:text-[2vw] tracking-wide font-semibold font-display">
                                             {project.title}
                                         </h3>
                                     </div>
                                     <div className="reveal-text">
-                                        <p className="text-[1.3vw] max-md:text-[4vw] font-sans font-medium mt-1">
+                                        <p className="text-[2.5vw] max-md:text-[4vw] md:text-[1.3vw] font-sans font-medium mt-1">
                                             {project.category}
                                         </p>
                                     </div>
@@ -108,17 +122,21 @@ export default function Work() {
                 {/* CTA Section */}
                 <AnimatedSection animation="fade" className="w-full mt-[12vw] px-[3vw] max-md:px-0 flex flex-col md:flex-row justify-between items-start md:items-end gap-[5vh] md:gap-[5vw] relative z-10">
                     <h2 className="text-[12vw] md:text-[7vw] w-full md:w-[60%] leading-[0.9] font-semibold font-display uppercase text-black">
-                        Every work you see here started with curiosity
+                        Every work you see here started with a <span className="text-black/50">conversation</span>
                     </h2>
-                    <div className="w-full md:w-[40%] text-black flex flex-col items-start text-left translate-y-[30vh]">
-                        <p className="text-[4.5vw] md:text-[1.3vw] font-sans max-md:leading-snug mb-[4vh] max-w-lg">
-                            Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. A focused conversation is often enough to uncover the right path. Reach out and let's see what we can build together.
+                    <div className="w-full md:w-[40%] text-black flex flex-col items-start text-left md:translate-y-[25vh]">
+                        <p className="text-[4.5vw] md:text-[1.3vw] font-sans max-md:leading-snug leading-relaxed mb-[4vh] max-w-lg">
+                            Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. A focused conversation is often enough to uncover the right path.
                         </p>
                         <a href="/contact" className="inline-block">
-                            <button className="text-[4vw] rounded cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-8 py-4 md:px-6 md:py-3 bg-black group overflow-hidden relative">
+                            <button className="text-[4vw] rounded-lg cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-8 py-4 md:px-8 md:py-4 bg-black group overflow-hidden relative transition-all hover:bg-black/90 hover:shadow-xl">
                                 <span className="relative overflow-clip inline-block" style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
-                                    <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>
-                                    <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>
+                                    <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>
+                                        Schedule Call
+                                    </span>
+                                    <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>
+                                        Schedule Call
+                                    </span>
                                 </span>
                             </button>
                         </a>

@@ -41,14 +41,15 @@ export default function AnimatedButton({
     };
 
     const baseStyles = `
-    relative overflow-hidden cursor-pointer
+    relative overflow-hidden cursor-pointer group
     font-display uppercase font-semibold tracking-wide
-    px-6 py-3 rounded transition-all duration-300
+    px-6 py-3 rounded-lg transition-all duration-300
     transform hover:scale-105 active:scale-95
+    shadow-lg hover:shadow-xl
   `;
 
     const variants = {
-        primary: "bg-lime-400 text-black hover:bg-lime-300",
+        primary: "bg-lime-400 text-black hover:bg-lime-300 hover:shadow-lime-400/50",
         secondary: "bg-black text-white hover:bg-zinc-800",
         outline: "border-2 border-lime-400 text-lime-400 hover:bg-lime-400 hover:text-black",
     };
