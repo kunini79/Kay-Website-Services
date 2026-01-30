@@ -2,8 +2,48 @@
 
 import Navigation from "@/components/Navigation";
 import Link from "next/link";
+import { useState, FormEvent } from "react";
 
 export default function Contact() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus('idle');
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get('Full_Name') as string,
+            email: formData.get('Email') as string,
+            phone: formData.get('Phone_Number') as string,
+            message: formData.get('Message') as string,
+        };
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                setSubmitStatus('success');
+                (e.target as HTMLFormElement).reset();
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <>
             <section className="w-full min-h-screen bg-[#f5f5f5] text-black overflow-hidden relative z-10">
@@ -146,7 +186,18 @@ export default function Contact() {
                         </div>
 
                         <div className="lg:w-1/2 mt-8 lg:mt-0">
-                            <form className="space-y-8 md:space-y-12">
+                            <form onSubmit={handleSubmit} className="space-y-8 md:space-y-12">
+                                {submitStatus === 'success' && (
+                                    <div className="bg-lime-400/20 border border-lime-600 text-lime-900 px-4 py-3 rounded">
+                                        <p className="font-sans text-sm">✓ Thank you! Your message has been sent successfully.</p>
+                                    </div>
+                                )}
+                                {submitStatus === 'error' && (
+                                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        <p className="font-sans text-sm">✗ Something went wrong. Please try again.</p>
+                                    </div>
+                                )}
+                                
                                 <div>
                                     <div className="w-fit">
                                         <div className="reveal-text">
@@ -219,10 +270,19 @@ export default function Contact() {
                                     ></textarea>
                                 </div>
                                 <div className="w-fit">
-                                    <button type="submit" className="text-[5vw] md:text-[2vw] tracking-wide text-black font-semibold font-display uppercase px-4 py-2 md:px-6 md:py-3 relative bg-lime-400 rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-4 md:mt-8 group" style={{ overflow: "visible" }}>
+                                    <button 
+                                        type="submit" 
+                                        disabled={isSubmitting}
+                                        className="text-[5vw] md:text-[2vw] tracking-wide text-black font-semibold font-display uppercase px-4 py-2 md:px-6 md:py-3 relative bg-lime-400 rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-4 md:mt-8 group" 
+                                        style={{ overflow: "visible" }}
+                                    >
                                         <span className="relative overflow-clip inline-block" style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
-                                            <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>Send Message</span>
-                                            <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>Send Message</span>
+                                            <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>
+                                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                                            </span>
+                                            <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>
+                                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                                            </span>
                                         </span>
                                     </button>
                                 </div>
