@@ -107,19 +107,15 @@ export default function Work() {
 
                 {/* CTA Section */}
                 <div className="w-full mt-[10vw] px-[3vw] max-md:px-0">
-                    <div className="fall-text">
-                        <h2 className="text-[12vw] md:text-[8vw] w-full md:w-[50%] leading-none font-semibold font-display uppercase">
-                            Every work you see here started with curiosity
-                        </h2>
-                    </div>
+                    <h2 className="text-[12vw] md:text-[8vw] w-full md:w-[50%] leading-none font-semibold font-display uppercase">
+                        Every work you see here started with curiosity
+                    </h2>
                     <div className="w-full md:w-[35%] ml-auto mt-[5vh] md:mt-0 text-black">
-                        <div className="reveal-text">
-                            <p className="text-[4vw] md:text-[1.3vw] font-sans max-md:leading-tight">
-                                Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. Reach out and let's see what we can build together.
-                            </p>
-                        </div>
+                        <p className="text-[4vw] md:text-[1.3vw] font-sans max-md:leading-tight">
+                            Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. Reach out and let's see what we can build together.
+                        </p>
                         <a href="/contact">
-                            <button className="text-[4vw] rounded cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-3 py-1.5 md:px-4 md:py-2 relative mt-[3vh] bg-black group overflow-hidden">
+                            <button className="text-[4vw] rounded cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-6 py-3 md:px-4 md:py-2 relative mt-[3vh] bg-black group overflow-hidden">
                                 <span className="relative overflow-clip inline-block" style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
                                     <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>
                                     <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>

@@ -9,13 +9,11 @@ export default function Contact() {
             <section className="w-full min-h-screen bg-[#f5f5f5] text-black overflow-hidden relative z-10">
                 <div className="w-full pt-[15vh] md:pt-[20vh] pb-[5vh] px-4 md:px-[5vw]">
                     <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-0">
-                        <div className="fall-text">
-                            <div>
-                                <h1 className="text-[16vw] md:text-[8vw] leading-[0.85] font-display font-semibold uppercase">
-                                    Ready to start<br />
-                                    <span className="text-lime-400">something great?</span>
-                                </h1>
-                            </div>
+                        <div>
+                            <h1 className="text-[16vw] md:text-[8vw] leading-[0.85] font-display font-semibold uppercase">
+                                Ready to start<br />
+                                <span className="text-lime-400">something great?</span>
+                            </h1>
                         </div>
 
                         <div className="w-fit md:hidden block">
@@ -57,85 +55,69 @@ export default function Contact() {
 
                 <div className="w-full px-4 md:px-[5vw] py-[10vh] md:py-[15vh]">
                     <div className="flex flex-col lg:flex-row gap-12 md:gap-[10vw]">
-                        <div className="lg:w-1/2">
+                        <div className="md:w-1/2">
                             <div className="w-fit">
-                                <div className="reveal-text">
-                                    <div>
-                                        <p className="text-xs md:text-[1vw] font-sans text-black/40 uppercase tracking-widest mb-4 md:mb-8">
-                                            Get in touch
-                                        </p>
-                                    </div>
+                                <div>
+                                    <p className="text-xs md:text-[1vw] font-sans text-black/40 uppercase tracking-widest mb-4 md:mb-8">
+                                        Get in touch
+                                    </p>
                                 </div>
                             </div>
 
-                            <div className="fall-text">
-                                <div>
-                                    <h2 className="text-[10vw] md:text-[4vw] font-display font-semibold leading-[1.1] uppercase mb-8 md:mb-12">
-                                        Have a project in mind? We're here to make it happen.
-                                    </h2>
-                                </div>
+                            <div>
+                                <h2 className="text-[10vw] md:text-[4vw] font-display font-semibold leading-[1.1] uppercase mb-8 md:mb-12">
+                                    Have a project in mind? We're here to make it happen.
+                                </h2>
                             </div>
 
                             <div className="space-y-6 md:space-y-8 mt-8 md:mt-16">
                                 <div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
-                                                    Email
-                                                </p>
-                                            </div>
+                                        <div>
+                                            <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
+                                                Email
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <a href="mailto:agency@kaycorp.tech" className="text-[5vw] md:text-[2vw] font-display hover:text-lime-600 transition-colors">
-                                                    agency@kaycorp.tech
-                                                </a>
-                                            </div>
+                                        <div>
+                                            <a href="mailto:agency@kaycorp.tech" className="text-[5vw] md:text-[2vw] font-display hover:text-lime-600 transition-colors">
+                                                agency@kaycorp.tech
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
-                                                    Phone
-                                                </p>
-                                            </div>
+                                        <div>
+                                            <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
+                                                Phone
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <a href="tel:+2347011350459" className="text-[5vw] md:text-[2vw] font-display hover:text-lime-600 transition-colors">
-                                                    +234 701 135 0459
-                                                </a>
-                                            </div>
+                                        <div>
+                                            <a href="tel:+2347011350459" className="text-[5vw] md:text-[2vw] font-display hover:text-lime-600 transition-colors">
+                                                +234 701 135 0459
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
-                                                    Location
-                                                </p>
-                                            </div>
+                                        <div>
+                                            <p className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider mb-1 md:mb-2">
+                                                Location
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="w-fit">
-                                        <div className="reveal-text">
-                                            <div>
-                                                <p className="text-[5vw] md:text-[2vw] font-display">
-                                                    Yola, Nigeria
-                                                </p>
-                                            </div>
+                                        <div>
+                                            <p className="text-[5vw] md:text-[2vw] font-display">
+                                                Yola, Nigeria
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -179,7 +161,7 @@ export default function Contact() {
                                         type="text"
                                         placeholder="John Doe"
                                         required
-                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-[5vw] md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
+                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
                                         name="Full_Name"
                                     />
                                 </div>
@@ -197,7 +179,7 @@ export default function Contact() {
                                         type="email"
                                         placeholder="john@example.com"
                                         required
-                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-[5vw] md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
+                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
                                         name="Email"
                                     />
                                 </div>
@@ -214,7 +196,7 @@ export default function Contact() {
                                     <input
                                         type="tel"
                                         placeholder="+91 1234567890"
-                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-[5vw] md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
+                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
                                         name="Phone_Number"
                                     />
                                 </div>
@@ -233,7 +215,7 @@ export default function Contact() {
                                         placeholder="I need help with..."
                                         rows={4}
                                         required
-                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-[5vw] md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20 resize-none"
+                                        className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20 resize-none"
                                     ></textarea>
                                 </div>
                                 <div className="w-fit">

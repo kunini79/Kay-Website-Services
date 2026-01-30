@@ -136,3 +136,9 @@ body {
   font-family: var(--font-sans);
   cursor: none;
 }
+
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}

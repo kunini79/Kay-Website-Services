@@ -50,7 +50,7 @@ export default function Services() {
                 <div className="h-[300vh] w-px absolute top-[-70%] left-1/2 -translate-x-1/2 bg-zinc-500/30"></div>
 
                 {/* Central Rotating Wheel Simulation */}
-                <AnimatedSection animation="scale" className="relative max-md:size-[60vw] md:size-[35vw] mx-auto flex items-center justify-center animate-wheel-spin">
+                <AnimatedSection animation="scale" className="relative max-md:size-[50vw] md:size-[35vw] mx-auto flex items-center justify-center animate-wheel-spin">
                     <div className="absolute inset-0 rounded-full border-2 border-lime-400 border-dashed flex items-center justify-center opacity-50"></div>
 
                     {/* Spikes */}
