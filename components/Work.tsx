@@ -48,7 +48,7 @@ export default function Work() {
                 </div>
             </div>
 
-            <div className="h-fit pb-[10vh] relative overflow-clip w-full bg-lime-400 px-0 max-md:px-[6vw]">
+            <div className="h-fit pb-[75vh] relative overflow-clip w-full bg-lime-400 px-0 max-md:px-[6vw]">
                 <AnimatedSection animation="fade">
                     <h2 className="text-[16vw] text-center md:text-[8vw] leading-none font-semibold font-display uppercase">
                         FEATURED WORK
@@ -106,16 +106,16 @@ export default function Work() {
                 </div>
 
                 {/* CTA Section */}
-                <div className="w-full mt-[10vw] px-[3vw] max-md:px-0">
-                    <h2 className="text-[12vw] md:text-[8vw] w-full md:w-[50%] leading-none font-semibold font-display uppercase">
+                <AnimatedSection animation="fade" className="w-full mt-[12vw] px-[3vw] max-md:px-0 flex flex-col md:flex-row justify-between items-start md:items-end gap-[5vh] md:gap-[5vw] relative z-10">
+                    <h2 className="text-[12vw] md:text-[7vw] w-full md:w-[60%] leading-[0.9] font-semibold font-display uppercase text-black">
                         Every work you see here started with curiosity
                     </h2>
-                    <div className="w-full md:w-[35%] ml-auto mt-[5vh] md:mt-0 text-black">
-                        <p className="text-[4vw] md:text-[1.3vw] font-sans max-md:leading-tight">
-                            Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. Reach out and let's see what we can build together.
+                    <div className="w-full md:w-[40%] text-black flex flex-col items-start text-left translate-y-[30vh]">
+                        <p className="text-[4.5vw] md:text-[1.3vw] font-sans max-md:leading-snug mb-[4vh] max-w-lg">
+                            Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. A focused conversation is often enough to uncover the right path. Reach out and let's see what we can build together.
                         </p>
-                        <a href="/contact">
-                            <button className="text-[4vw] rounded cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-6 py-3 md:px-4 md:py-2 relative mt-[3vh] bg-black group overflow-hidden">
+                        <a href="/contact" className="inline-block">
+                            <button className="text-[4vw] rounded cursor-pointer md:text-[1.5vw] tracking-wide text-white font-semibold font-display uppercase px-8 py-4 md:px-6 md:py-3 bg-black group overflow-hidden relative">
                                 <span className="relative overflow-clip inline-block" style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
                                     <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>
                                     <span className="inline-block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0" style={{ transformStyle: "preserve-3d" }}>Make It Real</span>
@@ -123,7 +123,7 @@ export default function Work() {
                             </button>
                         </a>
                     </div>
-                </div>
+                </AnimatedSection>
             </div>
         </section>
     );

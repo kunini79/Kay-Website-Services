@@ -171,7 +171,7 @@ export default function Hero() {
                         <div className="fall-text">
                             <div>
                                 <h1>
-                                    KayCorp <span className="text-lime-400">Deserves</span> More Than a Pretty Website.
+                                    Your Brand <span className="text-lime-400">Deserves</span> More Than a Pretty Website.
                                 </h1>
                             </div>
                         </div>
