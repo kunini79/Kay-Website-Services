@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Send email using Resend
     const data = await resend.emails.send({
-      from: 'Kay Website Services <onboarding@resend.dev>',
+      from: 'Kay Website Services <info@kaycorp.tech>',
       to: ['info@kaycorp.tech'], // Public-facing inbox
       subject: `New Contact Form Submission from ${name}`,
       html: `
