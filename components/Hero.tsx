@@ -179,26 +179,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* Marquee Text Section */}
-            <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden py-[6vh] md:py-[8vh] border-y border-zinc-200 bg-white">
-                <div className="flex whitespace-nowrap animate-marquee">
-                    {[...Array(4)].map((_, i) => (
-                        <div key={i} className="flex items-center shrink-0">
-                            <AnimatedButton
-                                href="/contact"
-                                variant="primary"
-                                magnetic={false}
-                                className="text-[8vw] md:text-[3vw] mx-[3vw] md:mx-[4vw] shrink-0"
-                            >
-                                LET'S TALK
-                            </AnimatedButton>
-                            <span className="text-[8vw] md:text-[3vw] font-display uppercase font-bold mx-[3vw] md:mx-[4vw]">
-                                •
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {/* Marquee Text Section removed */}
         </section>
     );
 }
