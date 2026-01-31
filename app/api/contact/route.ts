@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Send email using Resend
     const data = await resend.emails.send({
-      from: 'Kay Website Services <onboarding@resend.dev>', // You'll change this to your domain later
+      from: 'Kay Website Services <noreply@send.kaycorp.tech>',
       to: ['info@kaycorp.tech'], // Public-facing inbox
       subject: `New Contact Form Submission from ${name}`,
       html: `
@@ -52,6 +52,14 @@ export async function POST(request: NextRequest) {
       `,
       replyTo: email, // Allow you to reply directly to the sender
     });
+
+    if (data.error) {
+      console.error('Resend error:', data.error);
+      return NextResponse.json(
+        { error: data.error.message || 'Failed to send email' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json(
       { message: 'Email sent successfully', id: data?.data?.id ?? null },

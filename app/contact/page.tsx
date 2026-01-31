@@ -7,12 +7,14 @@ import { useState, FormEvent } from "react";
 export default function Contact() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsSubmitting(true);
         setSubmitStatus('idle');
+        setErrorMessage(null);
 
         const formData = new FormData(e.currentTarget);
         const data = {
@@ -35,10 +37,13 @@ export default function Contact() {
                 setSubmitStatus('success');
                 (e.target as HTMLFormElement).reset();
             } else {
+                const result = await response.json().catch(() => null);
+                setErrorMessage(result?.error || 'Something went wrong. Please try again.');
                 setSubmitStatus('error');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
+            setErrorMessage('Network error. Please try again.');
             setSubmitStatus('error');
         } finally {
             setIsSubmitting(false);
@@ -196,7 +201,7 @@ export default function Contact() {
                                     )}
                                     {submitStatus === 'error' && (
                                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                                            <p className="font-sans text-sm">✗ Something went wrong. Please try again.</p>
+                                            <p className="font-sans text-sm">✗ {errorMessage || 'Something went wrong. Please try again.'}</p>
                                         </div>
                                     )}
                                 </div>

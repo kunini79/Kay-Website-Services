@@ -42,6 +42,7 @@ export default function Process() {
     const containerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
     const [visible, setVisible] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const discoveryX = useMotionValue(0);
     const discoveryY = useMotionValue(0);
@@ -74,9 +75,16 @@ export default function Process() {
     };
 
     useEffect(() => {
+        const media = window.matchMedia("(max-width: 767px)");
+        const onChange = () => setIsMobile(media.matches);
+        onChange();
+        media.addEventListener("change", onChange);
         applyLayout();
         window.addEventListener('resize', applyLayout);
-        return () => window.removeEventListener('resize', applyLayout);
+        return () => {
+            media.removeEventListener("change", onChange);
+            window.removeEventListener('resize', applyLayout);
+        };
     }, []);
 
     useEffect(() => {
@@ -93,59 +101,91 @@ export default function Process() {
             <div ref={sectionRef} className="py-[18vh] max-md:py-[10vh] px-[4vw]">
                 <div
                     ref={containerRef}
-                    className="relative w-full h-[65vh] max-md:h-[80vh]
+                    className="relative w-full h-[65vh] max-md:h-auto
                     border border-zinc-200 rounded-3xl bg-[#fafafa]
                     px-[6vw] py-[8vh]"
                 >
-                    {/* CONNECTIONS */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                        <Bezier aX={discoveryX} aY={discoveryY} bX={designX} bY={designY} />
-                        <Bezier aX={designX} aY={designY} bX={developX} bY={developY} />
-                        <Bezier aX={developX} aY={developY} bX={polishX} bY={polishY} />
-                        <Bezier aX={polishX} aY={polishY} bX={launchX} bY={launchY} />
-                    </svg>
+                    {isMobile ? (
+                        <div className="space-y-6">
+                            <ProcessCard title="DISCOVERY" index={1}>
+                                <li>Creative Brief</li>
+                                <li>Brand Research</li>
+                                <li>Mood Boards</li>
+                            </ProcessCard>
+                            <ProcessCard title="DESIGN" index={2} dark>
+                                <li>Visual Direction</li>
+                                <li>Art Direction</li>
+                                <li>Storyboarding</li>
+                            </ProcessCard>
+                            <ProcessCard title="DEVELOP" index={3} dark>
+                                <li>Creative Coding</li>
+                                <li>WebGL & 3D</li>
+                                <li>Animations</li>
+                            </ProcessCard>
+                            <ProcessCard title="POLISH" index={4}>
+                                <li>Micro-interactions</li>
+                                <li>Performance</li>
+                                <li>Pixel Perfect</li>
+                            </ProcessCard>
+                            <ProcessCard title="LAUNCH" index={5} dark>
+                                <li>Go Live</li>
+                                <li>Case Study</li>
+                                <li>Awards Submit</li>
+                            </ProcessCard>
+                        </div>
+                    ) : (
+                        <>
+                            {/* CONNECTIONS */}
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                                <Bezier aX={discoveryX} aY={discoveryY} bX={designX} bY={designY} />
+                                <Bezier aX={designX} aY={designY} bX={developX} bY={developY} />
+                                <Bezier aX={developX} aY={developY} bX={polishX} bY={polishY} />
+                                <Bezier aX={polishX} aY={polishY} bX={launchX} bY={launchY} />
+                            </svg>
 
-                    <Node title="DISCOVERY" x={discoveryX} y={discoveryY}>
-                        <li>Creative Brief</li>
-                        <li>Brand Research</li>
-                        <li>Mood Boards</li>
-                    </Node>
+                            <Node title="DISCOVERY" x={discoveryX} y={discoveryY}>
+                                <li>Creative Brief</li>
+                                <li>Brand Research</li>
+                                <li>Mood Boards</li>
+                            </Node>
 
-                    <Node title="DESIGN" x={designX} y={designY} dark>
-                        <li>Visual Direction</li>
-                        <li>Art Direction</li>
-                        <li>Storyboarding</li>
-                    </Node>
+                            <Node title="DESIGN" x={designX} y={designY} dark>
+                                <li>Visual Direction</li>
+                                <li>Art Direction</li>
+                                <li>Storyboarding</li>
+                            </Node>
 
-                    <Node title="DEVELOP" x={developX} y={developY} dark>
-                        <li>Creative Coding</li>
-                        <li>WebGL & 3D</li>
-                        <li>Animations</li>
-                    </Node>
+                            <Node title="DEVELOP" x={developX} y={developY} dark>
+                                <li>Creative Coding</li>
+                                <li>WebGL & 3D</li>
+                                <li>Animations</li>
+                            </Node>
 
-                    <Node title="POLISH" x={polishX} y={polishY}>
-                        <li>Micro-interactions</li>
-                        <li>Performance</li>
-                        <li>Pixel Perfect</li>
-                    </Node>
+                            <Node title="POLISH" x={polishX} y={polishY}>
+                                <li>Micro-interactions</li>
+                                <li>Performance</li>
+                                <li>Pixel Perfect</li>
+                            </Node>
 
-                    <Node title="LAUNCH" x={launchX} y={launchY} dark>
-                        <li>Go Live</li>
-                        <li>Case Study</li>
-                        <li>Awards Submit</li>
-                    </Node>
+                            <Node title="LAUNCH" x={launchX} y={launchY} dark>
+                                <li>Go Live</li>
+                                <li>Case Study</li>
+                                <li>Awards Submit</li>
+                            </Node>
 
-                    {visible && (
-                        <motion.button
-                            onClick={applyLayout}
-                            className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-lime-400 hover:bg-lime-300 text-black font-display font-bold uppercase px-4 py-2 md:px-6 md:py-3 rounded-full text-sm md:text-base transition-colors shadow-lg"
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            RE-ARRANGE
-                        </motion.button>
+                            {visible && (
+                                <motion.button
+                                    onClick={applyLayout}
+                                    className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-lime-400 hover:bg-lime-300 text-black font-display font-bold uppercase px-4 py-2 md:px-6 md:py-3 rounded-full text-sm md:text-base transition-colors shadow-lg"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    RE-ARRANGE
+                                </motion.button>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -214,5 +254,29 @@ function Node({
                 </ul>
             </div>
         </motion.div>
+    );
+}
+
+function ProcessCard({
+    title,
+    index,
+    dark,
+    children,
+}: {
+    title: string;
+    index: number;
+    dark?: boolean;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className={`rounded-2xl p-5 border ${dark ? 'bg-black text-lime-400 border-black' : 'bg-lime-400 text-black border-lime-400'}`}>
+            <div className="flex items-center justify-between mb-3">
+                <h3 className="font-display font-bold uppercase text-base">{title}</h3>
+                <span className="font-display font-bold text-sm">0{index}</span>
+            </div>
+            <ul className="space-y-2 font-sans font-medium text-sm">
+                {children}
+            </ul>
+        </div>
     );
 }
