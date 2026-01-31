@@ -7,6 +7,11 @@ import Services from "@/components/Services";
 import ConceptSection from "@/components/ConceptSection";
 import Process from "@/components/Process";
 import Work from "@/components/Work";
+import TrustedBy from "@/components/TrustedBy";
+import CaseStudies from "@/components/CaseStudies";
+import Engagements from "@/components/Engagements";
+import FaqSection from "@/components/FaqSection";
+import FinalCTA from "@/components/FinalCTA";
 import PreFooterStatements from "@/components/PreFooterStatements";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
@@ -25,6 +30,11 @@ export default function Home() {
         <ConceptSection />
         <Process />
         <Work />
+        <TrustedBy />
+        <CaseStudies />
+        <Engagements />
+        <FaqSection />
+        <FinalCTA />
         <PreFooterStatements />
         <Footer />
         <Navigation />
