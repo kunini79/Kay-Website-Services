@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     // Send email using Resend
     const data = await resend.emails.send({
       from: 'Kay Website Services <onboarding@resend.dev>', // You'll change this to your domain later
-      to: ['agency@kaycorp.tech'], // Your email address
+      to: ['info@kaycorp.tech'], // Public-facing inbox
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
