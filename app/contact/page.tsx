@@ -2,12 +2,19 @@
 
 import Navigation from "@/components/Navigation";
 import Link from "next/link";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useRef, useEffect } from "react";
 
 export default function Contact() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const statusRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (submitStatus !== 'idle' && statusRef.current) {
+            statusRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [submitStatus]);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -193,18 +200,6 @@ export default function Contact() {
 
                         <div className="lg:w-1/2 mt-8 lg:mt-0">
                             <form onSubmit={handleSubmit} action="#" className="space-y-8 md:space-y-12">
-                                <div aria-live="polite" role="status">
-                                    {submitStatus === 'success' && (
-                                        <div className="bg-lime-400/20 border border-lime-600 text-lime-900 px-4 py-3 rounded">
-                                            <p className="font-sans text-sm">✓ Thank you! Your message has been sent successfully.</p>
-                                        </div>
-                                    )}
-                                    {submitStatus === 'error' && (
-                                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                                            <p className="font-sans text-sm">✗ {errorMessage || 'Something went wrong. Please try again.'}</p>
-                                        </div>
-                                    )}
-                                </div>
                                 
                                 <div>
                                     <div className="w-fit">
@@ -276,6 +271,18 @@ export default function Contact() {
                                         required
                                         className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20 resize-none"
                                     ></textarea>
+                                </div>
+                                <div ref={statusRef} aria-live="polite" role="status">
+                                    {submitStatus === 'success' && (
+                                        <div className="bg-lime-400/20 border border-lime-600 text-lime-900 px-4 py-3 rounded">
+                                            <p className="font-sans text-sm">✓ Thank you! Your message has been sent successfully.</p>
+                                        </div>
+                                    )}
+                                    {submitStatus === 'error' && (
+                                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                            <p className="font-sans text-sm">✗ {errorMessage || 'Something went wrong. Please try again.'}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="w-fit">
                                     <button 
