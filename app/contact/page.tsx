@@ -10,6 +10,7 @@ export default function Contact() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         setIsSubmitting(true);
         setSubmitStatus('idle');
 
@@ -186,17 +187,19 @@ export default function Contact() {
                         </div>
 
                         <div className="lg:w-1/2 mt-8 lg:mt-0">
-                            <form onSubmit={handleSubmit} className="space-y-8 md:space-y-12">
-                                {submitStatus === 'success' && (
-                                    <div className="bg-lime-400/20 border border-lime-600 text-lime-900 px-4 py-3 rounded">
-                                        <p className="font-sans text-sm">✓ Thank you! Your message has been sent successfully.</p>
-                                    </div>
-                                )}
-                                {submitStatus === 'error' && (
-                                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                                        <p className="font-sans text-sm">✗ Something went wrong. Please try again.</p>
-                                    </div>
-                                )}
+                            <form onSubmit={handleSubmit} action="#" className="space-y-8 md:space-y-12">
+                                <div aria-live="polite" role="status">
+                                    {submitStatus === 'success' && (
+                                        <div className="bg-lime-400/20 border border-lime-600 text-lime-900 px-4 py-3 rounded">
+                                            <p className="font-sans text-sm">✓ Thank you! Your message has been sent successfully.</p>
+                                        </div>
+                                    )}
+                                    {submitStatus === 'error' && (
+                                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                            <p className="font-sans text-sm">✗ Something went wrong. Please try again.</p>
+                                        </div>
+                                    )}
+                                </div>
                                 
                                 <div>
                                     <div className="w-fit">
