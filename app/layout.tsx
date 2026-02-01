@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Bebas_Neue, Inter_Tight, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import PageTransition from "@/components/PageTransition";
@@ -151,6 +152,7 @@ export default function RootLayout({
         <SmoothScroll>
           <PageTransition>{children}</PageTransition>
         </SmoothScroll>
+        <Analytics />
       </body>
     </html>
   );
