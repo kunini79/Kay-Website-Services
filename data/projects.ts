@@ -16,7 +16,7 @@ export const projects: Project[] = [
         title: "Gem'inate Kids Foundation",
         description: "A vibrant non-profit website empowering children through education and community programs",
         category: "WEB • DEVELOPMENT",
-        url: "https://www.geminatefoundation.org.ng",
+        url: "https://geminate-foundation.vercel.app",
         image: "/projects/geminate.png",
         tags: ["React", "Tailwind CSS", "Non-Profit", "Responsive Design"]
     },
@@ -25,7 +25,7 @@ export const projects: Project[] = [
         title: "Itsybits.dev",
         description: "Professional portfolio for education consultant showcasing expertise and impact",
         category: "WEB • DESIGN",
-        url: "https://www.itsybits.dev",
+        url: "https://itsy-bits.vercel.app",
         image: "/projects/itsybits.png",
         tags: ["Portfolio", "Modern Design", "Consulting", "Professional"]
     },
@@ -34,17 +34,35 @@ export const projects: Project[] = [
         title: "Yola Turf Club",
         description: "Premier horse racing and social club website with event management",
         category: "WEB • E-COMMERCE",
-        url: "https://www.yolaturfclub.com.ng",
+        url: "https://yola-turf.vercel.app",
         image: "/projects/yolaturf.png",
         tags: ["Events", "Membership", "Sports", "Community"]
     },
     {
         id: 4,
-        title: "AUN Schools Portal",
-        description: "Educational management system for American University of Nigeria schools",
-        category: "WEB • PLATFORM",
-        url: "https://www.schools.aun.edu.ng",
-        image: "/projects/aun-schools.png",
-        tags: ["Education", "Portal", "Management System", "University"]
+        title: "Haraji",
+        description: "AI-powered tax calculator system for automated tax calculations and compliance",
+        category: "WEB • AI APPLICATION",
+        url: "https://haraji.vercel.app",
+        image: "/projects/haraji.png",
+        tags: ["AI", "Tax Calculator", "Automation", "Next.js"]
+    },
+    {
+        id: 5,
+        title: "AUN Hotel Website",
+        description: "Modern hotel website with booking system and guest management for AUN Hotel",
+        category: "WEB • HOSPITALITY",
+        url: "https://aun-hotel-website.vercel.app",
+        image: "/projects/aun-hotel.png",
+        tags: ["Hospitality", "Booking System", "Hotel", "Next.js"]
+    },
+    {
+        id: 6,
+        title: "Alhuda Islamic Center",
+        description: "Community website for Islamic center featuring prayer times, events, and educational resources",
+        category: "WEB • COMMUNITY",
+        url: "https://al-huda-teal.vercel.app",
+        image: "/projects/alhuda.png",
+        tags: ["Islamic", "Community", "Education", "Next.js"]
     }
 ];

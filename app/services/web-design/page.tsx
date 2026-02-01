@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RateCard from "@/components/RateCard";
 
 export const metadata: Metadata = {
   title: "Web Design",
@@ -22,6 +23,8 @@ export default function WebDesignPage() {
         <li>• Mobile‑first responsive layouts</li>
         <li>• Conversion‑focused structure</li>
       </ul>
+
+      <RateCard />
     </main>
   );
 }
