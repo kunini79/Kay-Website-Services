@@ -35,6 +35,8 @@ export default function CursorFollower() {
 
         const handleMouseEnter = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
+            if (!target || typeof target.closest !== 'function') return;
+            
             const isInteractive =
                 target.tagName === "A" ||
                 target.tagName === "BUTTON" ||

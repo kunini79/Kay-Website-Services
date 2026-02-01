@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float, Stars } from "@react-three/drei";
+import { Float, Stars } from "@react-three/drei";
 import * as ONE from "three";
+import Scene3DErrorBoundary from "./Scene3DErrorBoundary";
 
 function AbstractShape() {
     const meshRef = useRef<ONE.Mesh>(null);
@@ -101,15 +102,40 @@ function Particles() {
 
 export default function Scene3D() {
     return (
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
-            <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1} color="#BBFD6A" />
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-                <AbstractShape />
-                <Particles />
-                <Environment preset="city" />
-            </Canvas>
-        </div>
+        <Scene3DErrorBoundary>
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+                <Canvas 
+                    camera={{ position: [0, 0, 10], fov: 45 }}
+                    gl={{ 
+                        preserveDrawingBuffer: true,
+                        failIfMajorPerformanceCaveat: false,
+                        powerPreference: "high-performance"
+                    }}
+                    onCreated={({ gl }) => {
+                        gl.setClearColor("#000000", 0);
+                        
+                        // Handle WebGL context loss
+                        const canvas = gl.domElement;
+                        canvas.addEventListener('webglcontextlost', (event) => {
+                            event.preventDefault();
+                            console.log('WebGL context lost. Attempting to restore...');
+                        }, false);
+                        
+                        canvas.addEventListener('webglcontextrestored', () => {
+                            console.log('WebGL context restored.');
+                        }, false);
+                    }}
+                >
+                    <Suspense fallback={null}>
+                        <ambientLight intensity={0.8} />
+                        <pointLight position={[10, 10, 10]} intensity={1.5} color="#BBFD6A" />
+                        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ffffff" />
+                        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+                        <AbstractShape />
+                        <Particles />
+                    </Suspense>
+                </Canvas>
+            </div>
+        </Scene3DErrorBoundary>
     );
 }

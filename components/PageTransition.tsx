@@ -79,6 +79,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
     useEffect(() => {
         const handleLinkClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
+            if (!target || typeof target.closest !== 'function') return;
+            
             const link = target.closest("a");
             if (!link) return;
 
