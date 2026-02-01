@@ -28,24 +28,6 @@ const projectRates = [
   },
 ];
 
-const rateModels = [
-  {
-    title: "Freelancers",
-    description:
-      "Typically lower rates: ₦150,000 – ₦500,000 for standard websites, with less long‑term support.",
-  },
-  {
-    title: "Agencies",
-    description:
-      "Professional, secure builds: ₦500,000 – ₦5,000,000+ with structured processes and support.",
-  },
-  {
-    title: "Hourly",
-    description:
-      "₦5,000 – ₦30,000 per hour locally, or $20–$100+ for international clients.",
-  },
-];
-
 const recurringCosts = [
   {
     title: "Domain (.com)",
@@ -134,20 +116,6 @@ export default function RateCard() {
                 <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
                 <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
                 <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-10 md:mt-14">
-          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase">
-            Freelancer vs. agency rates
-          </h3>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {rateModels.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
-                <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
-                <p className="mt-2 text-sm md:text-base font-sans text-black/70">{item.description}</p>
               </div>
             ))}
           </div>
