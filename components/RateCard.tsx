@@ -4,27 +4,27 @@ const projectRates = [
   {
     title: "Basic / Landing Page (1–3 pages)",
     price: "₦50,000 – ₦210,000",
-    usd: "$30 – $130",
+    usd: "$31 – $131",
   },
   {
     title: "Small Business / Corporate (5–15 pages, CMS)",
     price: "₦150,000 – ₦500,000",
-    usd: "$95 – $310",
+    usd: "$94 – $313",
   },
   {
     title: "E‑commerce (up to 100 products)",
     price: "₦350,000 – ₦1,500,000+",
-    usd: "$215 – $930+",
+    usd: "$219 – $938+",
   },
   {
     title: "Advanced Custom Web Applications",
     price: "₦1,000,000 – ₦5,000,000+",
-    usd: "$620 – $3,100+",
+    usd: "$625 – $3,125+",
   },
   {
     title: "Website Redesign",
     price: "₦50,000 – ₦1,500,000+",
-    usd: "$30 – $930+",
+    usd: "$31 – $938+",
   },
 ];
 
@@ -32,7 +32,7 @@ const recurringCosts = [
   {
     title: "Domain (.com)",
     price: "₦20,000 – ₦40,000 / year",
-    usd: "$12 – $25 / year",
+    usd: "$13 – $25 / year",
   },
   {
     title: "Domain (.ng)",
@@ -42,17 +42,17 @@ const recurringCosts = [
   {
     title: "Web Hosting (shared)",
     price: "₦25,000 – ₦100,000+ / year",
-    usd: "$16 – $62+ / year",
+    usd: "$16 – $63+ / year",
   },
   {
     title: "SSL Certificate",
     price: "₦5,000 – ₦150,000 / year (often free)",
-    usd: "$3 – $93 / year (often free)",
+    usd: "$3 – $94 / year (often free)",
   },
   {
     title: "Website Maintenance",
     price: "₦30,000 – ₦150,000+ / year",
-    usd: "$19 – $93+ / year",
+    usd: "$19 – $94+ / year",
   },
 ];
 
