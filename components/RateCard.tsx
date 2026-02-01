@@ -4,22 +4,27 @@ const projectRates = [
   {
     title: "Basic / Landing Page (1–3 pages)",
     price: "₦50,000 – ₦210,000",
+    usd: "$30 – $130",
   },
   {
     title: "Small Business / Corporate (5–15 pages, CMS)",
     price: "₦150,000 – ₦500,000",
+    usd: "$95 – $310",
   },
   {
     title: "E‑commerce (up to 100 products)",
     price: "₦350,000 – ₦1,500,000+",
+    usd: "$215 – $930+",
   },
   {
     title: "Advanced Custom Web Applications",
     price: "₦1,000,000 – ₦5,000,000+",
+    usd: "$620 – $3,100+",
   },
   {
     title: "Website Redesign",
     price: "₦50,000 – ₦1,500,000+",
+    usd: "$30 – $930+",
   },
 ];
 
@@ -45,22 +50,27 @@ const recurringCosts = [
   {
     title: "Domain (.com)",
     price: "₦20,000 – ₦40,000 / year",
+    usd: "$12 – $25 / year",
   },
   {
     title: "Domain (.ng)",
     price: "₦15,000 – ₦25,000 / year",
+    usd: "$9 – $16 / year",
   },
   {
     title: "Web Hosting (shared)",
     price: "₦25,000 – ₦100,000+ / year",
+    usd: "$16 – $62+ / year",
   },
   {
     title: "SSL Certificate",
     price: "₦5,000 – ₦150,000 / year (often free)",
+    usd: "$3 – $93 / year (often free)",
   },
   {
     title: "Website Maintenance",
     price: "₦30,000 – ₦150,000+ / year",
+    usd: "$19 – $93+ / year",
   },
 ];
 
@@ -68,25 +78,29 @@ const addOns = [
   {
     title: "1‑Hour Consultation",
     price: "₦50,000",
+    usd: "$31",
   },
   {
     title: "Additional Web Pages",
     price: "₦30,000 per page",
+    usd: "$19 per page",
   },
   {
     title: "Content / Copywriting",
     price: "₦30,000 – ₦50,000 per page",
+    usd: "$19 – $31 per page",
   },
   {
     title: "SEO Setup",
     price: "₦50,000+ per project",
+    usd: "$31+ per project",
   },
 ];
 
 const costFactors = [
   "Platform: WordPress/ready‑made themes are cheaper than fully custom builds.",
   "Functionality: E‑commerce, payment gateways, portals, and APIs increase scope.",
-  "Location: Lagos/Abuja rates are often higher due to operating costs.",
+  "Timeline: Rushed projects may incur premium charges for expedited delivery.",
 ];
 
 export default function RateCard() {
@@ -119,6 +133,7 @@ export default function RateCard() {
               <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
                 <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
               </div>
             ))}
           </div>
@@ -147,6 +162,7 @@ export default function RateCard() {
               <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
                 <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
               </div>
             ))}
           </div>
@@ -161,6 +177,7 @@ export default function RateCard() {
               <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
                 <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
               </div>
             ))}
           </div>
