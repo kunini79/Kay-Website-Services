@@ -25,7 +25,8 @@ export default function Navigation() {
                                 { name: "Home", href: "/" },
                                 { name: "Services", href: "/#services" },
                                 { name: "Process", href: "/#process" },
-                                { name: "Work", href: "/#work" }
+                                { name: "Work", href: "/#work" },
+                                { name: "Rate Card", href: "/services/web-design#rate-card" }
                             ].map((item, index) => (
                                 <div
                                     key={item.name}
