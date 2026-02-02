@@ -3,28 +3,28 @@ import Link from "next/link";
 const projectRates = [
   {
     title: "Basic / Landing Page (1–3 pages)",
-    price: "₦50,000 – ₦210,000",
-    usd: "$31 – $131",
+    price: "₦150,000 – ₦350,000",
+    usd: "$94 – $219",
   },
   {
     title: "Small Business / Corporate (5–15 pages, CMS)",
-    price: "₦150,000 – ₦500,000",
-    usd: "$94 – $313",
+    price: "₦300,000 – ₦750,000",
+    usd: "$188 – $469",
   },
   {
     title: "E‑commerce (up to 100 products)",
-    price: "₦350,000 – ₦1,500,000+",
-    usd: "$219 – $938+",
+    price: "₦500,000 – ₦2,000,000+",
+    usd: "$313 – $1,250+",
   },
   {
     title: "Advanced Custom Web Applications",
-    price: "₦1,000,000 – ₦5,000,000+",
-    usd: "$625 – $3,125+",
+    price: "₦1,500,000 – ₦7,500,000+",
+    usd: "$938 – $4,688+",
   },
   {
     title: "Website Redesign",
-    price: "₦50,000 – ₦1,500,000+",
-    usd: "$31 – $938+",
+    price: "₦150,000 – ₦2,000,000+",
+    usd: "$94 – $1,250+",
   },
 ];
 
