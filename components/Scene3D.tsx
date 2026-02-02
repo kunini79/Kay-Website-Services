@@ -1,57 +1,79 @@
 "use client";
 
 import { useRef, useMemo, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Stars } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Float, Stars, Glow } from "@react-three/drei";
 import * as ONE from "three";
 import Scene3DErrorBoundary from "./Scene3DErrorBoundary";
 
 function AbstractShape() {
     const meshRef = useRef<ONE.Mesh>(null);
-
-    // Create a custom geometry or use a primitive
-    // We'll use a Icosahedron for a tech/abstract feel
+    const groupRef = useRef<ONE.Group>(null);
 
     useFrame((state) => {
-        if (!meshRef.current) return;
+        if (!meshRef.current || !groupRef.current) return;
 
         const time = state.clock.getElapsedTime();
 
-        // Gentle rotation
-        meshRef.current.rotation.x = time * 0.1;
-        meshRef.current.rotation.y = time * 0.15;
+        // Smooth, elegant rotation
+        groupRef.current.rotation.x = Math.sin(time * 0.3) * 0.3;
+        groupRef.current.rotation.y = time * 0.25;
+        groupRef.current.rotation.z = Math.cos(time * 0.25) * 0.2;
 
-        // Gentle float/wobble is handled by Float wrapper, but we can add more specific deformations if we used a shader
-        // For now, let's keep it simple and elegant with a nice material
+        // Scale pulsing for depth effect
+        const scale = 1 + Math.sin(time * 1.5) * 0.08;
+        meshRef.current.scale.set(scale, scale, scale);
     });
 
     return (
-        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <mesh ref={meshRef} scale={1.8}>
-                <icosahedronGeometry args={[1, 1]} /> {/* Low poly look */}
-                <meshStandardMaterial
-                    color="#1a1a1a"
-                    roughness={0.1}
-                    metalness={0.9}
-                    wireframe={true}
-                    emissive="#BBFD6A"
-                    emissiveIntensity={0.2}
-                />
-            </mesh>
-            <mesh scale={1.79}>
-                <icosahedronGeometry args={[1, 1]} />
-                <meshStandardMaterial
-                    color="#000000"
-                    roughness={0.1}
-                    metalness={1}
-                />
-            </mesh>
+        <Float speed={3} rotationIntensity={0.3} floatIntensity={0.4}>
+            <group ref={groupRef}>
+                {/* Main glossy shape */}
+                <mesh ref={meshRef} scale={2}>
+                    <icosahedronGeometry args={[1, 4]} />
+                    <meshStandardMaterial
+                        color="#1a1a1a"
+                        roughness={0.15}
+                        metalness={0.85}
+                        emissive="#BBFD6A"
+                        emissiveIntensity={0.4}
+                        envMapIntensity={1.2}
+                    />
+                </mesh>
+
+                {/* Enhanced wireframe layer */}
+                <mesh scale={2.05}>
+                    <icosahedronGeometry args={[1, 4]} />
+                    <meshStandardMaterial
+                        color="#BBFD6A"
+                        wireframe={true}
+                        emissive="#BBFD6A"
+                        emissiveIntensity={0.6}
+                        transparent
+                        opacity={0.4}
+                        roughness={0}
+                        metalness={1}
+                    />
+                </mesh>
+
+                {/* Glow sphere for depth */}
+                <mesh scale={2.15}>
+                    <icosahedronGeometry args={[1, 4]} />
+                    <meshStandardMaterial
+                        color="#BBFD6A"
+                        emissive="#BBFD6A"
+                        emissiveIntensity={0.15}
+                        transparent
+                        opacity={0.15}
+                    />
+                </mesh>
+            </group>
         </Float>
     );
 }
 
 function Particles() {
-    const count = 100;
+    const count = 150;
     const mesh = useRef<ONE.InstancedMesh>(null);
 
     const dummy = useMemo(() => new ONE.Object3D(), []);
@@ -84,7 +106,7 @@ function Particles() {
                 (particle.my / 10) * b + yFactor + Math.sin((t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
                 (particle.my / 10) * b + zFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 3) * factor) / 10
             );
-            dummy.scale.set(s, s, s);
+            dummy.scale.set(s * 0.8, s * 0.8, s * 0.8);
             dummy.rotation.set(s * 5, s * 5, s * 5);
             dummy.updateMatrix();
             mesh.current!.setMatrixAt(i, dummy.matrix);
@@ -94,8 +116,14 @@ function Particles() {
 
     return (
         <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-            <dodecahedronGeometry args={[0.2, 0]} />
-            <meshStandardMaterial color="#BBFD6A" roughness={0.5} metalness={0.5} />
+            <dodecahedronGeometry args={[0.25, 0]} />
+            <meshStandardMaterial 
+                color="#BBFD6A" 
+                roughness={0.3} 
+                metalness={0.8}
+                emissive="#BBFD6A"
+                emissiveIntensity={0.5}
+            />
         </instancedMesh>
     );
 }
@@ -103,16 +131,19 @@ function Particles() {
 export default function Scene3D() {
     return (
         <Scene3DErrorBoundary>
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-70">
                 <Canvas 
-                    camera={{ position: [0, 0, 10], fov: 45 }}
+                    camera={{ position: [0, 0, 12], fov: 50 }}
                     gl={{ 
                         preserveDrawingBuffer: true,
                         failIfMajorPerformanceCaveat: false,
-                        powerPreference: "high-performance"
+                        powerPreference: "high-performance",
+                        antialias: true,
+                        alpha: true
                     }}
                     onCreated={({ gl }) => {
                         gl.setClearColor("#000000", 0);
+                        gl.outputColorSpace = "srgb";
                         
                         // Handle WebGL context loss
                         const canvas = gl.domElement;
@@ -127,10 +158,11 @@ export default function Scene3D() {
                     }}
                 >
                     <Suspense fallback={null}>
-                        <ambientLight intensity={0.8} />
-                        <pointLight position={[10, 10, 10]} intensity={1.5} color="#BBFD6A" />
-                        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ffffff" />
-                        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+                        <ambientLight intensity={1.2} color="#ffffff" />
+                        <pointLight position={[15, 15, 15]} intensity={2} color="#BBFD6A" />
+                        <pointLight position={[-15, -15, 10]} intensity={1.5} color="#ffffff" />
+                        <pointLight position={[0, -10, -15]} intensity={1} color="#BBFD6A" />
+                        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0.2} fade speed={0.5} />
                         <AbstractShape />
                         <Particles />
                     </Suspense>
