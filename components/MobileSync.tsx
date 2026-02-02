@@ -91,8 +91,8 @@ export default function MobileSync() {
 
             <div
                 ref={containerRef}
-                className="fixed bottom-16 left-4 z-[9000] p-4 rounded-xl shadow-2xl opacity-0 translate-y-5 pointer-events-none dark:bg-zinc-900" style={{ backgroundColor: "var(--background)" }}
-                style={{ pointerEvents: showQR ? "auto" : "none" }}
+                className="fixed bottom-16 left-4 z-[9000] p-4 rounded-xl shadow-2xl opacity-0 translate-y-5 pointer-events-none dark:bg-zinc-900"
+                style={{ backgroundColor: "var(--background)", pointerEvents: showQR ? "auto" : "none" }}
             >
                 {sessionId && (
                     <div className="flex flex-col items-center gap-2">
