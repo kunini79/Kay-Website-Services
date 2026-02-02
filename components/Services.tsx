@@ -105,9 +105,8 @@ export default function Services() {
                         animation="slideLeft"
                         delay={0.2}
                         className="absolute top-1/2 left-[15%] -translate-y-1/2 max-md:text-[6vw] md:text-[2vw] font-display uppercase font-semibold whitespace-nowrap"
-                        style={{ color: "var(--foreground)" }}
                     >
-                        <div className="flex items-center">
+                        <div className="flex items-center" style={{ color: "var(--foreground)" }}>
                             <span className="relative inline-flex items-center justify-center mr-2">
                                 <span className="absolute size-3 max-md:size-2 rounded-full bg-lime-400 animate-ping opacity-75"></span>
                                 <span className="relative size-2 max-md:size-1.5 rounded-full bg-lime-400"></span>
@@ -121,9 +120,8 @@ export default function Services() {
                         animation="fade"
                         delay={0.3}
                         className="absolute top-[3%] left-1/2 -translate-x-1/2 max-md:text-[6vw] md:text-[2vw] font-display uppercase font-semibold whitespace-nowrap"
-                        style={{ color: "var(--foreground)" }}
                     >
-                        <div className="flex items-center">
+                        <div className="flex items-center" style={{ color: "var(--foreground)" }}>
                             <span className="relative inline-flex items-center justify-center mr-2">
                                 <span className="absolute size-3 max-md:size-2 rounded-full bg-lime-400 animate-ping opacity-75"></span>
                                 <span className="relative size-2 max-md:size-1.5 rounded-full bg-lime-400"></span>
@@ -137,9 +135,8 @@ export default function Services() {
                         animation="slideRight"
                         delay={0.4}
                         className="absolute top-1/2 right-[15%] -translate-y-1/2 max-md:text-[6vw] md:text-[2vw] font-display uppercase font-semibold whitespace-nowrap"
-                        style={{ color: "var(--foreground)" }}
                     >
-                        <div className="flex items-center">
+                        <div className="flex items-center" style={{ color: "var(--foreground)" }}>
                             <span className="relative inline-flex items-center justify-center mr-2">
                                 <span className="absolute size-3 max-md:size-2 rounded-full bg-lime-400 animate-ping opacity-75"></span>
                                 <span className="relative size-2 max-md:size-1.5 rounded-full bg-lime-400"></span>
@@ -153,9 +150,8 @@ export default function Services() {
                         animation="fade"
                         delay={0.5}
                         className="absolute bottom-[15%] left-1/2 -translate-x-1/2 max-md:text-[6vw] md:text-[2vw] font-display uppercase font-semibold whitespace-nowrap"
-                        style={{ color: "var(--foreground)" }}
                     >
-                        <div className="flex items-center">
+                        <div className="flex items-center" style={{ color: "var(--foreground)" }}>
                             <span className="relative inline-flex items-center justify-center mr-2">
                                 <span className="absolute size-3 max-md:size-2 rounded-full bg-lime-400 animate-ping opacity-75"></span>
                                 <span className="relative size-2 max-md:size-1.5 rounded-full bg-lime-400"></span>
