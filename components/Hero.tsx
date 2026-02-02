@@ -62,14 +62,7 @@ export default function Hero() {
                 "-=0.5" // Start before intro completely fades
             );
         }
-    }, { scope: contentRef }); // Scope properly if using useGSAP, checking imports below
-
-    // Note: useGSAP is cleaner but we were using useEffect. Switching to useGSAP for better cleanup if available or sticking to useEffect for consistency. 
-    // The file imports `useEffect`. I will stick to usage in file if useGSAP isn't imported, but looking at previous file view it had `useEffect`.
-    // Wait, step 414 showed `import { gsap } from "gsap";`. I see `useGSAP` in step 423 (Work.tsx). 
-    // I should add `import { useGSAP } from "@gsap/react";` to Hero.tsx first or just use useEffect. 
-    // I'll stick to useEffect for now to minimize import changes unless I see it's easy. 
-    // Actually, let's use useEffect to be safe with existing imports.
+    }, { scope: contentRef });
 
     useEffect(() => {
         const tl = gsap.timeline();

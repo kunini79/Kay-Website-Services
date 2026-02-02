@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-black px-4 md:px-[5vw] py-[12vh]">
-      <h1 className="text-[12vw] md:text-[5vw] font-display font-semibold uppercase">
+        <h1 className="text-[12vw] md:text-[5vw] font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
         Services
       </h1>
       <p className="mt-4 md:mt-6 text-base md:text-lg font-sans text-black/70 max-w-2xl">

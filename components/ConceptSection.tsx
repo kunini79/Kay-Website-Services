@@ -60,9 +60,9 @@ export default function ConceptSection() {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="w-full py-[15vh] px-[3vw] max-md:px-[6vw] bg-white">
+        <section ref={sectionRef} className="w-full py-[15vh] px-[3vw] max-md:px-[6vw]" style={{ backgroundColor: "var(--background)" }}>
             <AnimatedSection animation="fade">
-                <h2 className="text-[12vw] md:text-[6vw] font-display font-semibold uppercase text-center mb-[10vh]">
+                <h2 className="text-[12vw] md:text-[6vw] font-display font-semibold uppercase text-center mb-[10vh]" style={{ color: "var(--foreground)" }}>
                     Our <span className="text-lime-400">Process</span>
                 </h2>
             </AnimatedSection>
@@ -71,19 +71,20 @@ export default function ConceptSection() {
                 {concepts.map((concept, index) => (
                     <div
                         key={index}
-                        className="concept-card group bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 hover:border-lime-400 hover:shadow-xl transition-all duration-300"
+                        className="concept-card group border border-black/10 dark:border-white/10 rounded-2xl p-8 hover:border-lime-400 hover:shadow-xl transition-all duration-300 dark:bg-zinc-900/40"
+                        style={{ backgroundColor: "var(--background)" }}
                     >
                         <div className="flex items-start justify-between mb-6">
-                            <h3 className="text-[6vw] md:text-[2vw] font-display font-bold uppercase">
+                            <h3 className="text-[6vw] md:text-[2vw] font-display font-bold uppercase" style={{ color: "var(--foreground)" }}>
                                 {concept.title}
                             </h3>
-                            <div className="size-10 md:size-12 rounded-full bg-lime-400/20 flex items-center justify-center font-display font-bold text-lime-600 group-hover:bg-lime-400 group-hover:text-black transition-all">
+                            <div className="size-10 md:size-12 rounded-full bg-lime-400/20 flex items-center justify-center font-display font-bold text-black group-hover:bg-lime-400 group-hover:text-black transition-all">
                                 0{index + 1}
                             </div>
                         </div>
                         <ul className="space-y-2">
                             {concept.items.map((item, i) => (
-                                <li key={i} className="flex items-center gap-3 text-gray-600 font-sans text-sm md:text-base">
+                                <li key={i} className="flex items-center gap-3 font-sans text-sm md:text-base" style={{ color: "var(--foreground)", opacity: "0.7" }}>
                                     <span className="size-1.5 rounded-full bg-lime-400 shrink-0"></span>
                                     {item}
                                 </li>

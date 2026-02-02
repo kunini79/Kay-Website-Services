@@ -242,7 +242,7 @@ function Node({
             className="-translate-x-1/2 -translate-y-1/2 z-10"
             whileHover={{ scale: 1.04 }}
         >
-            <div className="text-center mb-2 font-display font-bold uppercase">
+            <div className="text-center mb-2 font-display font-bold uppercase" style={{ color: "var(--foreground)" }}>
                 {title}
             </div>
             <div
@@ -271,7 +271,7 @@ function ProcessCard({
     return (
         <div className={`rounded-2xl p-5 border ${dark ? 'bg-black text-lime-400 border-black' : 'bg-lime-400 text-black border-lime-400'}`}>
             <div className="flex items-center justify-between mb-3">
-                <h3 className="font-display font-bold uppercase text-base">{title}</h3>
+                <h3 className="font-display font-bold uppercase text-base" style={{ color: "var(--foreground)" }}>{title}</h3>
                 <span className="font-display font-bold text-sm">0{index}</span>
             </div>
             <ul className="space-y-2 font-sans font-medium text-sm">

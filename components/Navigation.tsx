@@ -1,14 +1,23 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
 
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <>
             {/* Mobile Menu Overlay */}
-            <div className={`fixed flex flex-col items-center justify-center bottom-24 max-md:bottom-20 left-1/2 -translate-x-1/2 z-[140] w-[40vw] min-w-[500px] max-md:w-[90vw] max-md:min-w-0 min-h-[300px] max-md:min-h-auto transition-all duration-300 ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+            <div 
+                className={`fixed flex flex-col items-center justify-center bottom-24 max-md:bottom-20 left-1/2 -translate-x-1/2 z-[140] w-[40vw] max-md:w-[90vw] max-md:min-w-0 min-h-[300px] max-md:min-h-auto transition-all duration-300 ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+                role="navigation"
+                aria-label="Mobile navigation menu"
+            >
                 <div
                     className="absolute inset-0 bg-black rounded-[0.5vw] max-md:rounded-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]"
                     style={{
@@ -46,13 +55,13 @@ export default function Navigation() {
                                             >
                                                 <span
                                                     className="text-black font-display text-[1.5vw] max-md:text-xl uppercase font-semibold whitespace-nowrap text-center block transition-transform duration-300 group-hover:-translate-y-full"
-                                                    style={{ transformStyle: "preserve-3d" }}
+                                                    style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                                                 >
                                                     {item.name}
                                                 </span>
                                                 <span
                                                     className="text-black font-display text-[1.5vw] max-md:text-xl uppercase font-semibold whitespace-nowrap text-center block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0"
-                                                    style={{ transformStyle: "preserve-3d" }}
+                                                    style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                                                 >
                                                     {item.name}
                                                 </span>
@@ -80,13 +89,13 @@ export default function Navigation() {
                                         >
                                             <span
                                                 className="text-black font-display text-[1.5vw] max-md:text-xl uppercase font-semibold whitespace-nowrap text-center block transition-transform duration-300 group-hover:-translate-y-full"
-                                                style={{ transformStyle: "preserve-3d" }}
+                                                style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                                             >
                                                 Contact Us
                                             </span>
                                             <span
                                                 className="text-black font-display text-[1.5vw] max-md:text-xl uppercase font-semibold whitespace-nowrap text-center block absolute top-0 left-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0"
-                                                style={{ transformStyle: "preserve-3d" }}
+                                                style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                                             >
                                                 Contact Us
                                             </span>
@@ -164,18 +173,20 @@ export default function Navigation() {
                     >
                         <span
                             className="block text-black font-sans font-semibold text-[1.1vw] transition-transform duration-300 group-hover:-translate-y-full"
-                            style={{ transformStyle: "preserve-3d" }}
+                            style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                         >
                             Contact Us
                         </span>
                         <span
                             className="block absolute top-0 left-0 translate-y-full text-black font-sans font-semibold text-[1.1vw] transition-transform duration-300 group-hover:translate-y-0"
-                            style={{ transformStyle: "preserve-3d" }}
+                            style={{ transformStyle: "preserve-3d", color: "#0a0a0a" }}
                         >
                             Contact Us
                         </span>
                     </span>
                 </Link>
+
+                <ThemeToggle />
             </nav>
         </>
     );

@@ -102,7 +102,7 @@ export default function Work() {
                                         </div>
                                     </div>
                                 </a>
-                                <div className="mt-4 px-2 w-full flex justify-between items-center text-black">
+                                <div className="mt-4 px-2 w-full flex justify-between items-center" style={{ color: "var(--foreground)" }}>
                                     <div className="fall-text">
                                         <h3 className="text-[4vw] max-md:text-[6vw] md:text-[2vw] tracking-wide font-semibold font-display">
                                             {project.title}
@@ -121,11 +121,11 @@ export default function Work() {
 
                 {/* CTA Section */}
                 <AnimatedSection animation="fade" className="w-full mt-[12vw] px-[3vw] max-md:px-0 flex flex-col md:flex-row justify-between items-start md:items-end gap-[5vh] md:gap-[5vw] relative z-10">
-                    <h2 className="text-[12vw] md:text-[7vw] w-full md:w-[60%] leading-[0.9] font-semibold font-display uppercase text-black">
-                        Every work you see here started with a <span className="text-black/50">conversation</span>
+                    <h2 className="text-[12vw] md:text-[7vw] w-full md:w-[60%] leading-[0.9] font-semibold font-display uppercase" style={{ color: "var(--foreground)" }}>
+                        Every work you see here started with a <span style={{ color: "var(--foreground)", opacity: "0.6" }}>conversation</span>
                     </h2>
-                    <div className="w-full md:w-[40%] text-black flex flex-col items-start text-left md:translate-y-[25vh]">
-                        <p className="text-[4.5vw] md:text-[1.3vw] font-sans max-md:leading-snug leading-relaxed mb-[4vh] max-w-lg">
+                    <div className="w-full md:w-[40%] flex flex-col items-start text-left md:translate-y-[25vh]" style={{ color: "var(--foreground)" }}>
+                        <p className="text-[4.5vw] md:text-[1.3vw] font-sans max-md:leading-snug leading-relaxed mb-[4vh] max-w-lg" style={{ opacity: "0.85" }}>
                             Have an idea, a challenge, or a direction you want to explore? You don't need all the answers yet. A focused conversation is often enough to uncover the right path.
                         </p>
                         <a href="/contact" className="inline-block">

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
+import { shouldReduceMotion } from "@/utils/animations";
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -14,6 +15,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
     // Transition Out (Enter new page)
     const animateIn = () => {
         if (!containerRef.current) return;
+
+        // Respect prefers-reduced-motion
+        if (shouldReduceMotion()) {
+            if (containerRef.current) containerRef.current.style.pointerEvents = "none";
+            return;
+        }
 
         // Set origin to top so they shrink upwards
         barsRef.current.forEach((bar) => {
@@ -40,6 +47,13 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
         // Enable pointer events to block interaction
         containerRef.current.style.pointerEvents = "auto";
+
+        // Respect prefers-reduced-motion
+        if (shouldReduceMotion()) {
+            setIsTransitioning(false);
+            router.push(href);
+            return;
+        }
 
         // Set origin to bottom so they grow upwards
         barsRef.current.forEach((bar) => {

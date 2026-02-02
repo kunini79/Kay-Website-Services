@@ -82,7 +82,7 @@ export default function MobileSync() {
             <div className="fixed bottom-4 left-4 z-[9000]">
                 <button
                     onClick={() => setShowQR(!showQR)}
-                    className={`px-4 py-2 rounded-full font-display font-semibold uppercase tracking-wider text-sm transition-colors ${isConnected ? "bg-lime-400 text-black" : "bg-white text-black"
+                    className={`px-4 py-2 rounded-full font-display font-semibold uppercase tracking-wider text-sm transition-colors ${isConnected ? "bg-lime-400 text-black" : "dark:bg-zinc-900 dark:text-white bg-white text-black"
                         }`}
                 >
                     {isConnected ? "Phone Connected" : "Sync Phone"}
@@ -91,7 +91,7 @@ export default function MobileSync() {
 
             <div
                 ref={containerRef}
-                className="fixed bottom-16 left-4 z-[9000] bg-white p-4 rounded-xl shadow-2xl opacity-0 translate-y-5 pointer-events-none"
+                className="fixed bottom-16 left-4 z-[9000] p-4 rounded-xl shadow-2xl opacity-0 translate-y-5 pointer-events-none dark:bg-zinc-900" style={{ backgroundColor: "var(--background)" }}
                 style={{ pointerEvents: showQR ? "auto" : "none" }}
             >
                 {sessionId && (

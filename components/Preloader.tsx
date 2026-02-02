@@ -84,7 +84,7 @@ export default function Preloader() {
             </div>
 
             {/* Content */}
-            <div ref={textRef} className="relative z-10 w-full h-full flex flex-col justify-between p-10 max-md:p-5 text-black">
+            <div ref={textRef} className="relative z-10 w-full h-full flex flex-col justify-between p-10 max-md:p-5" style={{ color: "var(--foreground)" }}>
                 {/* Top Data */}
                 <div className="flex justify-between items-start font-display font-semibold uppercase leading-none">
                     <h1 className="text-[4vw]">Loading</h1>

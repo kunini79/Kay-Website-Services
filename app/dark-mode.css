@@ -1,0 +1,141 @@
+/* Dark Mode Styles - Add this to globals.css */
+
+/* General Dark Mode */
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+}
+
+/* Navigation Dark Mode */
+[data-theme="dark"] .nav-bg {
+  @apply bg-black/80;
+}
+
+/* Hero Section */
+[data-theme="dark"] .hero-text {
+  @apply text-white;
+}
+
+[data-theme="dark"] .hero-bg {
+  @apply bg-black;
+}
+
+/* Services Section */
+[data-theme="dark"] .services-section {
+  @apply bg-black;
+}
+
+[data-theme="dark"] .services-text {
+  @apply text-white;
+}
+
+[data-theme="dark"] .grid-line {
+  @apply bg-white/10;
+}
+
+/* Cards and Containers */
+[data-theme="dark"] .card {
+  @apply bg-zinc-900 border-zinc-800;
+}
+
+[data-theme="dark"] .card-hover:hover {
+  @apply bg-zinc-800;
+}
+
+/* Text Hierarchy */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  @apply text-white;
+}
+
+[data-theme="dark"] p {
+  @apply text-gray-300;
+}
+
+/* Borders */
+[data-theme="dark"] .border-black {
+  @apply border-white/20;
+}
+
+[data-theme="dark"] .border-zinc-500 {
+  @apply border-zinc-600;
+}
+
+/* Links */
+[data-theme="dark"] a {
+  @apply text-white hover:text-lime-400 transition-colors;
+}
+
+/* Input Elements */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+  @apply bg-zinc-900 text-white border-zinc-700 placeholder-gray-500;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  @apply border-lime-400 outline-none;
+}
+
+/* Buttons */
+[data-theme="dark"] .btn-dark {
+  @apply bg-zinc-800 text-white hover:bg-zinc-700;
+}
+
+/* Decorative Elements */
+[data-theme="dark"] .hexagon,
+[data-theme="dark"] .shape-decoration {
+  @apply border-white/20;
+}
+
+[data-theme="dark"] .pulse-element {
+  @apply border-white/30;
+}
+
+/* Pre and Code blocks */
+[data-theme="dark"] pre,
+[data-theme="dark"] code {
+  @apply bg-zinc-900 text-white;
+}
+
+/* Scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  @apply bg-zinc-700 hover:bg-zinc-600 rounded-full;
+}
+
+/* Specific Section Backgrounds */
+[data-theme="dark"] section {
+  @apply bg-black;
+}
+
+[data-theme="dark"] .section-accent {
+  @apply bg-zinc-900;
+}
+
+/* Animation elements in dark mode */
+[data-theme="dark"] .spinner,
+[data-theme="dark"] .loader {
+  @apply text-white;
+}
+
+/* Overlay and Backdrop */
+[data-theme="dark"] .backdrop-blur {
+  @apply backdrop-blur-md bg-black/30;
+}
+
+/* Focus states */
+[data-theme="dark"] *:focus-visible {
+  @apply outline-lime-400 outline-offset-2;
+}

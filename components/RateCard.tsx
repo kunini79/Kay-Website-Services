@@ -88,13 +88,13 @@ const costFactors = [
 export default function RateCard() {
   return (
     <section className="mt-14 md:mt-20" id="rate-card">
-      <div className="bg-white border border-black/10 rounded-3xl p-6 md:p-10">
+      <div className="border border-black/10 dark:border-white/10 rounded-3xl p-6 md:p-10 dark:bg-zinc-900/50" style={{ backgroundColor: "var(--background)" }}>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
-            <h2 className="text-[8vw] md:text-[3vw] leading-none font-display font-semibold uppercase">
+            <h2 className="text-[8vw] md:text-[3vw] leading-none font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
               Payment & Rate Card
             </h2>
-            <p className="mt-3 text-sm md:text-base font-sans text-black/70 max-w-3xl">
+            <p className="mt-3 text-sm md:text-base font-sans max-w-3xl" style={{ color: "var(--foreground)" }}>
               Transparent ranges to help you plan. Final quotes depend on scope, content readiness, and timeline.
             </p>
           </div>
@@ -107,58 +107,58 @@ export default function RateCard() {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase">
+          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
             Website development project rates
           </h3>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {projectRates.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
-                <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
-                <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
-                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
+              <div key={item.title} className="rounded-2xl border border-black/10 dark:border-white/10 p-5 md:p-6 dark:bg-zinc-900/30" style={{ backgroundColor: "var(--background)" }}>
+                <h4 className="text-lg md:text-xl font-display font-semibold" style={{ color: "var(--foreground)" }}>{item.title}</h4>
+                <p className="mt-2 text-base md:text-lg font-semibold" style={{ color: "var(--foreground)" }}>{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans" style={{ color: "var(--foreground)" }}>{item.usd}</p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mt-10 md:mt-14">
-          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase">
+          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
             Recurring costs (annual)
           </h3>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {recurringCosts.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
-                <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
-                <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
-                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
+              <div key={item.title} className="rounded-2xl border border-black/10 dark:border-white/10 p-5 md:p-6 dark:bg-zinc-900/30" style={{ backgroundColor: "var(--background)" }}>
+                <h4 className="text-lg md:text-xl font-display font-semibold" style={{ color: "var(--foreground)" }}>{item.title}</h4>
+                <p className="mt-2 text-base md:text-lg font-semibold" style={{ color: "var(--foreground)" }}>{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans" style={{ color: "var(--foreground)" }}>{item.usd}</p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mt-10 md:mt-14">
-          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase">
+          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
             Additional services (add‑ons)
           </h3>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {addOns.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-black/10 p-5 md:p-6">
-                <h4 className="text-lg md:text-xl font-display font-semibold">{item.title}</h4>
-                <p className="mt-2 text-base md:text-lg font-semibold text-black">{item.price}</p>
-                <p className="mt-1 text-sm md:text-base font-sans text-black/60">{item.usd}</p>
+              <div key={item.title} className="rounded-2xl border border-black/10 dark:border-white/10 p-5 md:p-6 dark:bg-zinc-900/30" style={{ backgroundColor: "var(--background)" }}>
+                <h4 className="text-lg md:text-xl font-display font-semibold" style={{ color: "var(--foreground)" }}>{item.title}</h4>
+                <p className="mt-2 text-base md:text-lg font-semibold" style={{ color: "var(--foreground)" }}>{item.price}</p>
+                <p className="mt-1 text-sm md:text-base font-sans" style={{ color: "var(--foreground)" }}>{item.usd}</p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mt-10 md:mt-14">
-          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase">
+          <h3 className="text-[6vw] md:text-[2vw] font-display font-semibold uppercase" style={{ color: "var(--foreground)" }}>
             Key factors influencing cost
           </h3>
-          <ul className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 text-sm md:text-base font-sans text-black/80">
+          <ul className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 text-sm md:text-base font-sans">
             {costFactors.map((item) => (
-              <li key={item} className="flex items-start gap-2 rounded-xl border border-black/10 p-4">
-                <span className="mt-1 size-2 rounded-full bg-black/70" />
+              <li key={item} className="flex items-start gap-2 rounded-xl border border-black/10 dark:border-white/10 p-4 dark:bg-zinc-900/20" style={{ color: "var(--foreground)" }}>
+                <span className="mt-1 size-2 rounded-full" style={{ backgroundColor: "var(--foreground)" }} />
                 <span>{item}</span>
               </li>
             ))}

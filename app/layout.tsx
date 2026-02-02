@@ -9,6 +9,7 @@ import Preloader from "@/components/Preloader";
 import MobileSync from "@/components/MobileSync";
 import ScrollProgress from "@/components/ScrollProgress";
 import CursorFollower from "@/components/CursorFollower";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
@@ -145,13 +146,15 @@ export default function RootLayout({
             gtag('config', 'G-NW52F9D716');
           `}
         </Script>
-        <Preloader />
-        <ScrollProgress />
-        <CursorFollower />
-        <MobileSync />
-        <SmoothScroll>
-          <PageTransition>{children}</PageTransition>
-        </SmoothScroll>
+        <ThemeProvider>
+          <Preloader />
+          <ScrollProgress />
+          <CursorFollower />
+          <MobileSync />
+          <SmoothScroll>
+            <PageTransition>{children}</PageTransition>
+          </SmoothScroll>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

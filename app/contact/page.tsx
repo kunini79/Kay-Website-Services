@@ -205,16 +205,21 @@ export default function Contact() {
                                     <div className="w-fit">
                                         <div className="reveal-text">
                                             <div>
-                                                <label className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4">
+                                                <label 
+                                                    htmlFor="fullName"
+                                                    className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4"
+                                                >
                                                     01 — Your Name
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <input
+                                        id="fullName"
                                         type="text"
                                         placeholder="John Doe"
                                         required
+                                        aria-required="true"
                                         className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
                                         name="Full_Name"
                                     />
@@ -223,16 +228,21 @@ export default function Contact() {
                                     <div className="w-fit">
                                         <div className="reveal-text">
                                             <div>
-                                                <label className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4">
+                                                <label 
+                                                    htmlFor="email"
+                                                    className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4"
+                                                >
                                                     02 — Your Email
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <input
+                                        id="email"
                                         type="email"
                                         placeholder="john@example.com"
                                         required
+                                        aria-required="true"
                                         className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
                                         name="Email"
                                     />
@@ -241,13 +251,17 @@ export default function Contact() {
                                     <div className="w-fit">
                                         <div className="reveal-text">
                                             <div>
-                                                <label className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4">
+                                                <label 
+                                                    htmlFor="phone"
+                                                    className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4"
+                                                >
                                                     03 — Your Phone Number
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <input
+                                        id="phone"
                                         type="tel"
                                         placeholder="+91 1234567890"
                                         className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20"
@@ -258,17 +272,22 @@ export default function Contact() {
                                     <div className="w-fit">
                                         <div className="reveal-text">
                                             <div>
-                                                <label className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4">
+                                                <label 
+                                                    htmlFor="message"
+                                                    className="text-black/40 text-xs md:text-sm font-sans uppercase tracking-wider block mb-3 md:mb-4"
+                                                >
                                                     04 — Tell us about your project
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <textarea
+                                        id="message"
                                         name="Message"
                                         placeholder="I need help with..."
                                         rows={4}
                                         required
+                                        aria-required="true"
                                         className="w-full bg-transparent border-b border-black/20 pb-3 md:pb-4 text-base md:text-[2vw] font-display focus:outline-none focus:border-lime-600 transition-colors placeholder:text-black/20 resize-none"
                                     ></textarea>
                                 </div>

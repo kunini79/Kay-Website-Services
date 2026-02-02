@@ -55,7 +55,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
                             </h1>
                         </div>
                         <div className="text-right overflow-hidden">
-                            <p className="animate-text text-[3vw] md:text-[1vw] font-sans text-black/60 uppercase tracking-wider">
+                            <p className="animate-text text-[3vw] md:text-[1vw] font-sans uppercase tracking-wider" style={{ color: "var(--foreground)", opacity: "0.6" }}>
                                 Please wait
                             </p>
                         </div>
@@ -64,10 +64,10 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
                     {/* Center Percentage */}
                     <div className="flex-1 flex items-center justify-center">
                         <div className="relative overflow-hidden">
-                            <span className="text-[35vw] md:text-[25vw] font-display font-semibold text-black leading-none inline-block">
+                            <span className="text-[35vw] md:text-[25vw] font-display font-semibold leading-none inline-block" style={{ color: "var(--foreground)" }}>
                                 {progress.toString().padStart(2, "0")}
                             </span>
-                            <span className="animate-text absolute top-[2vw] right-[-8vw] md:right-[-5vw] text-[8vw] md:text-[4vw] font-display text-black">
+                            <span className="animate-text absolute top-[2vw] right-[-8vw] md:right-[-5vw] text-[8vw] md:text-[4vw] font-display" style={{ color: "var(--foreground)" }}>
                                 %
                             </span>
                         </div>
@@ -75,15 +75,15 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
 
                     {/* Bottom Bar */}
                     <div className="flex flex-col gap-[2vh]">
-                        <div className="w-full h-[2px] bg-black/20 overflow-hidden origin-left">
+                        <div className="w-full h-[2px] overflow-hidden origin-left" style={{ backgroundColor: "var(--foreground)", opacity: "0.2" }}>
                             <div
-                                className="h-full bg-black transition-all duration-100 ease-out origin-left"
-                                style={{ width: `${progress}%` }}
+                                className="h-full transition-all duration-100 ease-out origin-left"
+                                style={{ width: `${progress}%`, backgroundColor: "var(--foreground)" }}
                             ></div>
                         </div>
                         <div className="flex justify-between items-end">
                             <div className="overflow-hidden">
-                                <p className="animate-text text-[3vw] md:text-[1vw] font-sans text-black/60 uppercase tracking-wider transition-all duration-300">
+                                <p className="animate-text text-[3vw] md:text-[1vw] font-sans uppercase tracking-wider transition-all duration-300" style={{ color: "var(--foreground)", opacity: "0.6" }}>
                                     {loadingText}
                                 </p>
                             </div>

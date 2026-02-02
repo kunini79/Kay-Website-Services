@@ -1,8 +1,15 @@
 @import "tailwindcss";
+@import "./dark-mode.css";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -28,6 +35,33 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #BBFD6A;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #BBFD6A;
+  outline-offset: 2px;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer utilities {
@@ -147,6 +181,38 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   cursor: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode text colors */
+[data-theme="dark"] body {
+  background: #0a0a0a;
+  color: #fafafa;
+}
+
+[data-theme="dark"] {
+  --text-primary: #fafafa;
+  --text-secondary: #a3a3a3;
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --border-color: #333;
+}
+
+/* Dark mode component overrides */
+[data-theme="dark"] .bg-white {
+  @apply dark:bg-zinc-900;
+}
+
+[data-theme="dark"] .text-black {
+  @apply dark:text-white;
+}
+
+[data-theme="dark"] .border-black {
+  @apply dark:border-white;
+}
+
+[data-theme="dark"] .bg-zinc-500 {
+  @apply dark:bg-zinc-600;
 }
 
 @media (hover: none) and (pointer: coarse) {
