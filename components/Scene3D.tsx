@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Stars, Glow } from "@react-three/drei";
+import { Float, Stars } from "@react-three/drei";
 import * as ONE from "three";
 import Scene3DErrorBoundary from "./Scene3DErrorBoundary";
 
