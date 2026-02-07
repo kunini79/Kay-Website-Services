@@ -22,11 +22,16 @@ const MIME_TYPES: Record<string, string> = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string[] }> }
+  { params }: { params: Promise<{ slug?: string[] }> }
 ) {
   try {
     const { slug } = await params;
-    const filePath = slug.join("/");
+    let filePath = slug ? slug.join("/") : "index.html";
+
+    // If no file extension or empty, try index.html
+    if (!filePath || !filePath.includes(".")) {
+      filePath = "index.html";
+    }
 
     // Construct the full file path
     const publicPath = join(process.cwd(), "public", "ThinkBox", filePath);
