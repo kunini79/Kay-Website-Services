@@ -32,11 +32,6 @@
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/bootstrap.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/swiper-bundle.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/style.min.css">
-    
-    <!-- Preload Critical Assets for Performance -->
-    <link rel="preload" href="/ThinkBox/Hero Picture.svg" as="image">
-    <link rel="preload" href="/ThinkBox/Think Box Logo.png" as="image">
-    <link rel="preload" href="/ThinkBox/Hero Background.jpg" as="image">
 
     <!--BE IXF: JavaScript begin-->
     <script src="/ThinkBox/cdn.bc0a.com/autopilot/f00000000046685/autopilot_sdk.js"></script>
@@ -91,9 +86,9 @@ cfg: { // Application Insights Configuration
         <div class="inner-wrap">
             <div class="logo-wrap">
 
-            <a href="#" class="d-inline-block" style="transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <a href="#" class="d-inline-block">
             <picture class="d-inline-block">
-                <img loading="eager" class="img-fluid" src="/ThinkBox/Think Box Logo.png" title="ThinkBox - A Smarter Way to Learn" alt="ThinkBox Logo" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1)); max-height: 60px;" width="180" height="60">
+                <img loading="lazy" class="img-fluid" src="/ThinkBox/Think Box Logo.png" title="ThinkBox" alt="ThinkBox">
             </picture>
             </a>
 </div>
@@ -824,7 +819,7 @@ cfg: { // Application Insights Configuration
 <section data-template="HeroBanner.default">
     <div class="hero-banner default " id="id5bbd3f7a" style="">
         <div class="container">
-            <div class="row d-flex flex-row align-items-center" style="min-height: 600px; padding: 60px 0;">
+            <div class="row d-flex flex-row">
                 <div class="col-lg-6 col-12">
                     <div class="hero-inner">
                             <p class="hero-tag" style="color:#35016D">ThinkBox</p>
@@ -837,8 +832,8 @@ cfg: { // Application Insights Configuration
                         </div>
                     </div>
                 </div>
-                <div id="image-style" class="hero-banner-image-standard col-lg-6 col-12">
-                        <img loading="eager" src="/ThinkBox/Hero Picture.svg" alt="ThinkBox Hero - Children learning and exploring" width="600" height="600">
+                <div id="image-style" class="hero-banner-image-standard">
+                        <img loading="lazy" src="/ThinkBox/Hero Picture.svg" alt="ThinkBox Hero">
                 </div>
             </div>
         </div>
@@ -966,28 +961,6 @@ cfg: { // Application Insights Configuration
             transform: translateY(0);
         }
     }
-    
-    /* Loading State for Images */
-    .hero-card .card-image::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-    }
-    
-    .hero-card .card-image img[src] + ::after {
-        display: none;
-    }
-    
-    @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-    }
 </style>
 
 <div class="container">
@@ -1003,7 +976,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#0078C2;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800&h=600&fit=crop&q=80" alt="Science - Colorful laboratory experiments" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%230078C2%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3EScience%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=300&fit=crop" alt="Science">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -1019,7 +992,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#00892D;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800&h=600&fit=crop&q=80" alt="Nature & Animals - Wildlife and ecosystems" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%2300892D%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3ENature%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/440px-African_Bush_Elephant.jpg" alt="Nature & Animals">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -1035,7 +1008,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#C25400;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&h=600&fit=crop&q=80" alt="Geography - Maps and world exploration" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23C25400%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2240%22 font-family=%22Arial%22%3EGeography%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=300&fit=crop" alt="Geography">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -1053,7 +1026,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#592E87;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=800&h=600&fit=crop&q=80" alt="History - Ancient civilizations and historical artifacts" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23592E87%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3EHistory%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://www.atlanticcouncil.org/wp-content/uploads/2010/12/reuters-12-15-10-Muammar-Gaddafi.jpg" alt="History">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -1069,7 +1042,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#003C8C;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop&q=80" alt="Space - Planets, stars, and the cosmos" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23003C8C%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3ESpace%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop" alt="Space">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -1085,7 +1058,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#35016D;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop&q=80" alt="How Things Work - Technology and engineering" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%2335016D%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2240%22 font-family=%22Arial%22%3EHow It Works%3C/text%3E%3C/svg%3E'">
+                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Assorted_gears.jpg/440px-Assorted_gears.jpg" alt="How Things Work">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
