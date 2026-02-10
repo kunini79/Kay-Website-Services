@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="#">
 
-<title>Home | Products, Coloring Pages, Crafts & More</title><meta property="og:title" content="Home | Products, Coloring Pages, Crafts & More"><meta property="og:description" content="Explore Crayola art supplies, kids' toys, free coloring pages, DIY crafts, creative prompts, and educational resources for kids, teachers, and adults!"><meta name="description" content="Explore Crayola art supplies, kids' toys, free coloring pages, DIY crafts, creative prompts, and educational resources for kids, teachers, and adults!"><link rel="canonical" href="#">                <link rel="alternate" hreflang="x-default" href="#">
+<title>ThinkBox | A Smarter Way for Kids to Explore Knowledge</title><meta property="og:title" content="ThinkBox | A Smarter Way for Kids to Explore Knowledge"><meta property="og:description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><meta name="description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><link rel="canonical" href="#">                <link rel="alternate" hreflang="x-default" href="#">
             <link rel="alternate" hreflang="en-US" href="#">
             <link rel="alternate" hreflang="en-GB" href="#">
             <link rel="alternate" hreflang="es-MX" href="#">
@@ -32,6 +32,11 @@
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/bootstrap.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/swiper-bundle.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/style.min.css">
+    
+    <!-- Preload Critical Assets for Performance -->
+    <link rel="preload" href="/ThinkBox/Hero Picture.svg" as="image">
+    <link rel="preload" href="/ThinkBox/Think Box Logo.png" as="image">
+    <link rel="preload" href="/ThinkBox/Hero Background.jpg" as="image">
 
     <!--BE IXF: JavaScript begin-->
     <script src="/ThinkBox/cdn.bc0a.com/autopilot/f00000000046685/autopilot_sdk.js"></script>
@@ -86,9 +91,9 @@ cfg: { // Application Insights Configuration
         <div class="inner-wrap">
             <div class="logo-wrap">
 
-            <a href="#" class="d-inline-block">
-            <picture class="d-inline-block ">
-                <img loading="lazy" class="img-fluid" src="/ThinkBox/Think Box Logo.png" title="ThinkBox" alt="ThinkBox">
+            <a href="#" class="d-inline-block" style="transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <picture class="d-inline-block">
+                <img loading="eager" class="img-fluid" src="/ThinkBox/Think Box Logo.png" title="ThinkBox - A Smarter Way to Learn" alt="ThinkBox Logo" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1)); max-height: 60px;" width="180" height="60">
             </picture>
             </a>
 </div>
@@ -698,11 +703,128 @@ cfg: { // Application Insights Configuration
             padding: 23% 0 10% 0;
         }
     }
+    
+    /* Enhanced Hero Section Styles */
+    .hero-banner.default {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+    }
+    
+    .hero-banner.default::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/ThinkBox/Hero Background.jpg');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+        z-index: 0;
+    }
+    
+    .hero-banner .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-inner {
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .hero-tag {
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: rgba(53, 1, 109, 0.1);
+        border-radius: 50px;
+    }
+    
+    .hero-header {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-header {
+            font-size: 2.5rem;
+        }
+    }
+    
+    .hero-description {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: #333;
+        line-height: 1.6;
+    }
+    
+    .hero-banner-image-standard img {
+        animation: floatAnimation 3s ease-in-out infinite;
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+    }
+    
+    @keyframes floatAnimation {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+    
+    .btn.large-primary {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn.large-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn.large-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn.large-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
 </style>
 <section data-template="HeroBanner.default">
     <div class="hero-banner default " id="id5bbd3f7a" style="">
         <div class="container">
-            <div class="row d-flex flex-row">
+            <div class="row d-flex flex-row align-items-center" style="min-height: 600px; padding: 60px 0;">
                 <div class="col-lg-6 col-12">
                     <div class="hero-inner">
                             <p class="hero-tag" style="color:#35016D">ThinkBox</p>
@@ -715,8 +837,8 @@ cfg: { // Application Insights Configuration
                         </div>
                     </div>
                 </div>
-                <div id="image-style" class="hero-banner-image-standard">
-                        <img loading="lazy" src="/ThinkBox/Hero Picture.svg" alt="ThinkBox Hero">
+                <div id="image-style" class="hero-banner-image-standard col-lg-6 col-12">
+                        <img loading="eager" src="/ThinkBox/Hero Picture.svg" alt="ThinkBox Hero - Children learning and exploring" width="600" height="600">
                 </div>
             </div>
         </div>
@@ -736,6 +858,39 @@ cfg: { // Application Insights Configuration
                         <div style="" class="col ">
 
 <style>
+    /* Enhanced Card Styles with Modern Effects */
+    .hero-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        position: relative;
+    }
+    
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .hero-card:hover::before {
+        opacity: 1;
+    }
+    
+    .hero-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+    
     .hero-card .card-image {
         height: 250px;
         overflow: hidden;
@@ -747,12 +902,99 @@ cfg: { // Application Insights Configuration
         height: 100%;
         object-fit: cover;
         object-position: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .hero-card:hover .card-image img {
+        transform: scale(1.1);
+    }
+    
+    .hero-card .card-body {
+        position: relative;
+        z-index: 2;
+        padding: 2rem;
+    }
+    
+    .hero-card .card-category {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+    }
+    
+    .hero-card .card-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-card .card-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-card .card-cta {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-card:hover .card-cta {
+        transform: translateX(5px);
+    }
+    
+    /* Staggered Animation for Cards */
+    .hero-card {
+        opacity: 0;
+        animation: fadeInUpCard 0.6s ease-out forwards;
+    }
+    
+    .col-lg-4:nth-child(1) .hero-card { animation-delay: 0.1s; }
+    .col-lg-4:nth-child(2) .hero-card { animation-delay: 0.2s; }
+    .col-lg-4:nth-child(3) .hero-card { animation-delay: 0.3s; }
+    
+    @keyframes fadeInUpCard {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Loading State for Images */
+    .hero-card .card-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+    }
+    
+    .hero-card .card-image img[src] + ::after {
+        display: none;
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
     }
 </style>
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-12 pb-4">
+        <div class="col-12 pb-4 text-center">
+            <h2 style="color: #35016D; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; animation: fadeIn 0.8s ease-out;">Explore Topics</h2>
+            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">Discover fascinating subjects designed to spark curiosity and inspire learning</p>
         </div>
     </div>
     
@@ -761,7 +1003,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#0078C2;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=300&fit=crop" alt="Science">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800&h=600&fit=crop&q=80" alt="Science - Colorful laboratory experiments" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%230078C2%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3EScience%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -777,7 +1019,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#00892D;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/440px-African_Bush_Elephant.jpg" alt="Nature & Animals">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800&h=600&fit=crop&q=80" alt="Nature & Animals - Wildlife and ecosystems" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%2300892D%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3ENature%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -793,7 +1035,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#C25400;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=300&fit=crop" alt="Geography">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&h=600&fit=crop&q=80" alt="Geography - Maps and world exploration" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23C25400%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2240%22 font-family=%22Arial%22%3EGeography%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -811,7 +1053,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#592E87;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://www.atlanticcouncil.org/wp-content/uploads/2010/12/reuters-12-15-10-Muammar-Gaddafi.jpg" alt="History">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=800&h=600&fit=crop&q=80" alt="History - Ancient civilizations and historical artifacts" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23592E87%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3EHistory%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -827,7 +1069,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#003C8C;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop" alt="Space">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop&q=80" alt="Space - Planets, stars, and the cosmos" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%23003C8C%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 font-family=%22Arial%22%3ESpace%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -843,7 +1085,7 @@ cfg: { // Application Insights Configuration
             <div style="height:100%;" data-template="CTACard.HeroCard">
                 <div class="card hero-card" style="background-color:#35016D;">
                     <div class="card-image">
-                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Assorted_gears.jpg/440px-Assorted_gears.jpg" alt="How Things Work">
+                        <img loading="lazy" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop&q=80" alt="How Things Work - Technology and engineering" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%2335016D%22 width=%22800%22 height=%22600%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2240%22 font-family=%22Arial%22%3EHow It Works%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="card-body">
                         <p class="card-category" style="color:#FFFFFF;">Topic</p>
@@ -856,10 +1098,11 @@ cfg: { // Application Insights Configuration
         </div>
     </div>
     
-    <div class="row justify-content-center" style="margin-top: 60px;">
+    <div class="row justify-content-center" style="margin-top: 80px;">
         <div class="col-12 pb-4">
             <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #35016D; font-size: 2.5rem; font-weight: bold;">Learn by Age</h2>
+                <h2 style="color: #35016D; font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Learn by Age</h2>
+                <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">Age-appropriate content tailored for different learning stages</p>
             </div>
         </div>
     </div>
@@ -1098,13 +1341,15 @@ cfg: { // Application Insights Configuration
 
     </div>
     <div class="row featured-mobile-slider" role="region">
-        <div class=" col-12">
-            <div class="slider-cta">
-                <h2>Join the Waitlist</h2>
-                    <p></p><p></p><p></p>
-                <form style="display: flex; gap: 10px; margin-top: 15px;">
-                    <input type="email" placeholder="Enter your email" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; flex: 1; font-size: 14px;">
-                    <button type="submit" class="btn large-primary" style="padding: 10px 25px; white-space: nowrap;">Send</button>
+        <div class="col-12">
+            <div class="slider-cta" style="background: linear-gradient(135deg, #35016D 0%, #592E87 100%); padding: 60px 40px; border-radius: 25px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); text-align: center; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(60px);"></div>
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(50px);"></div>
+                <h2 style="color: #FFFFFF; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; position: relative; z-index: 1;">Join the Waitlist</h2>
+                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; margin-bottom: 2rem; position: relative; z-index: 1; max-width: 600px; margin-left: auto; margin-right: auto;">Be the first to experience ThinkBox when we launch. Get exclusive early access and updates!</p>
+                <form style="display: flex; gap: 15px; margin-top: 25px; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" placeholder="Enter your email address" required style="padding: 18px 25px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50px; flex: 1; min-width: 280px; font-size: 16px; background: rgba(255, 255, 255, 0.95); transition: all 0.3s ease;" onfocus="this.style.background='#FFFFFF'; this.style.transform='scale(1.02)';" onblur="this.style.background='rgba(255, 255, 255, 0.95)'; this.style.transform='scale(1)';">
+                    <button type="submit" class="btn large-primary" style="padding: 18px 45px; white-space: nowrap; border-radius: 50px; font-weight: 700; font-size: 16px; background: #FFD72D; color: #00502E; border: none;">Join Waitlist</button>
                 </form>
             </div>
         </div>
@@ -1346,6 +1591,281 @@ cfg: { // Application Insights Configuration
     <script src="/ThinkBox/www.crayola.com/js/content-lightbox.js"></script>
     <script src="/ThinkBox/www.crayola.com/js/functions.js"></script>
     <script src="/ThinkBox/www.crayola.com/js/timeline-slider.js"></script>
+    
+    <!-- Enhanced Mobile & Desktop Styles -->
+    <style>
+        /* Mobile Responsiveness Improvements */
+        @media (max-width: 992px) {
+            .hero-banner .row {
+                min-height: auto !important;
+                padding: 40px 0 !important;
+            }
+            
+            .hero-banner-image-standard {
+                margin-top: 30px;
+                text-align: center;
+            }
+            
+            .hero-banner-image-standard img {
+                max-width: 80%;
+                height: auto;
+            }
+            
+            .hero-card {
+                margin-bottom: 20px;
+            }
+            
+            .dropdown-menu.mega-menu {
+                position: static !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-header {
+                font-size: 2rem !important;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem !important;
+            }
+            
+            .hero-tag {
+                font-size: 0.9rem !important;
+            }
+            
+            .slider-cta {
+                padding: 40px 25px !important;
+            }
+            
+            .slider-cta h2 {
+                font-size: 2rem !important;
+            }
+            
+            .slider-cta form {
+                flex-direction: column;
+            }
+            
+            .slider-cta form input {
+                min-width: 100% !important;
+            }
+            
+            .slider-cta form button {
+                width: 100%;
+            }
+        }
+        
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Enhanced Button Styles */
+        .btn.small-secondary {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn.small-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Improved Focus States for Accessibility */
+        a:focus, button:focus, input:focus {
+            outline: 3px solid #FFD72D;
+            outline-offset: 2px;
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        
+        /* Section Padding Improvements */
+        .green-brush-stroke .inner-section-wrap {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .green-brush-stroke .inner-section-wrap {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+        }
+        
+        /* Enhanced Navigation Hover Effects */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #FFD72D;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        /* Back to Top Button Enhancement */
+        .back-to-top-anchor {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .back-to-top-anchor:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+    </style>
+    
+    <!-- Enhanced JavaScript for Animations -->
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize GSAP ScrollTrigger animations if available
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Animate cards on scroll
+                gsap.utils.toArray('.hero-card').forEach((card, index) => {
+                    gsap.from(card, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions: 'play none none reverse'
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 0.6,
+                        delay: index * 0.1,
+                        ease: 'power2.out'
+                    });
+                });
+                
+                // Animate section headings
+                gsap.utils.toArray('h2').forEach(heading => {
+                    gsap.from(heading, {
+                        scrollTrigger: {
+                            trigger: heading,
+                            start: 'top 90%',
+                            toggleActions: 'play none none reverse'
+                        },
+                        y: 30,
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                });
+            }
+            
+            // Enhanced image loading
+            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                img.addEventListener('load', function() {
+                    this.style.opacity = '0';
+                    this.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 10);
+                });
+            });
+            
+            // Waitlist form submission enhancement
+            const waitlistForm = document.querySelector('.slider-cta form');
+            if (waitlistForm) {
+                waitlistForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    const button = this.querySelector('button[type="submit"]');
+                    const originalText = button.textContent;
+                    
+                    button.textContent = 'Joining...';
+                    button.disabled = true;
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        button.textContent = '✓ Joined!';
+                        button.style.background = '#00892D';
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.disabled = false;
+                            button.style.background = '#FFD72D';
+                            this.reset();
+                        }, 2000);
+                    }, 1500);
+                });
+            }
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && href !== '#main') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Add parallax effect to hero background
+            const heroSection = document.querySelector('.hero-banner.default');
+            if (heroSection) {
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.pageYOffset;
+                    const parallax = scrolled * 0.5;
+                    heroSection.style.backgroundPositionY = parallax + 'px';
+                });
+            }
+            
+            // Enhanced card hover effects
+            document.querySelectorAll('.hero-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
+            });
+            
+            // Back to top button visibility
+            const backToTopBtn = document.querySelector('.back-to-top');
+            if (backToTopBtn) {
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        backToTopBtn.style.opacity = '1';
+                        backToTopBtn.style.pointerEvents = 'auto';
+                    } else {
+                        backToTopBtn.style.opacity = '0';
+                        backToTopBtn.style.pointerEvents = 'none';
+                    }
+                });
+            }
+        });
+    </script>
     
 
 
