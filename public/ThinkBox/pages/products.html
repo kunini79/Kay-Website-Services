@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html id="html" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../www.crayola.com/img/favicon.ico">
+    <title>Explore | ThinkBox</title>
+    <meta name="description" content="Explore fascinating topics across science, nature, history, and more. Fuel your curiosity!">
+    <link rel="stylesheet" href="../www.crayola.com/css/dist/bootstrap.min.css">
+    <link rel="stylesheet" href="../www.crayola.com/css/dist/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../www.crayola.com/css/dist/style.min.css">
+</head>
+<body data-template="views.main.layout" id="top">
+    <a href="#main" class="skip-to-main">Skip to Main Content</a>
+    <script src="../cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../www.crayola.com/js/bootstrap.bundle.js"></script>
+
+    <header id="header">
+        <div id="aux-header">
+            <div class="">
+                <p style="margin-bottom: 0; color: rgba(255, 204, 51, 1)"><strong></strong></p>
+            </div>
+        </div>
+        <div id="main-header">
+            <div class="container">
+                <div class="inner-wrap">
+                    <div class="logo-wrap">
+                        <a href="../index.html" class="d-inline-block">
+                            <picture class="d-inline-block">
+                                <img loading="lazy" class="img-fluid" src="../Think Box Logo.png" title="ThinkBox" alt="ThinkBox">
+                            </picture>
+                        </a>
+                    </div>
+                    <div class="primary-nav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="products.html"><span>Explore</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="coloring.html"><span>Coloring</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="create.html"><span>Create</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="learning.html"><span>Learning</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="discover.html"><span>Discover</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="secondary-nav">
+                        <nav aria-label="Additional Links">
+                            <ul>
+                                <li>
+                                    <a href="support.html" id="contact-us" tabindex="0" target="_self" aria-label="Support">
+                                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="44" height="44" rx="22" fill="#FFCC33"></rect>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M25.0052 10.3701C25.0052 9.69014 25.5552 9.14014 26.2352 9.14014C30.9952 9.14014 34.8652 13.0001 34.8652 17.7701C34.8652 18.4501 34.3152 19.0001 33.6352 19.0001C32.9552 19.0001 32.4052 18.4501 32.4052 17.7701C32.4052 14.3701 29.6452 11.6101 26.2452 11.6101C25.5652 11.6101 25.0152 11.0601 25.0152 10.3801L25.0052 10.3701ZM25.0052 15.3003C25.0052 14.6203 25.5552 14.0703 26.2352 14.0703C28.2752 14.0703 29.9352 15.7303 29.9352 17.7703C29.9352 18.4503 29.3853 19.0003 28.7052 19.0003C28.0252 19.0003 27.4753 18.4503 27.4753 17.7703C27.4753 17.0903 26.9252 16.5403 26.2452 16.5403C25.5652 16.5403 25.0152 15.9903 25.0152 15.3103L25.0052 15.3003ZM31.1752 34.8499C31.2452 34.8599 31.3152 34.8599 31.3852 34.8599H31.3952C31.9252 34.8599 32.4452 34.6599 32.8452 34.2999C33.3352 33.8599 33.6052 33.2399 33.6052 32.5499V28.1599C33.6052 27.1199 32.9352 26.1899 31.9452 25.8599L27.6852 24.4399C26.8052 24.1599 25.8552 24.3799 25.2052 25.0299L24.5252 25.7099C24.0952 26.1399 23.4252 26.2099 22.9352 25.8699C20.7252 24.3599 19.4652 23.1099 18.1152 21.0699C17.7952 20.5799 17.8652 19.9199 18.2852 19.4999L18.9852 18.7999C19.6352 18.1499 19.8552 17.1899 19.5652 16.3199L18.1452 12.0599C17.8152 11.0699 16.8952 10.3999 15.8452 10.3999H11.4552C10.7652 10.3999 10.1452 10.6699 9.70521 11.1599C9.28521 11.6199 9.08521 12.2199 9.14521 12.8199C10.2952 24.4399 19.5652 33.6999 31.1752 34.8499Z" fill="#00502E"></path>
+                                        </svg>
+                                    </a>
+                                </li>
+                                <li>
+                                    <button id="mobile-nav-toggle" role="button" aria-label="Toggle Navigation Menu">
+                                        <p class="sr-only">Toggle Navigation Menu</p>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-nav-flyout" aria-labelledby="mobile-nav-toggle">
+            <div class="inner-flyout-wrap">
+                <nav class="mobile-nav">
+                    <div>
+                        <ul>
+                            <li class="nav-item"><a class="nav-link" href="products.html">Explore</a></li>
+                            <li class="nav-item"><a class="nav-link" href="coloring.html">Coloring</a></li>
+                            <li class="nav-item"><a class="nav-link" href="create.html">Create</a></li>
+                            <li class="nav-item"><a class="nav-link" href="learning.html">Learning</a></li>
+                            <li class="nav-item"><a class="nav-link" href="discover.html">Discover</a></li>
+                            <li class="nav-item"><a class="nav-link" href="support.html">Support</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div id="nav-underlay"></div>
+        <div id="nav-underlay-mobile"></div>
+    </header>
+
+    <main id="main">
+        <section class="">
+            <div class="inner-section-wrap padding-xl-top padding-xl-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h1 style="color:#00892D;">Explore</h1>
+                            <p class="lead">Discover fascinating topics across science, nature, history, and more. Fuel your curiosity!</p>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#003C8C; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Science</h5>
+                                    <p class="card-text">Explore the wonders of scientific discovery.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#0078C2; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Technology</h5>
+                                    <p class="card-text">Learn about innovations shaping our world.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#00892D; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Nature & Animals</h5>
+                                    <p class="card-text">Discover the natural world around us.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#C25400; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Geography</h5>
+                                    <p class="card-text">Explore places and landscapes of Earth.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#8B4513; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">History</h5>
+                                    <p class="card-text">Journey through time and past civilizations.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#592E87; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Culture & Society</h5>
+                                    <p class="card-text">Understand people and communities worldwide.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#1C1C3A; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Space</h5>
+                                    <p class="card-text">Explore the mysteries of the universe.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#E67E22; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">How Things Work</h5>
+                                    <p class="card-text">Understand the mechanics behind everyday things.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 text-center" style="background-color:#2ECC71; color: white;">
+                                <div class="card-body d-flex flex-column justify-content-center" style="min-height: 200px;">
+                                    <h5 class="card-title">Africa & The World</h5>
+                                    <p class="card-text">Discover Africa's rich heritage and global connections.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="footer-top">
+            <div class="desktop">
+                <img loading="lazy" src="../www.crayola.com/img/footer/footer-top.png" alt="">
+            </div>
+            <div class="mobile">
+                <img loading="lazy" src="../www.crayola.com/img/footer/footer-top-mobile.png" alt="">
+            </div>
+        </div>
+        <div class="footer-main">
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col-12 text-center py-4">
+                        <p style="color: #FCE828;">Placeholder page - Full content coming soon!</p>
+                        <a href="../index.html" class="btn large-primary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-banner">
+                <div class="desktop">
+                    <img loading="lazy" src="../www.crayola.com/img/footer/footer-banner.png" alt="ThinkBox">
+                </div>
+                <div class="mobile">
+                    <img loading="lazy" src="../www.crayola.com/img/footer/footer-banner-mobile.png" alt="ThinkBox">
+                </div>
+            </div>
+        </div>
+        <div class="footer-aux">
+            <div class="container">
+                <div class="aux-inner-wrap">
+                    <div class="aux-left">
+                        <p>&copy; <span id="copyrightYear">2026</span> ThinkBox&reg; All Rights Reserved.</p>
+                        <script>document.getElementById("copyrightYear").textContent = new Date().getFullYear();</script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../www.crayola.com/js/GSAP/gsap.min.js"></script>
+    <script src="../www.crayola.com/js/navigation.js"></script>
+    <script src="../www.crayola.com/js/functions.js"></script>
+</body>
+</html>
