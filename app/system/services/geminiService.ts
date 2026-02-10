@@ -5,15 +5,75 @@ import { STATIC_TOPICS } from "../constants";
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });
 
-// Helper to generate a consistent image URL based on a string hash
+// Helper to generate a relevant image URL based on the topic
 export const getImageUrl = (seed: string, width = 800, height = 600) => {
-  // Simple hash function to pick a consistent seed
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  // Create a mapping of keywords to curated image categories
+  const seedLower = seed.toLowerCase();
+  
+  // Map to specific Picsum photo IDs that match common topics
+  const categoryMaps: { [key: string]: number[] } = {
+    // Nature & Animals (green, wildlife, landscapes)
+    'animal': [1024, 1025, 237, 659, 718, 783, 1074, 1084],
+    'lion': [1024, 1025],
+    'cat': [1074, 1084],
+    'dog': [237, 659],
+    'bird': [718, 783],
+    'ocean': [1018, 147, 152, 164, 177, 197],
+    'forest': [975, 901, 1002, 1015],
+    
+    // Science (tech, lab, space)
+    'science': [2, 60, 180, 195, 257],
+    'space': [996, 1005, 1006],
+    'robot': [2, 257],
+    
+    // Sports (action, equipment)
+    'sport': [175, 244, 367, 400, 427],
+    'ball': [175, 244],
+    
+    // Arts (colors, creativity)
+    'art': [102, 163, 201, 217, 225],
+    'paint': [102, 163],
+    'music': [153, 225],
+    
+    // Reading & People
+    'book': [24, 225, 356],
+    'people': [64, 65, 91, 200, 338, 548],
+    'child': [64, 200, 338],
+    
+    // Places & History
+    'city': [15, 101, 111, 206, 213],
+    'building': [15, 206, 213],
+    'history': [193, 235, 274],
+    
+    // General education
+    'learn': [24, 60, 219],
+    'school': [24, 219],
+  };
+  
+  // Find matching category
+  let imageIds: number[] = [];
+  for (const [keyword, ids] of Object.entries(categoryMaps)) {
+    if (seedLower.includes(keyword)) {
+      imageIds = ids;
+      break;
+    }
   }
-  const id = Math.abs(hash) % 1000;
-  return `https://picsum.photos/id/${id}/${width}/${height}`;
+  
+  // If no match, use hash-based selection from curated general set
+  if (imageIds.length === 0) {
+    const generalIds = [3, 10, 20, 28, 42, 48, 56, 82, 103, 119, 146, 169, 188, 250, 292, 326, 365, 403, 431, 478];
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % generalIds.length;
+    imageIds = [generalIds[index]];
+  }
+  
+  // Pick one from the matched category
+  const selectedId = imageIds[Math.floor(Math.random() * imageIds.length)];
+  
+  return `https://picsum.photos/id/${selectedId}/${width}/${height}`;
 };
 
 export const fetchArticle = async (topic: string): Promise<Article> => {

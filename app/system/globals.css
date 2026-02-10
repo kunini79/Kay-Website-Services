@@ -1,0 +1,113 @@
+/* ThinkBox System Styles - Matching Landing Page Design */
+
+:root {
+  /* ThinkBox color palette - matching landing page */
+  --tb-primary: #00892D; /* Green - primary brand color */
+  --tb-secondary: #ffd72d; /* Yellow - accent color */
+  --tb-purple: #35016D; /* Dark purple */
+  --tb-blue: #0078C2; /* Bright blue */
+  --tb-dark-blue: #003C8C; /* Dark blue */
+  --tb-purple-alt: #592E87; /* Purple alt */
+  --tb-orange: #C25400; /* Orange */
+  --tb-dark-green: #00502e; /* Dark green */
+  --tb-text: #1f2937; /* Gray-800 */
+  --tb-bg: #ffffff; /* White */
+  --tb-bg-light: #f5f5f5; /* Light gray background */
+}
+
+/* Global overrides for ThinkBox system */
+.text-tb-primary {
+  color: var(--tb-primary) !important;
+}
+
+.bg-tb-primary {
+  background-color: var(--tb-primary) !important;
+}
+
+.text-tb-secondary {
+  color: var(--tb-secondary) !important;
+}
+
+.bg-tb-secondary {
+  background-color: var(--tb-secondary) !important;
+}
+
+.text-tb-text {
+  color: var(--tb-text) !important;
+}
+
+.border-tb-primary {
+  border-color: var(--tb-primary) !important;
+}
+
+/* Color utilities */  
+.text-tb-purple { color: var(--tb-purple) !important; }
+.bg-tb-purple { background-color: var(--tb-purple) !important; }
+.text-tb-blue { color: var(--tb-blue) !important; }
+.bg-tb-blue { background-color: var(--tb-blue) !important; }
+.text-tb-orange { color: var(--tb-orange) !important; }
+.bg-tb-orange { background-color: var(--tb-orange) !important; }
+
+/* Force light mode colors */
+.focus\:border-tb-primary:focus {
+  border-color: var(--tb-primary) !important;
+}
+
+.group-hover\:text-tb-primary {
+  transition: color 0.3s ease;
+}
+
+.group:hover .group-hover\:text-tb-primary {
+  color: var(--tb-primary) !important;
+}
+
+.group:hover .group-hover\:text-tb-primary\/70 {
+  color: var(--tb-primary) !important;
+  opacity: 0.7;
+}
+
+.hover\:text-tb-primary:hover {
+  color: var(--tb-primary) !important;
+}
+
+/* Matching ThinkBox button styles */
+.hover\:bg-emerald-600:hover {
+  background-color: #059669 !important;
+}
+
+/* Card animations from landing page */
+@keyframes fadeInUpCard {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+

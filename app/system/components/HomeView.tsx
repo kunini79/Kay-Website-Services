@@ -32,9 +32,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
       {/* Welcome Banner */}
       <div className="text-center py-12 md:py-20">
         <h1 className="text-5xl md:text-7xl font-extrabold text-tb-text mb-6 tracking-tight">
-          Explore the <span className="text-tb-primary">World.</span>
+          Explore the <span className="text-tb-purple">World.</span>
         </h1>
-        <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
+        <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto font-medium">
           Pick a topic, start an adventure. What will you discover today?
         </p>
       </div>
@@ -49,28 +49,36 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
             <button
               key={cat}
               onClick={() => handleCategorySelect(cat)}
+              style={{
+                backgroundColor: isActive ? config.color : '#ffffff'
+              }}
               className={`
-                relative overflow-hidden p-6 rounded-3xl transition-all duration-300 text-left group
-                ${isActive ? 'ring-4 ring-offset-4 ring-indigo-200 scale-105 shadow-xl' : 'hover:scale-105 hover:shadow-lg bg-white'}
+                relative overflow-hidden p-6 rounded-3xl transition-all duration-300 text-left group shadow-lg
+                ${isActive ? 'scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-xl'}
               `}
             >
-              <div className={`
-                absolute inset-0 opacity-10 transition-opacity
-                ${config.color}
-                ${isActive ? 'opacity-20' : 'group-hover:opacity-15'}
-              `}></div>
+              <div 
+                style={{ backgroundColor: config.color }}
+                className={`
+                  absolute inset-0 transition-opacity
+                  ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-90'}
+                `}
+              ></div>
               
-              <div className={`
-                w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors
-                ${isActive ? config.color : 'bg-gray-100 group-hover:bg-white'}
-              `}>
-                {React.cloneElement(config.icon as React.ReactElement<{ className?: string }>, {
-                   className: `w-6 h-6 ${isActive ? 'text-white' : 'text-gray-600'}`
-                })}
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors bg-white/20">
+                  {React.cloneElement(config.icon as React.ReactElement<{ className?: string }>, {
+                     className: `w-6 h-6 ${isActive ? 'text-white' : 'text-gray-600'}`
+                  })}
+                </div>
+                
+                <h3 className={`font-bold text-lg mb-1 ${isActive ? 'text-white' : 'text-gray-800 group-hover:text-white'}`}>
+                  {cat}
+                </h3>
+                <p className={`text-xs leading-tight ${isActive ? 'text-white/90' : 'text-gray-500 group-hover:text-white/90'}`}>
+                  {config.description}
+                </p>
               </div>
-              
-              <h3 className="font-bold text-gray-800 text-lg mb-1">{cat}</h3>
-              <p className="text-xs text-gray-500 leading-tight">{config.description}</p>
             </button>
           );
         })}
@@ -78,10 +86,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
 
       {/* Dynamic Suggestions Area */}
       {activeCategory && (
-        <div className="bg-white rounded-3xl p-8 shadow-xl border border-indigo-50 mb-16 animate-in slide-in-from-bottom-8">
+        <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 mb-16 animate-in slide-in-from-bottom-8">
             <div className="flex items-center gap-3 mb-6">
                <Sparkles className="text-tb-secondary w-6 h-6" />
-               <h2 className="text-2xl font-bold text-gray-800">
+               <h2 className="text-2xl font-bold text-tb-purple">
                  Cool stuff in {activeCategory}
                </h2>
             </div>
@@ -123,14 +131,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
       {!activeCategory && (
         <div className="mb-20">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-800">Jump right in</h2>
+            <h2 className="text-3xl font-bold text-tb-purple">Jump right in</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
              {INITIAL_SUGGESTIONS.map((topic, i) => (
                <button
                  key={i}
                  onClick={() => onTopicClick(topic)}
-                 className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4 group border border-transparent hover:border-indigo-100"
+                 className="bg-white p-4 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-4 group border border-gray-100 hover:border-tb-primary"
                >
                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-200">
                     <img src={getImageUrl(topic, 100, 100)} alt={topic} className="w-full h-full object-cover" />

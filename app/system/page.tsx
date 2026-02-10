@@ -8,11 +8,25 @@ import { ArticleView } from './components/ArticleView';
 import { Loader } from './components/Loader';
 import { fetchArticle } from './services/geminiService';
 import { AlertCircle } from 'lucide-react';
+import './globals.css';
 
 export default function SystemPage() {
   const [viewState, setViewState] = useState<ViewState>(ViewState.HOME);
   const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Force light mode for ThinkBox System
+  useEffect(() => {
+    const originalTheme = document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', 'light');
+    
+    return () => {
+      // Restore original theme when leaving the route
+      if (originalTheme) {
+        document.documentElement.setAttribute('data-theme', originalTheme);
+      }
+    };
+  }, []);
 
   // Scroll to top when view changes
   useEffect(() => {
@@ -39,7 +53,7 @@ export default function SystemPage() {
   }, []);
 
   return (
-    <div className="min-h-screen font-sans text-tb-text selection:bg-tb-primary/20">
+    <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-indigo-200" style={{ colorScheme: 'light' }}>
       <Header onSearch={handleTopicSelect} onHome={goHome} />
 
       <main className="max-w-5xl mx-auto px-4 pb-20 pt-8">

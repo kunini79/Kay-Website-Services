@@ -65,8 +65,8 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
           {article.sections.map((section, idx) => (
             <div key={idx} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-tb-primary mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-indigo-100 text-tb-primary flex items-center justify-center text-sm">
+                <h2 className="text-2xl font-bold text-tb-purple mb-4 flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-full bg-tb-secondary/50 text-tb-purple flex items-center justify-center text-sm font-bold">
                     {idx + 1}
                   </span>
                   {section.subtitle}
@@ -86,7 +86,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
         </div>
 
         {/* Discovery Loop */}
-        <div className="bg-indigo-900 rounded-3xl p-8 md:p-12 text-white text-center mt-16 shadow-xl relative overflow-hidden">
+        <div className="bg-tb-purple rounded-3xl p-8 md:p-12 text-white text-center mt-16 shadow-xl relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
           
@@ -96,7 +96,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
               <button
                 key={i}
                 onClick={() => onTopicClick(topic)}
-                className="group flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-4 rounded-2xl transition-all hover:scale-105 border border-white/10"
+                className="group flex items-center gap-2 bg-white/10 hover:bg-tb-secondary/80 hover:text-tb-purple backdrop-blur-sm px-6 py-4 rounded-2xl transition-all hover:scale-105 border border-white/10 font-semibold"
               >
                 <span className="font-bold text-lg">{topic}</span>
                 <ArrowRight className="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" />

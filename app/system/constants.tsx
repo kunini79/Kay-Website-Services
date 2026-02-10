@@ -15,52 +15,52 @@ import {
 
 export const CATEGORY_CONFIG: Record<Category, { color: string; icon: React.ReactNode; description: string }> = {
   [Category.ANIMALS]: {
-    color: 'bg-emerald-500',
+    color: '#00892D',
     icon: <PawPrint className="w-6 h-6 text-white" />,
     description: "Lions, tigers, and bears!"
   },
   [Category.SCIENCE]: {
-    color: 'bg-blue-500',
+    color: '#0078C2',
     icon: <Beaker className="w-6 h-6 text-white" />,
     description: "Chemistry, Physics, and how stuff works."
   },
   [Category.SPORTS]: {
-    color: 'bg-orange-500',
+    color: '#C25400',
     icon: <Trophy className="w-6 h-6 text-white" />,
     description: "Games, athletes, and staying active."
   },
   [Category.ARTS]: {
-    color: 'bg-pink-500',
+    color: '#e91e8c',
     icon: <Palette className="w-6 h-6 text-white" />,
     description: "Painting, music, and creativity."
   },
   [Category.READING]: {
-    color: 'bg-indigo-500',
+    color: '#592E87',
     icon: <BookOpen className="w-6 h-6 text-white" />,
     description: "Stories, poems, and authors."
   },
   [Category.PEOPLE]: {
-    color: 'bg-yellow-500',
-    icon: <Users className="w-6 h-6 text-white" />,
+    color: '#ffd72d',
+    icon: <Users className="w-6 h-6 text-gray-800" />,
     description: "Famous biographies and leaders."
   },
   [Category.PLACES]: {
-    color: 'bg-teal-500',
+    color: '#14b8a6',
     icon: <Map className="w-6 h-6 text-white" />,
     description: "Countries, cities, and geography."
   },
   [Category.HISTORY]: {
-    color: 'bg-amber-700',
+    color: '#35016D',
     icon: <History className="w-6 h-6 text-white" />,
     description: "The past and ancient times."
   },
   [Category.SOCIAL_STUDIES]: {
-    color: 'bg-red-500',
+    color: '#dc2626',
     icon: <Landmark className="w-6 h-6 text-white" />,
     description: "Communities and cultures."
   },
   [Category.GAMES]: {
-    color: 'bg-violet-500',
+    color: '#003C8C',
     icon: <Gamepad2 className="w-6 h-6 text-white" />,
     description: "Puzzles, coding, and fun!"
   }
