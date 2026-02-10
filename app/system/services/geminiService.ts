@@ -5,120 +5,187 @@ import { STATIC_TOPICS } from "../constants";
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });
 
-// Helper to generate a relevant image URL based on the topic
-export const getImageUrl = (seed: string, width = 800, height = 600) => {
-  // Create a mapping of keywords to curated image categories
-  const seedLower = seed.toLowerCase();
-  
-  // Map to specific Picsum photo IDs that match common topics
-  const categoryMaps: { [key: string]: number[] } = {
-    // Nature & Animals (green, wildlife, landscapes)
-    'animal': [1024, 1025, 237, 659, 718, 783, 1074, 1084],
-    'lion': [1024, 1025],
-    'cat': [1074, 1084],
-    'dog': [237, 659],
-    'bird': [718, 783],
-    'ocean': [1018, 147, 152, 164, 177, 197],
-    'forest': [975, 901, 1002, 1015],
-    
-    // Science (tech, lab, space)
-    'science': [2, 60, 180, 195, 257],
-    'space': [996, 1005, 1006],
-    'robot': [2, 257],
-    
-    // Sports (action, equipment)
-    'sport': [175, 244, 367, 400, 427],
-    'ball': [175, 244],
-    
-    // Arts (colors, creativity)
-    'art': [102, 163, 201, 217, 225],
-    'paint': [102, 163],
-    'music': [153, 225],
-    
-    // Reading & People
-    'book': [24, 225, 356],
-    'people': [64, 65, 91, 200, 338, 548],
-    'child': [64, 200, 338],
-    
-    // Places & History
-    'city': [15, 101, 111, 206, 213],
-    'building': [15, 206, 213],
-    'history': [193, 235, 274],
-    
-    // General education
-    'learn': [24, 60, 219],
-    'school': [24, 219],
-  };
-  
-  // Find matching category
-  let imageIds: number[] = [];
-  for (const [keyword, ids] of Object.entries(categoryMaps)) {
-    if (seedLower.includes(keyword)) {
-      imageIds = ids;
-      break;
-    }
-  }
-  
-  // If no match, use hash-based selection from curated general set
-  if (imageIds.length === 0) {
-    const generalIds = [3, 10, 20, 28, 42, 48, 56, 82, 103, 119, 146, 169, 188, 250, 292, 326, 365, 403, 431, 478];
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-      hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % generalIds.length;
-    imageIds = [generalIds[index]];
-  }
-  
-  // Pick one from the matched category
-  const selectedId = imageIds[Math.floor(Math.random() * imageIds.length)];
-  
-  return `https://picsum.photos/id/${selectedId}/${width}/${height}`;
+// Image and content cache to avoid repeated API calls
+const imageCache = new Map<string, string>();
+const contentCache = new Map<string, any>();
+
+// Map friendly topic names to Wikipedia article names for better image results
+const TOPIC_TO_WIKIPEDIA_MAP: Record<string, string> = {
+  // Animals
+  "Mammals": "Mammal",
+  "The Big Five": "Big Five game",
+  "Birds": "Bird",
+  "Reptiles & Amphibians": "Reptile",
+  "Ocean Giants": "Whale",
+  "Rainforest Critters": "Rainforest",
+  "Baby Animals": "Infant",
+  "Insects & Bugs": "Insect",
+  "Super Fast Animals": "Cheetah",
+  "Endangered Animals": "Endangered species",
+  "Animal Homes": "Burrow",
+  "Night Animals": "Nocturnal animal",
+
+  // Science
+  "Plants": "Plant",
+  "The Human Body": "Human body",
+  "The Solar System": "Solar System",
+  "Weather & Climate": "Weather",
+  "Rocks & Minerals": "Mineral",
+  "Light & Sound": "Light",
+  "Electricity": "Electricity",
+  "States of Matter": "State of matter",
+  "Simple Experiments": "Experiment",
+  "Ecosystems": "Ecosystem",
+  "Recycling": "Recycling",
+  "Microorganisms": "Microorganism",
+
+  // Sports
+  "Football (Soccer)": "Association football",
+  "Basketball": "Basketball",
+  "Athletics": "Sport of athletics",
+  "African Games": "Africa",
+  "Swimming": "Swimming",
+  "Fitness & Exercise": "Physical fitness",
+  "Famous Athletes": "Athlete",
+  "The Olympics": "Olympic Games",
+  "Outdoor Adventure": "Outdoor recreation",
+  "Martial Arts": "Martial arts",
+
+  // Arts
+  "Drawing & Painting": "Painting",
+  "Music": "Music",
+  "Dance": "Dance",
+  "African Masks": "African mask",
+  "Sculpture": "Sculpture",
+  "Storytelling": "Storytelling",
+  "Photography": "Photography",
 };
 
-export const fetchArticle = async (topic: string): Promise<Article> => {
-  if (!apiKey) {
-    // Fallback for demo if no API key is present
-    return new Promise(resolve => setTimeout(() => resolve({
-      title: topic,
-      category: Category.ANIMALS,
-      intro: `This is a demo article about ${topic}. Connect your Gemini API Key to see real magic!`,
-      funFact: "Did you know? This is placeholder data.",
-      sections: [
-        { subtitle: "Where do they live?", content: "They live in the demo forest." },
-        { subtitle: "What do they eat?", content: "Pixels and data." }
-      ],
-      relatedTopics: ["Space", "Cats", "Robots"]
-    }), 1500));
+// Fetch Wikipedia API data
+const fetchWikipediaData = async (query: string) => {
+  try {
+    const response = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=extracts|pageimages&explaintext=true&exintro=true&piprop=original&format=json&origin=*`
+    );
+    const data = await response.json();
+    const pages = data.query.pages;
+    const pageId = Object.keys(pages)[0];
+    return pages[pageId];
+  } catch (error) {
+    console.error('Wikipedia API error:', error);
+    return null;
+  }
+};
+
+// Get image from Wikipedia
+export const getImageUrl = async (seed: string, width = 800, height = 600): Promise<string> => {
+  const cacheKey = `image_${seed}_${width}x${height}`;
+  if (imageCache.has(cacheKey)) {
+    console.log(`[Image Cache HIT] ${seed}`);
+    return imageCache.get(cacheKey)!;
   }
 
-  const model = "gemini-3-flash-preview";
-  
-  // Enhanced prompt to support specific Animal Template
-  const prompt = `
-    Write a fun, educational encyclopedia article for an 8-12 year old child about "${topic}".
-    
-    Guidelines:
-    - Tone: Enthusiastic, clear, encouraging (Encarta style).
-    - Structure: Chunked information, no walls of text.
-    - Fun Fact: Include one surprising "Did You Know?" fact.
-    - Related Topics: Suggest 3 other topics a kid might like after this.
-    - Category: Choose one best fit from [Animals, Science, Sports and Recreation, Arts, Reading and Writing, People, Places, History, Social Studies, Games and Fun].
-
-    SPECIAL INSTRUCTION FOR ANIMALS:
-    If the topic is a specific animal (e.g., Lion, Frog), you MUST use these section headers:
-    1. "Habitat & Home" (Where do they live?)
-    2. "What's on the Menu?" (Diet)
-    3. "Family Life & Babies" (Social structure & Life Cycle)
-    4. "Super Senses & Body" (Physical features)
-    
-    If the topic is a GROUP (e.g., Mammals, Reptiles), explain what makes them special, give examples, and where they are found.
-
-    Return pure JSON.
-  `;
+  // Map friendly title to Wikipedia article name
+  const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[seed] || seed;
+  console.log(`[Image Fetch] Fetching image for: ${seed} (Wikipedia: ${wikipediaQuery})`);
 
   try {
-    const response = await ai.models.generateContent({
+    const wikiData = await fetchWikipediaData(wikipediaQuery);
+
+    if (wikiData?.original?.source) {
+      const imageUrl = wikiData.original.source;
+      console.log(`[Image Found - Original] ${seed}: ${imageUrl.substring(0, 80)}...`);
+      imageCache.set(cacheKey, imageUrl);
+      return imageUrl;
+    }
+
+    // Try thumbnail as fallback
+    if (wikiData?.thumbnail?.source) {
+      const imageUrl = wikiData.thumbnail.source;
+      console.log(`[Image Found - Thumbnail] ${seed}: ${imageUrl.substring(0, 80)}...`);
+      imageCache.set(cacheKey, imageUrl);
+      return imageUrl;
+    }
+
+    // Try pageimage field
+    if (wikiData?.pageimage) {
+      const imageUrl = `https://en.wikipedia.org/wiki/Special:FilePath/${wikiData.pageimage}`;
+      console.log(`[Image Found - PageImage] ${seed}`);
+      imageCache.set(cacheKey, imageUrl);
+      return imageUrl;
+    }
+
+    console.log(`[Image No Match] No image found for ${seed} (tried ${wikipediaQuery})`);
+  } catch (error) {
+    console.warn(`[Image Error] Failed to fetch Wikipedia image for ${seed}:`, error);
+  }
+
+  // Fallback placeholder
+  const fallback = `https://placehold.co/${width}x${height}/e0e7ff/6366f1?text=${encodeURIComponent(seed)}`;
+  console.log(`[Image Fallback] Using placeholder for ${seed}`);
+  imageCache.set(cacheKey, fallback);
+  return fallback;
+};
+
+// Fetch properly aligned images from Wikipedia
+export const fetchWikimediaImage = async (
+  topic: string,
+  width: number = 800,
+  height: number = 600
+): Promise<string> => {
+  return getImageUrl(topic, width, height);
+};
+
+// Get Wikipedia content and enrich with Gemini for ThinkBox structure
+export const fetchArticle = async (topic: string): Promise<Article> => {
+  const cacheKey = `article_${topic}`;
+  if (contentCache.has(cacheKey)) {
+    return contentCache.get(cacheKey);
+  }
+
+  try {
+    // Map friendly title to Wikipedia article name
+    const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[topic] || topic;
+    console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (mapped to: ${wikipediaQuery})`);
+
+    // Get Wikipedia content first
+    const wikiData = await fetchWikipediaData(wikipediaQuery);
+    const wikiContent = wikiData?.extract || '';
+
+    // Check for disambiguation or too-short content
+    if (!wikiContent || wikiContent.length < 200 || wikiContent.includes('may refer to:')) {
+      throw new Error(`Could not find detailed information about "${topic}". Try a more specific search term.`);
+    }
+
+    if (!apiKey) {
+      throw new Error('Gemini API key not configured');
+    }
+
+    // Use Gemini to structure Wikipedia content into ThinkBox format
+    const model = "gemini-2.5-flash";
+    const prompt = `
+      Take this Wikipedia content about "${topic}" and structure it for an 8-12 year old educational app (ThinkBox).
+
+      Wikipedia Content:
+      ${wikiContent.substring(0, 2000)}
+
+      Requirements:
+      - Tone: Enthusiastic, clear, encouraging (Encarta style)
+      - Structure: 3-4 chunked sections with short paragraphs (keep content concise)
+      - For animals: Use headers like "Habitat & Home", "What's on the Menu?", "Family Life & Babies", "Super Senses & Body"
+      - Include one "Did You Know?" fun fact from the Wikipedia content
+      - Suggest 3 related topics for further learning
+      - Category: Choose from [Animals, Science, Sports and Recreation, Arts, Reading and Writing, People, Places, History, Social Studies, Games and Fun]
+
+      Return pure JSON with: title, category, intro (2-3 sentences), funFact, sections (array with subtitle and content), relatedTopics (array)
+    `;
+
+    // Create a timeout promise (40 seconds to allow for Gemini processing)
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timed out. Please try again.')), 40000)
+    );
+
+    const apiPromise = ai.models.generateContent({
       model,
       contents: prompt,
       config: {
@@ -128,41 +195,80 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
           properties: {
             title: { type: Type.STRING },
             category: { type: Type.STRING },
-            intro: { type: Type.STRING, description: "A 2-3 sentence engaging summary." },
-            funFact: { type: Type.STRING, description: "A surprising fact." },
+            intro: { type: Type.STRING },
+            funFact: { type: Type.STRING },
             sections: {
               type: Type.ARRAY,
               items: {
                 type: Type.OBJECT,
                 properties: {
                   subtitle: { type: Type.STRING },
-                  content: { type: Type.STRING, description: "2-3 paragraphs max." }
-                }
+                  content: { type: Type.STRING }
+                },
+                required: ['subtitle', 'content']
               }
             },
             relatedTopics: {
               type: Type.ARRAY,
               items: { type: Type.STRING }
             }
-          }
+          },
+          required: ['title', 'category', 'intro', 'funFact', 'sections', 'relatedTopics']
         }
       }
     });
 
+    const response = await Promise.race([apiPromise, timeoutPromise]) as any;
+
     const text = response.text;
-    if (!text) throw new Error("No data returned");
-    return JSON.parse(text) as Article;
+    console.log('[Article] Raw Gemini response length:', text?.length || 0);
+    console.log('[Article] Raw response preview:', text?.substring(0, 200));
+
+    if (!text) throw new Error("No structured content returned");
+
+    let article: Article;
+    try {
+      article = JSON.parse(text) as Article;
+    } catch (parseError) {
+      console.error('[Article] JSON parse error:', parseError);
+      console.error('[Article] Failed to parse text:', text);
+      throw new Error('Invalid JSON response from Gemini');
+    }
+
+    // Validate article structure and add defaults if missing
+    if (!article.sections || !Array.isArray(article.sections)) {
+      console.warn('[Article] Missing or invalid sections, adding defaults');
+      article.sections = [];
+    }
+    if (!article.relatedTopics || !Array.isArray(article.relatedTopics)) {
+      console.warn('[Article] Missing or invalid relatedTopics, adding defaults');
+      article.relatedTopics = [];
+    }
+    if (!article.title) article.title = topic;
+    if (!article.intro) article.intro = `Learn about ${topic}.`;
+    if (!article.funFact) article.funFact = `${topic} is fascinating!`;
+
+    console.log('[Article] Successfully structured:', {
+      title: article.title,
+      sectionsCount: article.sections.length,
+      relatedTopicsCount: article.relatedTopics.length
+    });
+
+    contentCache.set(cacheKey, article);
+    return article;
 
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Oops! Our encyclopedia brain is taking a nap. Try again later!");
+    console.error("Article fetch error:", error);
+
+    // Re-throw the error with a helpful message for the user
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    throw new Error(`Could not load article: ${errorMessage}`);
   }
 };
 
 export const fetchSuggestions = async (category: Category): Promise<TopicPreview[]> => {
-  // 1. Use curated static topics if available (Enforce structure for Animals)
+  // Use curated static topics for consistency
   if (STATIC_TOPICS[category]) {
-    // Simulate a small delay for consistency
     return new Promise(resolve => setTimeout(() => resolve(STATIC_TOPICS[category]!), 300));
   }
 
@@ -174,7 +280,7 @@ export const fetchSuggestions = async (category: Category): Promise<TopicPreview
     ];
   }
 
-  const model = "gemini-3-flash-preview";
+  const model = "gemini-2.5-flash";
   const prompt = `
     Suggest 4 interesting, specific topics for a children's encyclopedia in the category: "${category}".
     For each, provide a title and a very short playful description (1 sentence).
@@ -193,7 +299,7 @@ export const fetchSuggestions = async (category: Category): Promise<TopicPreview
             properties: {
               title: { type: Type.STRING },
               description: { type: Type.STRING },
-              category: { type: Type.STRING } // Just to fit the type, though we know it
+              category: { type: Type.STRING }
             }
           }
         }
@@ -203,11 +309,10 @@ export const fetchSuggestions = async (category: Category): Promise<TopicPreview
     const text = response.text;
     if (!text) return [];
     const items = JSON.parse(text);
-    // Ensure category is set correctly
-    return items.map((item: any) => ({ ...item, category })); 
+    return items.map((item: any) => ({ ...item, category }));
 
   } catch (error) {
     console.error(error);
     return [];
   }
-}
+};

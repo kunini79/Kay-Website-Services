@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CATEGORY_CONFIG, INITIAL_SUGGESTIONS } from '../constants';
 import { Category, TopicPreview } from '../types';
-import { getImageUrl, fetchSuggestions } from '../services/geminiService';
+import { fetchSuggestions, fetchWikimediaImage } from '../services/geminiService';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 interface HomeViewProps {
@@ -103,31 +103,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {suggestions.map((topic, idx) => (
-                  <button
+                  <TopicCard
                     key={idx}
-                    onClick={() => onTopicClick(topic.title)}
-                    className="flex flex-col text-left group h-full"
-                  >
-                    <div className="h-40 rounded-2xl overflow-hidden mb-4 relative">
-                       <img 
-                          src={getImageUrl(topic.title)} 
-                          alt={topic.title} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                       />
-                       <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                    </div>
-                    <h4 className="font-bold text-lg text-gray-800 group-hover:text-tb-primary transition-colors">
-                      {topic.title}
-                    </h4>
-                    <p className="text-sm text-gray-500 mt-1">{topic.description}</p>
-                  </button>
+                    topic={topic}
+                    onTopicClick={onTopicClick}
+                  />
                 ))}
               </div>
             )}
         </div>
       )}
 
-      {/* Featured / Random Start */}
+      {/* Featured Topics */}
       {!activeCategory && (
         <div className="mb-20">
           <div className="flex items-center justify-between mb-8">
@@ -140,21 +127,84 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
                  onClick={() => onTopicClick(topic)}
                  className="bg-white p-4 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-4 group border border-gray-100 hover:border-tb-primary"
                >
-                 <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-200">
-                    <img src={getImageUrl(topic, 100, 100)} alt={topic} className="w-full h-full object-cover" />
+                 <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-200 flex items-center justify-center">
+                    <span className="text-xs text-gray-500">📚</span>
                  </div>
                  <div className="text-left">
-                   <h4 className="font-bold text-gray-700 group-hover:text-tb-primary transition-colors">{topic}</h4>
-                   <div className="flex items-center text-xs text-gray-400 mt-1 group-hover:text-tb-primary/70">
-                     <span>Read now</span>
-                     <ArrowRight className="w-3 h-3 ml-1" />
-                   </div>
+                    <p className="font-bold text-gray-800">{topic}</p>
+                    <p className="text-sm text-gray-500">Learn something new</p>
                  </div>
+                 <ArrowRight className="w-5 h-5 ml-auto text-gray-300 group-hover:text-tb-primary transition-colors" />
                </button>
              ))}
           </div>
         </div>
       )}
     </div>
+  );
+};
+
+// Topic card with async image loading from Wikipedia
+interface TopicCardProps {
+  topic: TopicPreview;
+  onTopicClick: (topic: string) => void;
+}
+
+const TopicCard: React.FC<TopicCardProps> = ({ topic, onTopicClick }) => {
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageLoading, setImageLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadImage = async () => {
+      try {
+        const url = await fetchWikimediaImage(topic.title, 400, 300);
+        if (isMounted) {
+          setImageUrl(url);
+        }
+      } catch (err) {
+        console.warn(`Failed to load image for ${topic.title}:`, err);
+        setImageUrl('');
+      } finally {
+        if (isMounted) {
+          setImageLoading(false);
+        }
+      }
+    };
+
+    loadImage();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [topic.title]);
+
+  return (
+    <button
+      onClick={() => onTopicClick(topic.title)}
+      className="flex flex-col text-left group h-full"
+    >
+      <div className="h-40 rounded-2xl overflow-hidden mb-4 relative bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0 flex items-center justify-center">
+        {imageLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-tb-purple"></div>
+          </div>
+        )}
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={topic.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+      </div>
+      <h4 className="font-bold text-lg text-gray-800 group-hover:text-tb-primary transition-colors">
+        {topic.title}
+      </h4>
+      <p className="text-sm text-gray-500 mt-1">{topic.description}</p>
+    </button>
   );
 };
