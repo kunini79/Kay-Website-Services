@@ -1,148 +1,30 @@
-/* ThinkBox System Styles - Encarta Kids Nature Theme */
+/* ThinkBox System Styles - Professional Modern Theme */
 
 :root {
-  /* Nature Expedition color palette */
-  --jungle-green: #2D5A27;
-  --leaf-light: #A7C957;
-  --earth-brown: #6B4423;
-  --sun-yellow: #F9DC5C;
-  --moss: #4A7040;
-  --tb-primary: #2D5A27;
-  --tb-secondary: #F9DC5C;
-  --tb-purple: #35016D;
-  --tb-blue: #0078C2;
-  --tb-dark-blue: #003C8C;
-  --tb-purple-alt: #592E87;
-  --tb-orange: #C25400;
-  --tb-dark-green: #00502e;
-  --tb-text: #1f2937;
-  --tb-bg: #ffffff;
-  --tb-bg-light: #f5f5f5;
+  --tb-glass-border: rgba(255, 255, 255, 0.1);
+  --tb-glass-bg: rgba(255, 255, 255, 0.05);
+  --tb-accent: #BBFD6A; /* Kay Website Services Lime */
 }
 
-/* Jungle background gradient */
-.jungle-bg {
-  background: linear-gradient(to bottom, #e8f5e9 0%, #fff 100%);
+.system-glass {
+  background: var(--tb-glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--tb-glass-border);
 }
 
-/* Organic glass effect */
-.organic-glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 2px solid var(--leaf-light);
+.system-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Leaf-shaped card borders */
-.leaf-card {
-  border-radius: 0 48px 0 48px;
-  transition: all 0.3s ease;
+.system-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
 }
 
-.leaf-card:hover {
-  border-radius: 24px 24px 24px 24px;
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.rounded-leaf {
-  border-radius: 0px 40px 0px 40px;
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-
-.rounded-leaf-reverse {
-  border-radius: 40px 0px 40px 0px;
-}
-
-/* Tablet UI style */
-.tablet-ui {
-  background: #2c3e50;
-  border: 12px solid #1a252f;
-  border-radius: 24px;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Global overrides for ThinkBox system */
-.text-tb-primary {
-  color: var(--tb-primary) !important;
-}
-
-.bg-tb-primary {
-  background-color: var(--tb-primary) !important;
-}
-
-.text-tb-secondary {
-  color: var(--tb-secondary) !important;
-}
-
-.bg-tb-secondary {
-  background-color: var(--tb-secondary) !important;
-}
-
-.text-tb-text {
-  color: var(--tb-text) !important;
-}
-
-.border-tb-primary {
-  border-color: var(--tb-primary) !important;
-}
-
-/* Force light mode colors */
-.focus\:border-tb-primary:focus {
-  border-color: var(--tb-primary) !important;
-}
-
-.group-hover\:text-tb-primary {
-  transition: color 0.3s ease;
-}
-
-.group:hover .group-hover\:text-tb-primary {
-  color: var(--tb-primary) !important;
-}
-
-.group:hover .group-hover\:text-tb-primary\/70 {
-  color: var(--tb-primary) !important;
-  opacity: 0.7;
-}
-
-.hover\:text-tb-primary:hover {
-  color: var(--tb-primary) !important;
-}
-
-/* Matching ThinkBox button styles */
-.hover\:bg-emerald-600:hover {
-  background-color: #059669 !important;
-}
-
-/* Card animations from landing page */
-@keyframes fadeInUpCard {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes floatAnimation {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.animate-float {
-  animation: floatAnimation 3s ease-in-out infinite;
-}
-

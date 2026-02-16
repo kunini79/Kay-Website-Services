@@ -12,20 +12,19 @@ export const Button: React.FC<ButtonProps> = ({
   className = '', 
   ...props 
 }) => {
-  const baseStyles = "px-6 py-3 rounded-full font-bold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95";
+  const baseStyles = 'px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 text-sm uppercase tracking-wide';
   
   const variants = {
-    primary: "bg-tb-primary text-white hover:bg-emerald-700 shadow-lg hover:shadow-xl",
-    secondary: "bg-white text-tb-primary border-2 border-tb-primary hover:bg-tb-secondary/20",
-    ghost: "bg-transparent text-tb-text hover:bg-gray-100"
+    primary: 'bg-[#BBFD6A] text-black hover:bg-[#aef059] shadow-sm hover:shadow-md',
+    secondary: 'bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-700',
+    ghost: 'bg-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800'
   };
 
+  const styles = \\ \ \\;
+
   return (
-    <button 
-      className={`${baseStyles} ${variants[variant]} ${className}`}
-      {...props}
-    >
-      {icon}
+    <button className={styles} {...props}>
+      {icon && <span className='w-4 h-4'>{icon}</span>}
       {children}
     </button>
   );

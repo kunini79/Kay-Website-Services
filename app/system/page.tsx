@@ -48,19 +48,6 @@ export default function SystemPage() {
     */
   }, [router]);
 
-  // Force light mode for ThinkBox System
-  useEffect(() => {
-    const originalTheme = document.documentElement.getAttribute('data-theme');
-    document.documentElement.setAttribute('data-theme', 'light');
-    
-    return () => {
-      // Restore original theme when leaving the route
-      if (originalTheme) {
-        document.documentElement.setAttribute('data-theme', originalTheme);
-      }
-    };
-  }, []);
-
   // Scroll to top when view changes
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -88,7 +75,7 @@ export default function SystemPage() {
   // Show loading state while checking authentication
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
         <div className="text-center">
           <div className="mb-4">
             <Loader message="Verifying access..." />
@@ -99,7 +86,7 @@ export default function SystemPage() {
   }
 
   return (
-    <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-indigo-200" style={{ colorScheme: 'light' }}>
+    <div className="min-h-screen font-sans bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-[#BBFD6A] selection:text-black">
       <Header onSearch={handleTopicSelect} onHome={goHome} />
 
       <main className="max-w-5xl mx-auto px-4 pb-20 pt-8">
