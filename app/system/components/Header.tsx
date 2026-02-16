@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Compass, Sparkles } from 'lucide-react';
+import { addToSearchHistory } from '../services/dailyHighlights';
 
 interface HeaderProps {
   onSearch: (term: string) => void;
@@ -12,6 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onHome }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (term.trim()) {
+      addToSearchHistory(term.trim());
       onSearch(term);
       setTerm('');
     }

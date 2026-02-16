@@ -4,6 +4,8 @@ import { Category, TopicPreview } from '../types';
 import { fetchSuggestions, fetchWikimediaImage } from '../services/geminiService';
 import { Compass } from 'lucide-react';
 import { getOfflineQuickPicks } from '../services/offlineTopics';
+import { TodayILearned } from './TodayILearned';
+import { addToSearchHistory, getSearchHistory } from '../services/dailyHighlights';
 
 interface HomeViewProps {
   onTopicClick: (topic: string) => void;
@@ -14,6 +16,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
   const [suggestions, setSuggestions] = useState<TopicPreview[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [quickTopics, setQuickTopics] = useState<string[]>(INITIAL_SUGGESTIONS);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   const handleCategorySelect = async (cat: Category) => {
     if (activeCategory === cat) {
@@ -35,6 +38,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
     onTopicClick(randomTopic);
   };
 
+  const handleTopicClickWithTracking = (topic: string) => {
+    addToSearchHistory(topic);
+    onTopicClick(topic);
+  };
+
   useEffect(() => {
     const hydrateOffline = async () => {
       const picks = await getOfflineQuickPicks(12);
@@ -43,6 +51,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
       }
     };
     hydrateOffline();
+
+    // Load recent searches
+    const history = getSearchHistory(5);
+    setRecentSearches(history.map(h => h.query));
   }, []);
 
   return (
@@ -63,6 +75,27 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
           </div>
         </div>
       </div>
+
+      {/* Today I Learned Section */}
+      <TodayILearned onTopicClick={handleTopicClickWithTracking} />
+
+      {/* Recent Searches */}
+      {recentSearches.length > 0 && (
+        <div className="max-w-7xl mx-auto mb-8">
+          <h3 className="text-lg font-bold text-gray-700 mb-3">🔍 Recent Searches</h3>
+          <div className="flex flex-wrap gap-2">
+            {recentSearches.map((search, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleTopicClickWithTracking(search)}
+                className="px-4 py-2 bg-white rounded-full text-sm font-semibold text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] hover:text-[#0066CC] transition-all transform hover:scale-105 shadow-sm"
+              >
+                {search}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Category Grid */}
       <section className="max-w-7xl mx-auto mb-12">
@@ -143,7 +176,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
                   <TopicCard
                     key={idx}
                     topic={topic}
-                    onTopicClick={onTopicClick}
+                    onTopicClick={handleTopicClickWithTracking}
                   />
                 ))}
               </div>
