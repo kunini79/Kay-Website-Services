@@ -1,53 +1,79 @@
-/* ThinkBox System Styles - Encarta Kids Nature Theme */
+/* EncartaKids System Styles - Interactive Learning Adventure */
 
 :root {
-  /* Nature Expedition color palette */
-  --jungle-green: #2D5A27;
-  --leaf-light: #A7C957;
-  --earth-brown: #6B4423;
-  --sun-yellow: #F9DC5C;
-  --moss: #4A7040;
-  --tb-primary: #2D5A27;
-  --tb-secondary: #F9DC5C;
-  --tb-purple: #35016D;
-  --tb-blue: #0078C2;
-  --tb-dark-blue: #003C8C;
-  --tb-purple-alt: #592E87;
-  --tb-orange: #C25400;
+  /* EncartaKids vibrant color palette */
+  --ek-primary: #0066CC;       /* Primary Blue - Learning & Discovery */
+  --ek-secondary: #FF6B35;     /* Vibrant Orange - Action & Energy */
+  --ek-success: #00C853;       /* Success Green - Achievement */
+  --ek-purple: #7B2CBF;        /* Creative Purple - Arts & Imagination */
+  --ek-yellow: #FFD23F;        /* Cheerful Yellow - Fun & Happiness */
+  --ek-pink: #FF006E;          /* Playful Pink - Creativity */
+  --ek-teal: #06D6A0;          /* Fresh Teal - Science & Nature */
+  --ek-red: #EF476F;           /* Warm Red - Important Content */
+  --ek-text: #2B2D42;          /* Dark Blue-Gray - Main Text */
+  --ek-text-light: #8D99AE;    /* Light Gray - Secondary Text */
+  --ek-bg: #FFFFFF;            /* Clean White Background */
+  --ek-bg-light: #F8F9FA;      /* Soft Gray Background */
+  --ek-bg-accent: #EDF2F7;     /* Accent Background */
+  
+  /* Legacy ThinkBox compatibility */
+  --tb-primary: var(--ek-primary);
+  --tb-secondary: var(--ek-secondary);
+  --tb-purple: var(--ek-purple);
+  --tb-blue: var(--ek-primary);
+  --tb-dark-blue: #004C99;
+  --tb-purple-alt: var(--ek-purple);
+  --tb-orange: var(--ek-secondary);
   --tb-dark-green: #00502e;
-  --tb-text: #1f2937;
-  --tb-bg: #ffffff;
-  --tb-bg-light: #f5f5f5;
+  --tb-text: var(--ek-text);
+  --tb-bg: var(--ek-bg);
+  --tb-bg-light: var(--ek-bg-light);
 }
 
-/* Jungle background gradient */
+/* EncartaKids Background - Gradient Learning Space */
 .jungle-bg {
-  background: linear-gradient(to bottom, #e8f5e9 0%, #fff 100%);
+  background: linear-gradient(135deg, #E3F2FD 0%, #FFF 50%, #FFF8E1 100%);
+  position: relative;
 }
 
-/* Organic glass effect */
+.jungle-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 107, 53, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Modern glass effect */
 .organic-glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 2px solid var(--leaf-light);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border: 2px solid var(--ek-primary);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Leaf-shaped card borders */
+/* Friendly rounded card design */
 .leaf-card {
-  border-radius: 0 48px 0 48px;
-  transition: all 0.3s ease;
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .leaf-card:hover {
-  border-radius: 24px 24px 24px 24px;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .rounded-leaf {
-  border-radius: 0px 40px 0px 40px;
+  border-radius: 20px;
 }
 
 .rounded-leaf-reverse {
-  border-radius: 40px 0px 40px 0px;
+  border-radius: 20px;
 }
 
 /* Tablet UI style */

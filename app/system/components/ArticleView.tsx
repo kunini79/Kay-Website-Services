@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Article } from '../types';
 import { DidYouKnow } from './DidYouKnow';
 import { fetchWikimediaImage } from '../services/geminiService';
-import { ArrowRight, Volume2 } from 'lucide-react';
+import { ArrowRight, Volume2, BookmarkPlus, BookmarkCheck, Trophy, Printer } from 'lucide-react';
+import { QuizComponent } from './QuizComponent';
+import { generateQuiz, saveQuizResult, Quiz } from '../services/quizService';
+import { trackArticleRead, trackQuizCompletion } from '../services/progressTracking';
 
 interface ArticleViewProps {
   article: Article;
@@ -12,6 +15,35 @@ interface ArticleViewProps {
 export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick }) => {
   const [heroImage, setHeroImage] = useState<string>('');
   const [heroLoading, setHeroLoading] = useState(true);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
+  const [showBadgeNotification, setShowBadgeNotification] = useState(false);
+
+  // Track article read on mount
+  useEffect(() => {
+    const progress = trackArticleRead(article.category);
+    
+    // Check if user just earned a new badge
+    const recentBadge = progress.badges.find(b => 
+      b.earned && b.earnedDate && 
+      new Date().getTime() - new Date(b.earnedDate).getTime() < 2000
+    );
+    
+    if (recentBadge) {
+      setShowBadgeNotification(true);
+      setTimeout(() => setShowBadgeNotification(false), 5000);
+    }
+  }, [article.category, article.title]);
+
+  // Check if bookmarked
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const bookmarks = JSON.parse(localStorage.getItem('encartakids_bookmarks') || '[]');
+      setIsBookmarked(bookmarks.some((b: any) => b.title === article.title));
+    }
+  }, [article.title]);
 
   // Load hero image from Wikipedia
   useEffect(() => {
@@ -51,8 +83,79 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
     }
   };
 
+  // Toggle bookmark
+  const toggleBookmark = () => {
+    if (typeof window === 'undefined') return;
+    
+    const bookmarks = JSON.parse(localStorage.getItem('encartakids_bookmarks') || '[]');
+    
+    if (isBookmarked) {
+      const updated = bookmarks.filter((b: any) => b.title !== article.title);
+      localStorage.setItem('encartakids_bookmarks', JSON.stringify(updated));
+      setIsBookmarked(false);
+    } else {
+      bookmarks.push({
+        title: article.title,
+        category: article.category,
+        savedAt: new Date().toISOString(),
+      });
+      localStorage.setItem('encartakids_bookmarks', JSON.stringify(bookmarks));
+      setIsBookmarked(true);
+    }
+  };
+
+  // Start quiz
+  const handleStartQuiz = async () => {
+    setLoadingQuiz(true);
+    try {
+      const generatedQuiz = await generateQuiz(article);
+      setQuiz(generatedQuiz);
+      setShowQuiz(true);
+    } catch (error) {
+      console.error('Failed to generate quiz:', error);
+    } finally {
+      setLoadingQuiz(false);
+    }
+  };
+
+  // Handle quiz completion
+  const handleQuizComplete = (score: number) => {
+    if (quiz) {
+      const completedQuiz = { ...quiz, score, completed: true };
+      saveQuizResult(completedQuiz);
+      trackQuizCompletion(score, quiz.questions.length);
+    }
+  };
+
+  // Print article
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Badge Notification */}
+      {showBadgeNotification && (
+        <div className="fixed top-24 right-4 z-50 animate-in slide-in-from-right-5">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+            <Trophy className="w-8 h-8" />
+            <div>
+              <p className="font-bold">New Badge Earned! 🎉</p>
+              <p className="text-sm opacity-90">Check your progress dashboard</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quiz Modal */}
+      {showQuiz && quiz && (
+        <QuizComponent
+          quiz={quiz}
+          onComplete={handleQuizComplete}
+          onClose={() => setShowQuiz(false)}
+        />
+      )}
+
       {/* Hero Section */}
       <div className="relative w-full overflow-hidden rounded-3xl shadow-lg mb-8 group bg-gradient-to-br from-gray-200 to-gray-300">
         <div className="aspect-video w-full relative flex items-center justify-center">
@@ -83,14 +186,30 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
           </h1>
         </div>
         
-        {/* TTS Button */}
-        <button 
-          onClick={handleSpeak}
-          className="absolute bottom-6 right-6 bg-white/90 hover:bg-white text-tb-primary p-3 rounded-full shadow-lg transition-transform hover:scale-110 backdrop-blur-sm"
-          title="Read Aloud"
-        >
-          <Volume2 className="w-6 h-6" />
-        </button>
+        {/* Action Buttons */}
+        <div className="absolute bottom-6 right-6 flex gap-2">
+          <button 
+            onClick={handleSpeak}
+            className="bg-white/90 hover:bg-white text-tb-primary p-3 rounded-full shadow-lg transition-transform hover:scale-110 backdrop-blur-sm"
+            title="Read Aloud"
+          >
+            <Volume2 className="w-6 h-6" />
+          </button>
+          <button 
+            onClick={toggleBookmark}
+            className={`${isBookmarked ? 'bg-yellow-400 text-white' : 'bg-white/90 text-tb-primary'} hover:bg-yellow-400 hover:text-white p-3 rounded-full shadow-lg transition-all hover:scale-110 backdrop-blur-sm`}
+            title={isBookmarked ? 'Bookmarked' : 'Bookmark'}
+          >
+            {isBookmarked ? <BookmarkCheck className="w-6 h-6" /> : <BookmarkPlus className="w-6 h-6" />}
+          </button>
+          <button 
+            onClick={handlePrint}
+            className="bg-white/90 hover:bg-white text-tb-primary p-3 rounded-full shadow-lg transition-transform hover:scale-110 backdrop-blur-sm print:hidden"
+            title="Print Article"
+          >
+            <Printer className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -118,6 +237,36 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
               <p>No detailed sections available. Try searching for a different topic.</p>
             </div>
           )}
+        </div>
+
+        {/* Quiz Section */}
+        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 my-12 border-4 border-[#FFD23F] shadow-xl">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🎯</div>
+            <h3 className="text-3xl font-black text-gray-800 mb-3">
+              Test Your Knowledge!
+            </h3>
+            <p className="text-gray-600 mb-6 text-lg">
+              Ready to see what you learned? Take a fun quiz and earn points! 🌟
+            </p>
+            <button
+              onClick={handleStartQuiz}
+              disabled={loadingQuiz}
+              className="px-8 py-4 bg-gradient-to-r from-[#0066CC] to-[#FF6B35] text-white rounded-full font-bold text-lg hover:shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingQuiz ? (
+                <span className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Preparing Quiz...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Trophy className="w-6 h-6" />
+                  Start Quiz
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Discovery Loop */}
