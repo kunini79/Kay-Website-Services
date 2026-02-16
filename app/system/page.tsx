@@ -7,9 +7,8 @@ import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { ArticleView } from './components/ArticleView';
 import { Loader } from './components/Loader';
-import { ProgressDashboard } from './components/ProgressDashboard';
 import { fetchArticle } from './services/geminiService';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import './globals.css';
 
 export default function SystemPage() {
@@ -18,7 +17,6 @@ export default function SystemPage() {
   const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [showProgress, setShowProgress] = useState(false);
 
   // Check authentication on mount
   useEffect(() => {
@@ -104,20 +102,6 @@ export default function SystemPage() {
     <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-indigo-200" style={{ colorScheme: 'light' }}>
       <Header onSearch={handleTopicSelect} onHome={goHome} />
 
-      {/* Progress Button - Floating */}
-      <button
-        onClick={() => setShowProgress(true)}
-        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#0066CC] to-[#FF6B35] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all transform hover:scale-110 print:hidden"
-        title="View Progress"
-      >
-        <TrendingUp className="w-6 h-6" />
-      </button>
-
-      {/* Progress Dashboard Modal */}
-      {showProgress && (
-        <ProgressDashboard onClose={() => setShowProgress(false)} />
-      )}
-
       <main className="max-w-5xl mx-auto px-4 pb-20 pt-8">
         {viewState === ViewState.HOME && (
           <HomeView onTopicClick={handleTopicSelect} />
@@ -155,10 +139,7 @@ export default function SystemPage() {
 
       {/* Footer */}
       <footer className="text-center py-8 text-gray-400 text-sm border-t border-gray-200 mt-auto">
-        <p className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#0066CC] to-[#FF6B35]">
-          © {new Date().getFullYear()} EncartaKids - Where Learning Comes Alive! 🌟
-        </p>
-        <p className="text-xs mt-2 text-gray-500">Powered by AI • Safe • Fun • Educational</p>
+        <p>© {new Date().getFullYear()} ThinkBox. Built for curious minds.</p>
       </footer>
     </div>
   );

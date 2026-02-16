@@ -4,8 +4,6 @@ import { Category, TopicPreview } from '../types';
 import { fetchSuggestions, fetchWikimediaImage } from '../services/geminiService';
 import { Compass } from 'lucide-react';
 import { getOfflineQuickPicks } from '../services/offlineTopics';
-import { TodayILearned } from './TodayILearned';
-import { addToSearchHistory, getSearchHistory } from '../services/dailyHighlights';
 
 interface HomeViewProps {
   onTopicClick: (topic: string) => void;
@@ -16,7 +14,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
   const [suggestions, setSuggestions] = useState<TopicPreview[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [quickTopics, setQuickTopics] = useState<string[]>(INITIAL_SUGGESTIONS);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   const handleCategorySelect = async (cat: Category) => {
     if (activeCategory === cat) {
@@ -38,11 +35,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
     onTopicClick(randomTopic);
   };
 
-  const handleTopicClickWithTracking = (topic: string) => {
-    addToSearchHistory(topic);
-    onTopicClick(topic);
-  };
-
   useEffect(() => {
     const hydrateOffline = async () => {
       const picks = await getOfflineQuickPicks(12);
@@ -51,59 +43,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
       }
     };
     hydrateOffline();
-
-    // Load recent searches
-    const history = getSearchHistory(5);
-    setRecentSearches(history.map(h => h.query));
   }, []);
 
   return (
     <div className="animate-in fade-in duration-700 min-h-screen jungle-bg text-slate-800 relative overflow-hidden px-6 pt-8">
-      
-      {/* Welcome Banner */}
-      <div className="max-w-6xl mx-auto mb-8">
-        <div className="bg-gradient-to-r from-[#0066CC] to-[#FF6B35] rounded-3xl p-8 shadow-2xl text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
-          <div className="relative z-10">
-            <h1 className="text-4xl md:text-5xl font-black mb-3 flex items-center gap-3">
-              Welcome to EncartaKids! 🎓
-            </h1>
-            <p className="text-xl md:text-2xl font-medium opacity-95">
-              Your magical journey to learning starts here. Explore, discover, and have fun! ✨
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Today I Learned Section */}
-      <TodayILearned onTopicClick={handleTopicClickWithTracking} />
-
-      {/* Recent Searches */}
-      {recentSearches.length > 0 && (
-        <div className="max-w-7xl mx-auto mb-8">
-          <h3 className="text-lg font-bold text-gray-700 mb-3">🔍 Recent Searches</h3>
-          <div className="flex flex-wrap gap-2">
-            {recentSearches.map((search, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleTopicClickWithTracking(search)}
-                className="px-4 py-2 bg-white rounded-full text-sm font-semibold text-gray-700 border-2 border-gray-200 hover:border-[#0066CC] hover:text-[#0066CC] transition-all transform hover:scale-105 shadow-sm"
-              >
-                {search}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Category Grid */}
       <section className="max-w-7xl mx-auto mb-12">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-[#0066CC] flex items-center justify-center gap-3">
-            <Compass className="w-8 h-8" /> Choose Your Learning Adventure! 🗺️
+          <h2 className="text-3xl font-black text-[#2D5A27] flex items-center justify-center gap-3">
+            <Compass className="w-8 h-8" /> Choose Your Adventure! 🗺️
           </h2>
-          <p className="text-slate-600 mt-2 text-lg">Pick a category below and start exploring amazing topics!</p>
+          <p className="text-slate-600 mt-2">Pick a category and start exploring!</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
@@ -116,23 +67,23 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
                 key={cat}
                 onClick={() => handleCategorySelect(cat)}
                 style={{
-                  borderColor: isActive ? config.color : '#E5E7EB',
-                  backgroundColor: isActive ? `${config.color}20` : 'white'
+                  borderColor: isActive ? config.color : 'transparent',
+                  backgroundColor: isActive ? `${config.color}15` : 'white'
                 }}
                 className={`
                   relative overflow-hidden p-6 leaf-card transition-all duration-300 text-left group shadow-lg border-4
-                  ${isActive ? 'scale-105 shadow-2xl ring-4 ring-yellow-300 ring-opacity-50' : 'hover:scale-105 hover:shadow-xl'}
+                  ${isActive ? 'scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-xl border-white'}
                 `}
               >
                 <div className="relative z-10">
                   <div 
-                    style={{ backgroundColor: `${config.color}25` }}
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                    style={{ backgroundColor: `${config.color}20` }}
+                    className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
                   >
                     <span className="text-3xl">{config.icon}</span>
                   </div>
 
-                  <h3 className="font-bold text-xl mb-2 text-[#2B2D42]">
+                  <h3 className="font-bold text-xl mb-2 text-[#2D5A27]">
                     {cat}
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-600">
@@ -153,13 +104,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
       {/* Suggestions Area */}
       {activeCategory && (
         <section className="px-6 max-w-7xl mx-auto mb-12">
-          <div className="bg-gradient-to-br from-blue-50 to-orange-50 rounded-3xl p-8 shadow-xl border-4 border-[#FFD23F] animate-in slide-in-from-bottom-8 relative overflow-hidden">
-            <div className="absolute top-4 right-4 text-4xl animate-pulse">🌟</div>
-            <div className="absolute bottom-4 left-4 text-3xl animate-bounce">🚀</div>
+          <div className="bg-[#e8f5e9] rounded-3xl p-8 shadow-xl border-4 border-[#A7C957] animate-in slide-in-from-bottom-8 relative overflow-hidden">
+            <div className="absolute top-4 right-4 text-4xl animate-pulse">🌿</div>
+            <div className="absolute bottom-4 left-4 text-3xl animate-bounce">🦋</div>
 
             <div className="flex items-center gap-3 mb-6 relative z-10">
               <span className="text-3xl">🔍</span>
-              <h2 className="text-3xl font-bold text-[#0066CC]">
+              <h2 className="text-3xl font-bold text-[#2D5A27]">
                 Discover {activeCategory}! 🎉
               </h2>
             </div>
@@ -167,7 +118,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
             {loadingSuggestions ? (
               <div className="flex gap-6 animate-pulse">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="h-48 bg-white/70 rounded-3xl flex-1 border-2 border-white shadow-lg"></div>
+                  <div key={i} className="h-48 bg-white/50 rounded-3xl flex-1 border-2 border-white shadow-lg"></div>
                 ))}
               </div>
             ) : (
@@ -176,7 +127,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTopicClick }) => {
                   <TopicCard
                     key={idx}
                     topic={topic}
-                    onTopicClick={handleTopicClickWithTracking}
+                    onTopicClick={onTopicClick}
                   />
                 ))}
               </div>
