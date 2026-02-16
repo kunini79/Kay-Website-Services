@@ -3,13 +3,7 @@ import Script from "next/script";
 import { Bebas_Neue, Inter_Tight, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
-import PageTransition from "@/components/PageTransition";
-import Preloader from "@/components/Preloader";
-import MobileSync from "@/components/MobileSync";
-import ScrollProgress from "@/components/ScrollProgress";
-import CursorFollower from "@/components/CursorFollower";
-import { ThemeProvider } from "@/context/ThemeContext";
+import BodyContent from "@/app/components/BodyContent";
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
@@ -133,28 +127,7 @@ export default function RootLayout({
             ],
           })}
         </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-NW52F9D716"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-NW52F9D716');
-          `}
-        </Script>
-        <ThemeProvider>
-          <Preloader />
-          <ScrollProgress />
-          <CursorFollower />
-          <MobileSync />
-          <SmoothScroll>
-            <PageTransition>{children}</PageTransition>
-          </SmoothScroll>
-        </ThemeProvider>
+        <BodyContent>{children}</BodyContent>
         <Analytics />
       </body>
     </html>

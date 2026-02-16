@@ -1,77 +1,66 @@
 import React from 'react';
 import { Category, TopicPreview } from './types';
-import { 
-  Beaker, 
-  PawPrint, 
-  History, 
-  Trophy, 
-  Palette,
-  BookOpen,
-  Users,
-  Map,
-  Landmark,
-  Gamepad2
-} from 'lucide-react';
 
-export const CATEGORY_CONFIG: Record<Category, { color: string; icon: React.ReactNode; description: string }> = {
+export const CATEGORY_CONFIG: Record<Category, { color: string; icon: string; description: string }> = {
   [Category.ANIMALS]: {
-    color: '#00892D',
-    icon: <PawPrint className="w-6 h-6 text-white" />,
-    description: "Lions, tigers, and bears!"
+    color: '#2D5A27',
+    icon: '🦁',
+    description: "Meet amazing creatures from around the world! 🐾"
   },
   [Category.SCIENCE]: {
     color: '#0078C2',
-    icon: <Beaker className="w-6 h-6 text-white" />,
-    description: "Chemistry, Physics, and how stuff works."
+    icon: '🔬',
+    description: "Discover how things work with cool experiments! ⚗️"
   },
   [Category.SPORTS]: {
     color: '#C25400',
-    icon: <Trophy className="w-6 h-6 text-white" />,
-    description: "Games, athletes, and staying active."
+    icon: '🏆',
+    description: "Awesome games and super athletes! ⚽"
   },
   [Category.ARTS]: {
     color: '#e91e8c',
-    icon: <Palette className="w-6 h-6 text-white" />,
-    description: "Painting, music, and creativity."
+    icon: '🎨',
+    description: "Draw, paint, and create amazing art! 🖌️"
   },
   [Category.READING]: {
     color: '#592E87',
-    icon: <BookOpen className="w-6 h-6 text-white" />,
-    description: "Stories, poems, and authors."
+    icon: '📚',
+    description: "Magical stories and exciting adventures! ✨"
   },
   [Category.PEOPLE]: {
-    color: '#ffd72d',
-    icon: <Users className="w-6 h-6 text-gray-800" />,
-    description: "Famous biographies and leaders."
+    color: '#F9DC5C',
+    icon: '👑',
+    description: "Meet heroes and learn their amazing stories! 🌟"
   },
   [Category.PLACES]: {
     color: '#14b8a6',
-    icon: <Map className="w-6 h-6 text-white" />,
-    description: "Countries, cities, and geography."
+    icon: '🗺️',
+    description: "Explore amazing places around the world! 🌍"
   },
   [Category.HISTORY]: {
-    color: '#35016D',
-    icon: <History className="w-6 h-6 text-white" />,
-    description: "The past and ancient times."
+    color: '#6B4423',
+    icon: '🏛️',
+    description: "Travel back in time to ancient civilizations! ⏳"
   },
   [Category.SOCIAL_STUDIES]: {
     color: '#dc2626',
-    icon: <Landmark className="w-6 h-6 text-white" />,
-    description: "Communities and cultures."
+    icon: '🏘️',
+    description: "Learn about communities and cultures! 🤝"
   },
   [Category.GAMES]: {
-    color: '#003C8C',
-    icon: <Gamepad2 className="w-6 h-6 text-white" />,
-    description: "Puzzles, coding, and fun!"
+    color: '#4A7040',
+    icon: '🎮',
+    description: "Puzzles, brain teasers, and fun! 🧩"
   }
 };
 
 export const INITIAL_SUGGESTIONS = [
-  "Blue Whales",
-  "The Pyramids",
-  "Mars",
-  "Electricity",
-  "Dinosaurs"
+  "Dinosaurs",
+  "Space Exploration", 
+  "Ocean Animals",
+  "Ancient Egypt",
+  "Volcanoes",
+  "Rainforest Animals"
 ];
 
 // Curated Topics to enforce educational structure

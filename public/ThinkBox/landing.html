@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinkBox | AI-Powered Education Platform</title>
+    <meta name="description" content="An intelligent, AI-powered educational platform that transforms how you explore and understand complex topics.">
+    <link rel="icon" type="image/x-icon" href="/ThinkBox/Think Box Logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #6B46C1 0%, #4299E1 100%);
+            color: white;
+            padding: 100px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/ThinkBox/Hero Background.jpg');
+            background-size: cover;
+            opacity: 0.1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .badge {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #6B46C1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);        color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: #F7FAFC;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 60px;
+            color: #1A202C;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6B46C1, #4299E1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1A202C;
+        }
+        
+        .feature-card p {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        /* Form Section */
+        .demo-section {
+            padding: 100px 20px;
+            background: white;
+        }
+        
+        .demo-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .form-intro h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1A202C;
+        }
+        
+        .form-intro p {
+            font-size: 1.2rem;
+            color: #4A5568;
+        }
+        
+        .form-container {
+            background: #F7FAFC;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2D3748;
+            font-size: 0.95rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #6B46C1;
+        }
+        
+        textarea.form-control {
+            padding-left: 16px;
+            resize: none;
+        }
+        
+        .submit-note {
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 20px;
+            background: #F7FAFC;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6B46C1, #4299E1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(107, 70, 193, 0.3);
+        }
+        
+        .step h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1A202C;
+        }
+        
+        .step p {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 20px;
+            background: white;
+        }
+        
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .faq-items {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .faq-item {
+            background: #F7FAFC;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .faq-item h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1A202C;
+        }
+        
+        .faq-item p {
+            color: #4A5568;
+            line-height: 1.6;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #6B46C1 0%, #4299E1 100%);
+            text-align: center;
+            color: white;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1A202C;
+            color: #A0AEC0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: #A0AEC0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge">AI-Powered Education</div>
+                <h1>The ThinkBox System</h1>
+                <p>An intelligent, AI-powered educational platform that transforms how you explore and understand complex topics. Learn faster with personalized, instantly-generated knowledge.</p>
+                <div class="btn-group">
+                    <a href="#demo-form" class="btn btn-primary">Request Demo Access</a>
+                    <a href="/thinkbox" class="btn btn-secondary">Access ThinkBox</a>
+                </div>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    👇 Explore ThinkBox Features Below
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>AI-Powered Learning</h3>
+                    <p>Leverage cutting-edge Google Gemini AI to generate personalized educational content on any topic.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Knowledge</h3>
+                    <p>Get comprehensive articles with visual insights in seconds, powered by Wikipedia imagery.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖱️</div>
+                    <h3>Interactive Exploration</h3>
+                    <p>Explore topics fluidly with our intuitive interface designed for learners of all levels.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Data-Rich Content</h3>
+                    <p>Access rich, contextual information with beautiful visualizations and relevant imagery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Request Form -->
+    <section id="demo-form" class="demo-section">
+        <div class="container">
+            <div class="demo-form">
+                <div class="form-intro">
+                    <h2>Get Demo Access</h2>
+                    <p>Fill out the form below to request access to ThinkBox. Our team will review your request and send you login credentials within 24 hours.</p>
+                </div>
+                
+                <form class="form-container" action="#" method="POST">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Your full name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Work Email *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="your.email@company.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Company Name *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏢</span>
+                            <input type="text" id="company" name="company" class="form-control" placeholder="Your company name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Additional Message</label>
+                        <textarea id="message" name="message" class="form-control" rows="4" placeholder="Tell us about your learning goals or specific interests..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #6B46C1, #4299E1); color: white;">
+                        Request Demo Access
+                    </button>
+                    
+                    <p class="submit-note">We process demo requests within 24 hours. You'll receive login credentials via email.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Request Demo</h3>
+                    <p>Fill out our quick demo request form with your details and learning interests.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>We Review & Approve</h3>
+                    <p>Our team reviews your request and prepares your account for access.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Receive Credentials</h3>
+                    <p>Get login credentials and a welcome email with instructions via email.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Start Learning</h3>
+                    <p>Sign in to ThinkBox and begin exploring topics with AI-powered insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="faq-container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <h3>How long does approval take?</h3>
+                        <p>We typically review and approve demo requests within 24 hours, and you'll receive your credentials via email.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Is there a cost for the demo?</h3>
+                        <p>Demo access is completely free. You can explore all features without any payment required.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>How long is demo access valid?</h3>
+                        <p>Demo access is valid indefinitely, allowing you to explore and learn at your own pace.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Can I invite team members?</h3>
+                        <p>Currently, each demo account is individual. Contact us if you'd like team access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Want to learn more about our other products and services?</h2>
+            <a href="/" class="btn btn-primary" style="margin-top: 20px; display: inline-flex; align-items: center; gap: 10px;">
+                Back to KayCorp Home
+                <span style="font-size: 1.2rem;">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="/">KayCorp</a>
+                <span>•</span>
+                <a href="/contact">Contact</a>
+                <span>•</span>
+                <a href="/#services">Services</a>
+                <span>•</span>
+                <a href="/#work">Work</a>
+            </div>
+            <p style="font-size: 0.9rem;">© 2026 KayCorp. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

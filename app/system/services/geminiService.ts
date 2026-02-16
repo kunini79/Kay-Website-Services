@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Article, TopicPreview, Category } from "../types";
 import { STATIC_TOPICS } from "../constants";
+import { getOfflineTopic, toArticleFromOffline } from './offlineTopics';
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });
@@ -144,6 +145,16 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
   }
 
   try {
+    // If offline, try local cache first.
+    if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) {
+      const offlineHit = await getOfflineTopic(topic);
+      if (offlineHit) {
+        const article = toArticleFromOffline(offlineHit);
+        contentCache.set(cacheKey, article);
+        return article;
+      }
+    }
+
     // Map friendly title to Wikipedia article name
     const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[topic] || topic;
     console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (mapped to: ${wikipediaQuery})`);
@@ -259,6 +270,18 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
 
   } catch (error) {
     console.error("Article fetch error:", error);
+
+    // Try offline fallback before surfacing error
+    try {
+      const offlineHit = await getOfflineTopic(topic);
+      if (offlineHit) {
+        const article = toArticleFromOffline(offlineHit);
+        contentCache.set(cacheKey, article);
+        return article;
+      }
+    } catch (offlineErr) {
+      console.warn('[Article] offline fallback failed:', offlineErr);
+    }
 
     // Re-throw the error with a helpful message for the user
     const errorMessage = error instanceof Error ? error.message : "Unknown error";

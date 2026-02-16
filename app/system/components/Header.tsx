@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Compass, BookOpen } from 'lucide-react';
+import { Search, Compass } from 'lucide-react';
 
 interface HeaderProps {
   onSearch: (term: string) => void;
@@ -25,12 +25,11 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onHome }) => {
           onClick={onHome}
           className="flex items-center gap-2 group"
         >
-          <div className="w-10 h-10 bg-tb-primary rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
-            <BookOpen size={24} />
-          </div>
-          <span className="text-2xl font-extrabold text-tb-purple tracking-tight hidden sm:block">
-            ThinkBox
-          </span>
+          <img 
+            src="/ThinkBox/Think Box Logo.png" 
+            alt="ThinkBox" 
+            className="h-16 w-auto group-hover:scale-110 transition-transform"
+          />
         </button>
 
         {/* Search Bar */}

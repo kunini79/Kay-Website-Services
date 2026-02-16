@@ -1,6 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/thinkbox",
+          destination: "/ThinkBox/index.html",
+        },
+        {
+          source: "/thinkbox/:path*",
+          destination: "/ThinkBox/:path*",
+        },
+      ],
+    };
+  },
   async headers() {
     return [
       {

@@ -1,7 +1,6 @@
 <!DOCTYPE html><html id="html" lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="#">
 
 <title>ThinkBox | A Smarter Way for Kids to Explore Knowledge</title><meta property="og:title" content="ThinkBox | A Smarter Way for Kids to Explore Knowledge"><meta property="og:description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><meta name="description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><link rel="canonical" href="#">                <link rel="alternate" hreflang="x-default" href="#">
             <link rel="alternate" hreflang="en-US" href="#">
@@ -32,6 +31,17 @@
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/bootstrap.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/swiper-bundle.min.css">
     <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/style.min.css">
+
+    <style>
+        .primary-nav .navbar-nav {
+            display: flex;
+            flex-wrap: nowrap;
+            font-size: 4rem;
+        }
+        .primary-nav .navbar-nav .nav-link span {
+            font-size: 1.2rem;
+        }
+    </style>
 
     <!--BE IXF: JavaScript begin-->
     <script src="/ThinkBox/cdn.bc0a.com/autopilot/f00000000046685/autopilot_sdk.js"></script>
@@ -517,107 +527,6 @@ cfg: { // Application Insights Configuration
             <div class="secondary-nav">
                 <nav aria-label="Additional Links">
                     <ul>
-                        <li class="dropdown">
-                            <div>
-
-
-
-    
-
-
-    <a id="search" class="dropdown-toggle" href="#" role="button" aria-expanded="false" data-template="search-box.navigation-search" aria-label="Search Dropdown Button">
-        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 44C34.1503 44 44 34.1503 44 22C44 9.84974 34.1503 0 22 0C9.84974 0 0 9.84974 0 22C0 34.1503 9.84974 44 22 44Z" fill="#FFCC33"></path>
-            <path d="M21.2001 13.48C23.1501 13.48 24.9801 14.24 26.3601 15.62C29.2001 18.46 29.2001 23.09 26.3601 25.94C24.9801 27.32 23.1501 28.08 21.2001 28.08C19.2501 28.08 17.4201 27.32 16.0401 25.94C13.2001 23.1 13.2001 18.47 16.0401 15.62C17.4201 14.24 19.2501 13.48 21.2001 13.48ZM21.2001 9.47998C18.3101 9.47998 15.4201 10.58 13.2101 12.79C8.80009 17.2 8.80009 24.35 13.2101 28.76C15.4201 30.97 18.3101 32.07 21.2001 32.07C24.0901 32.07 26.9801 30.97 29.1901 28.76C33.6001 24.35 33.6001 17.2 29.1901 12.79C26.9801 10.58 24.0901 9.47998 21.2001 9.47998Z" fill="#00502E"></path>
-            <path d="M27.99 27.5601L33.17 32.7401" stroke="#00502E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-    </a>
-    <div class="dropdown-menu search position-relative" role="menu" aria-labelledby="search" data-sf-search-autocomplete-item-class="dropdown-item text-truncate" data-sf-visibility-hidden="d-none" data-sf-active-class="active">
-        <div class="dropdown-menu-inner-wrap">
-            <div class="container">
-                <div class="row d-flex align-items-end">
-                    <div class="col-lg-12">
-                        <div class="search-input">
-                                <label for="search-input" class="sr-only form-label" id="search-label">Search Site</label>
-                                <input value="" id="search-input" class="form-control nav-search" data-sf-role="search-box" data-sf-results-url="/search" data-sf-search-catalogue="fullsite" data-sf-scoring-setting="" data-sf-suggestions-length="0" data-sf-site-id="b39f2a55-0e40-4027-8c37-71d0fb801954" data-sf-culture="en" data-sf-sort="" data-sf-suggestions-fields="Title,Content" data-sf-results-all="0" data-sf-service-path="/api/default" type="text" placeholder="Search Site..." aria-label="Search Site" autocomplete="off">
-                                <button class="close-search" aria-label="Close Search Bar">
-                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="44" height="44" rx="22" fill="#00502E"></rect>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M24.8194 21.8859L29.5674 26.6339C30.3328 27.3994 30.3328 28.6404 29.5674 29.4058C28.802 30.1712 27.561 30.1712 26.7955 29.4058L22.0475 24.6578L17.2053 29.5C16.4399 30.2654 15.1989 30.2654 14.4334 29.5C13.668 28.7345 13.668 27.4935 14.4334 26.7281L19.2757 21.8859L14.6616 17.2718C13.8962 16.5064 13.8962 15.2654 14.6616 14.5C15.427 13.7345 16.668 13.7345 17.4334 14.5L22.0475 19.114L26.5674 14.5942C27.3328 13.8287 28.5738 13.8287 29.3393 14.5942C30.1047 15.3596 30.1047 16.6006 29.3393 17.366L24.8194 21.8859Z" fill="#FFCC33"></path>
-                                    </svg>
-                                </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                        </li>
-                        <li class="dropdown">
-                            <div>
-
-<a id="language" class="dropdown-toggle" href="#" role="button" aria-expanded="false" data-template="language-selector.default" aria-label="Language Selector Dropdown">
-    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="22" cy="22" r="22" fill="#FFCC33"></circle>
-        <path d="M33.5 22C33.5 27.0216 28.5959 31.5 22 31.5C15.4041 31.5 10.5 27.0216 10.5 22C10.5 16.9784 15.4041 12.5 22 12.5C28.5959 12.5 33.5 16.9784 33.5 22Z" stroke="#00502E" stroke-width="3"></path>
-        <path d="M27 22C27 24.6113 26.3629 26.9271 25.3851 28.5566C24.3955 30.206 23.1676 31 22 31C20.8324 31 19.6045 30.206 18.6149 28.5566C17.6371 26.9271 17 24.6113 17 22C17 19.3887 17.6371 17.0729 18.6149 15.4434C19.6045 13.794 20.8324 13 22 13C23.1676 13 24.3955 13.794 25.3851 15.4434C26.3629 17.0729 27 19.3887 27 22Z" stroke="#00502E" stroke-width="2"></path>
-        <path d="M12.4629 17.5H32.2036" stroke="#00502E" stroke-width="2"></path>
-        <path d="M12.4629 26.5H32.2036" stroke="#00502E" stroke-width="2"></path>
-        <path d="M11.5 22L33.6481 22" stroke="#00502E" stroke-width="2"></path>
-    </svg>
-</a>
-
-<div class="dropdown-menu language" role="menu" aria-labelledby="language">
-    <div class="dropdown-menu-inner-wrap">
-        <div>
-            <p>
-                Select a Language (Region)
-            </p>
-        </div>
-
-        <div>
-            <ul>
-                                <li>
-                                    <span class="region-selected">English</span>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="en-GB" class="hover-link">English (United Kingdom)</a>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="es-MX" class="hover-link">Español (México)</a>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="en-AU" class="hover-link">English (Australia)</a>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="it-IT" class="hover-link">Italiano (Italia)</a>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="es-ES" class="hover-link">Español (España)</a>
-                                </li>
-                                <li>
-                                    <a href="#" target="_self" hreflang="en-CA" class="hover-link">English (Canada)</a>
-                                </li>
-            </ul>
-        </div>
-
-    </div>
-</div>
-</div>
-                        </li>
-                        <li>
-                            <div>
-        <a href="#" id="contact-us" tabindex="0" target="_self" aria-label="Support">
-            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="44" height="44" rx="22" fill="#FFCC33"></rect>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M25.0052 10.3701C25.0052 9.69014 25.5552 9.14014 26.2352 9.14014C30.9952 9.14014 34.8652 13.0001 34.8652 17.7701C34.8652 18.4501 34.3152 19.0001 33.6352 19.0001C32.9552 19.0001 32.4052 18.4501 32.4052 17.7701C32.4052 14.3701 29.6452 11.6101 26.2452 11.6101C25.5652 11.6101 25.0152 11.0601 25.0152 10.3801L25.0052 10.3701ZM25.0052 15.3003C25.0052 14.6203 25.5552 14.0703 26.2352 14.0703C28.2752 14.0703 29.9352 15.7303 29.9352 17.7703C29.9352 18.4503 29.3853 19.0003 28.7052 19.0003C28.0252 19.0003 27.4753 18.4503 27.4753 17.7703C27.4753 17.0903 26.9252 16.5403 26.2452 16.5403C25.5652 16.5403 25.0152 15.9903 25.0152 15.3103L25.0052 15.3003ZM31.1752 34.8499C31.2452 34.8599 31.3152 34.8599 31.3852 34.8599H31.3952C31.9252 34.8599 32.4452 34.6599 32.8452 34.2999C33.3352 33.8599 33.6052 33.2399 33.6052 32.5499V28.1599C33.6052 27.1199 32.9352 26.1899 31.9452 25.8599L27.6852 24.4399C26.8052 24.1599 25.8552 24.3799 25.2052 25.0299L24.5252 25.7099C24.0952 26.1399 23.4252 26.2099 22.9352 25.8699C20.7252 24.3599 19.4652 23.1099 18.1152 21.0699C17.7952 20.5799 17.8652 19.9199 18.2852 19.4999L18.9852 18.7999C19.6352 18.1499 19.8552 17.1899 19.5652 16.3199L18.1452 12.0599C17.8152 11.0699 16.8952 10.3999 15.8452 10.3999H11.4552C10.7652 10.3999 10.1452 10.6699 9.70521 11.1599C9.28521 11.6199 9.08521 12.2199 9.14521 12.8199C10.2952 24.4399 19.5652 33.6999 31.1752 34.8499Z" fill="#00502E"></path>
-            </svg>
-        </a>
-
-
-</div>
-                        </li>
                         <li>
                             <button id="mobile-nav-toggle" role="button" aria-label="Toggle Navigation Menu">
                                 <p class="sr-only">Toggle Navigation Menu</p>
@@ -652,10 +561,10 @@ cfg: { // Application Insights Configuration
 </div></header>
     <main id="main">
 
+<!-- Hero Section -->
+<section class="hero-section" style="color: white; position: relative; overflow: hidden;">
 
-<section class="">
-
-        <div style="background-image: url('/ThinkBox/Hero%20Background.jpg');background-size: cover;" class="inner-section-wrap -sc-image">
+        <div style="" class="inner-section-wrap -sc-image">
                 <div class="row">
                         <div style="" class="col ">
 
@@ -821,14 +730,12 @@ cfg: { // Application Insights Configuration
         <div class="container">
             <div class="row d-flex flex-row">
                 <div class="col-lg-6 col-12">
-                    <div class="hero-inner">
-                            <p class="hero-tag" style="color:#35016D">ThinkBox</p>
-                        <h1 class="hero-header" style="color: #00502e">A smarter way for kids to explore knowledge.</h1>
+                    <div class="hero-inner">                        <h1 class="hero-header" style="color: #00502e">A smarter way for kids to explore knowledge.</h1>
                             <div class="hero-description">
-                                <p>Explore science, history, nature, and more — offline, safe, and made for curious minds.</p>
+                                <p>Explore science, history, nature, and more offline, safe, and made for curious minds.</p>
                             </div>
                         <div class="btn-row">
-                                <a href="#" class="btn large-primary" tabindex="0" aria-label="Start exploring ThinkBox topics" id="hero_cta_1">Start Exploring</a>
+                                <a href="/system" class="btn large-primary" tabindex="0" aria-label="Start exploring ThinkBox topics" id="hero_cta_1">Start Exploring</a>
                         </div>
                     </div>
                 </div>
@@ -966,8 +873,7 @@ cfg: { // Application Insights Configuration
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12 pb-4 text-center">
-            <h2 style="color: #35016D; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; animation: fadeIn 0.8s ease-out;">Explore Topics</h2>
-            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">Discover fascinating subjects designed to spark curiosity and inspire learning</p>
+            <h2 style="color: #ffffff; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; animation: fadeIn 0.8s ease-out;">Explore Topics</h2>
         </div>
     </div>
     

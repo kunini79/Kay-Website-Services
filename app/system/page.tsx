@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ViewState, Article } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -11,9 +12,41 @@ import { AlertCircle } from 'lucide-react';
 import './globals.css';
 
 export default function SystemPage() {
+  const router = useRouter();
   const [viewState, setViewState] = useState<ViewState>(ViewState.HOME);
   const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    // Temporarily bypass auth for direct access
+    setIsAuthenticated(true);
+    /*
+    const checkAuth = async () => {
+      try {
+        // Try to verify auth by checking if token exists
+        const response = await fetch('/api/verify-auth', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          // Not authenticated, redirect to ThinkBox login
+          router.push('/thinkbox?tab=login&redirect=/system');
+          return;
+        }
+
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/thinkbox?tab=login&redirect=/system');
+      }
+    };
+
+    checkAuth();
+    */
+  }, [router]);
 
   // Force light mode for ThinkBox System
   useEffect(() => {
@@ -51,6 +84,19 @@ export default function SystemPage() {
     setViewState(ViewState.HOME);
     setCurrentArticle(null);
   }, []);
+
+  // Show loading state while checking authentication
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="mb-4">
+            <Loader message="Verifying access..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-indigo-200" style={{ colorScheme: 'light' }}>

@@ -1,18 +1,61 @@
-/* ThinkBox System Styles - Matching Landing Page Design */
+/* ThinkBox System Styles - Encarta Kids Nature Theme */
 
 :root {
-  /* ThinkBox color palette - matching landing page */
-  --tb-primary: #00892D; /* Green - primary brand color */
-  --tb-secondary: #ffd72d; /* Yellow - accent color */
-  --tb-purple: #35016D; /* Dark purple */
-  --tb-blue: #0078C2; /* Bright blue */
-  --tb-dark-blue: #003C8C; /* Dark blue */
-  --tb-purple-alt: #592E87; /* Purple alt */
-  --tb-orange: #C25400; /* Orange */
-  --tb-dark-green: #00502e; /* Dark green */
-  --tb-text: #1f2937; /* Gray-800 */
-  --tb-bg: #ffffff; /* White */
-  --tb-bg-light: #f5f5f5; /* Light gray background */
+  /* Nature Expedition color palette */
+  --jungle-green: #2D5A27;
+  --leaf-light: #A7C957;
+  --earth-brown: #6B4423;
+  --sun-yellow: #F9DC5C;
+  --moss: #4A7040;
+  --tb-primary: #2D5A27;
+  --tb-secondary: #F9DC5C;
+  --tb-purple: #35016D;
+  --tb-blue: #0078C2;
+  --tb-dark-blue: #003C8C;
+  --tb-purple-alt: #592E87;
+  --tb-orange: #C25400;
+  --tb-dark-green: #00502e;
+  --tb-text: #1f2937;
+  --tb-bg: #ffffff;
+  --tb-bg-light: #f5f5f5;
+}
+
+/* Jungle background gradient */
+.jungle-bg {
+  background: linear-gradient(to bottom, #e8f5e9 0%, #fff 100%);
+}
+
+/* Organic glass effect */
+.organic-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 2px solid var(--leaf-light);
+}
+
+/* Leaf-shaped card borders */
+.leaf-card {
+  border-radius: 0 48px 0 48px;
+  transition: all 0.3s ease;
+}
+
+.leaf-card:hover {
+  border-radius: 24px 24px 24px 24px;
+}
+
+.rounded-leaf {
+  border-radius: 0px 40px 0px 40px;
+}
+
+.rounded-leaf-reverse {
+  border-radius: 40px 0px 40px 0px;
+}
+
+/* Tablet UI style */
+.tablet-ui {
+  background: #2c3e50;
+  border: 12px solid #1a252f;
+  border-radius: 24px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Global overrides for ThinkBox system */
@@ -39,14 +82,6 @@
 .border-tb-primary {
   border-color: var(--tb-primary) !important;
 }
-
-/* Color utilities */  
-.text-tb-purple { color: var(--tb-purple) !important; }
-.bg-tb-purple { background-color: var(--tb-purple) !important; }
-.text-tb-blue { color: var(--tb-blue) !important; }
-.bg-tb-blue { background-color: var(--tb-blue) !important; }
-.text-tb-orange { color: var(--tb-orange) !important; }
-.bg-tb-orange { background-color: var(--tb-orange) !important; }
 
 /* Force light mode colors */
 .focus\:border-tb-primary:focus {
