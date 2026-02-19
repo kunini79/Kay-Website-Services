@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ViewState, Article } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -12,122 +11,189 @@ import { AlertCircle } from 'lucide-react';
 import './globals.css';
 
 export default function SystemPage() {
-  const router = useRouter();
   const [viewState, setViewState] = useState<ViewState>(ViewState.HOME);
   const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [exploredCategories, setExploredCategories] = useState<Set<string>>(
+    new Set()
+  );
 
-  // Check authentication on mount
+  /* Force light theme for ThinkBox */
   useEffect(() => {
-    // Temporarily bypass auth for direct access
-    setIsAuthenticated(true);
-    /*
-    const checkAuth = async () => {
-      try {
-        // Try to verify auth by checking if token exists
-        const response = await fetch('/api/verify-auth', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          // Not authenticated, redirect to ThinkBox login
-          router.push('/thinkbox?tab=login&redirect=/system');
-          return;
-        }
-
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        router.push('/thinkbox?tab=login&redirect=/system');
-      }
+    const prev = document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', 'light');
+    return () => {
+      if (prev) document.documentElement.setAttribute('data-theme', prev);
     };
+  }, []);
 
-    checkAuth();
-    */
-  }, [router]);
-
-  // Scroll to top when view changes
+  /* Scroll to top on view change */
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [viewState, currentArticle]);
 
-  const handleTopicSelect = useCallback(async (topic: string) => {
-    setViewState(ViewState.LOADING);
-    setErrorMsg(null);
-    try {
-      const article = await fetchArticle(topic);
-      setCurrentArticle(article);
-      setViewState(ViewState.ARTICLE);
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || "Something went wrong.");
-      setViewState(ViewState.ERROR);
-    }
-  }, []);
+  const handleTopicSelect = useCallback(
+    async (topic: string) => {
+      setViewState(ViewState.LOADING);
+      setErrorMsg(null);
+      setSearchFilter('');
+      try {
+        const article = await fetchArticle(topic);
+        setCurrentArticle(article);
+        setExploredCategories((prev) => {
+          const next = new Set(prev);
+          next.add(article.category);
+          return next;
+        });
+        setViewState(ViewState.ARTICLE);
+      } catch (err: any) {
+        console.error(err);
+        setErrorMsg(err.message || 'Something went wrong.');
+        setViewState(ViewState.ERROR);
+      }
+    },
+    []
+  );
 
   const goHome = useCallback(() => {
     setViewState(ViewState.HOME);
     setCurrentArticle(null);
+    setSearchFilter('');
   }, []);
 
-  // Show loading state while checking authentication
-  if (isAuthenticated === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-        <div className="text-center">
-          <div className="mb-4">
-            <Loader message="Verifying access..." />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const exploredCount = exploredCategories.size;
 
   return (
-    <div className="min-h-screen font-sans bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-[#BBFD6A] selection:text-black">
-      <Header onSearch={handleTopicSelect} onHome={goHome} />
+    <div style={{ minHeight: '100vh' }}>
+      {/* Navbar */}
+      <Header
+        onSearch={handleTopicSelect}
+        onHome={goHome}
+        searchFilter={searchFilter}
+        onSearchFilterChange={setSearchFilter}
+        streakCount={7}
+      />
 
-      <main className="max-w-5xl mx-auto px-4 pb-20 pt-8">
+      {/* Progress bar */}
+      <div
+        style={{
+          padding: '8px 24px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--tb-font-body)',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: 'var(--tb-text-muted)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          You&apos;ve explored {exploredCount} of 9 topics today
+        </span>
+        <div className="tb-progress-track" style={{ flex: 1 }}>
+          <div
+            className="tb-progress-fill"
+            style={{ width: `${(exploredCount / 9) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Main content */}
+      <main style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '80px' }}>
         {viewState === ViewState.HOME && (
-          <HomeView onTopicClick={handleTopicSelect} />
+          <HomeView
+            onTopicClick={handleTopicSelect}
+            searchFilter={searchFilter}
+            exploredCategories={exploredCategories}
+          />
         )}
 
         {viewState === ViewState.LOADING && (
-          <div className="mt-20">
-            <Loader message="Reading all the books..." />
+          <div style={{ marginTop: '80px' }}>
+            <Loader message="Opening the magic book..." />
           </div>
         )}
 
         {viewState === ViewState.ERROR && (
-           <div className="flex flex-col items-center justify-center mt-20 text-center">
-             <div className="bg-red-100 p-6 rounded-full mb-6">
-                <AlertCircle className="w-12 h-12 text-red-500" />
-             </div>
-             <h2 className="text-2xl font-bold text-gray-800 mb-2">Uh oh!</h2>
-             <p className="text-gray-600 max-w-md mb-8">{errorMsg}</p>
-             <button 
-               onClick={goHome}
-               className="bg-tb-primary text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-colors"
-             >
-               Go Back Home
-             </button>
-           </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: '80px',
+              textAlign: 'center',
+              maxWidth: '480px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              background: 'var(--tb-surface)',
+              borderRadius: 'var(--tb-radius-xl)',
+              padding: '48px 32px',
+              boxShadow: 'var(--tb-shadow-md)',
+            }}
+          >
+            <div
+              style={{
+                background: '#FEF2F2',
+                padding: '20px',
+                borderRadius: '50%',
+                marginBottom: '24px',
+              }}
+            >
+              <AlertCircle size={40} color="#EF4444" />
+            </div>
+            <h3
+              style={{
+                fontFamily: 'var(--tb-font-heading)',
+                fontSize: '24px',
+                fontWeight: 700,
+                color: '#EF4444',
+                marginBottom: '8px',
+              }}
+            >
+              Oops!
+            </h3>
+            <p
+              style={{
+                color: 'var(--tb-text-muted)',
+                fontSize: '15px',
+                fontWeight: 600,
+                marginBottom: '24px',
+                lineHeight: 1.6,
+              }}
+            >
+              {errorMsg}
+            </p>
+            <button
+              onClick={goHome}
+              style={{
+                padding: '12px 32px',
+                background: 'var(--tb-primary)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 'var(--tb-radius-full)',
+                fontFamily: 'var(--tb-font-heading)',
+                fontWeight: 700,
+                fontSize: '15px',
+                cursor: 'pointer',
+              }}
+            >
+              Try Again
+            </button>
+          </div>
         )}
 
         {viewState === ViewState.ARTICLE && currentArticle && (
-          <ArticleView 
-            article={currentArticle} 
-            onTopicClick={handleTopicSelect} 
-          />
+          <ArticleView article={currentArticle} onTopicClick={handleTopicSelect} />
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="text-center py-8 text-gray-400 text-sm border-t border-gray-200 mt-auto">
-        <p>© {new Date().getFullYear()} ThinkBox. Built for curious minds.</p>
-      </footer>
     </div>
   );
 }

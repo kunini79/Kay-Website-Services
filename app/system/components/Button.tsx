@@ -5,27 +5,53 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  icon, 
-  className = '', 
-  ...props 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  icon,
+  style,
+  ...props
 }) => {
-  const baseStyles = 'px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 text-sm uppercase tracking-wide';
-  
-  const variants = {
-    primary: 'bg-[#BBFD6A] text-black hover:bg-[#aef059] shadow-sm hover:shadow-md',
-    secondary: 'bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-700',
-    ghost: 'bg-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800'
+  const baseStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '12px 28px',
+    borderRadius: 'var(--tb-radius-full)',
+    fontFamily: 'var(--tb-font-heading)',
+    fontWeight: 700,
+    fontSize: '15px',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'transform 200ms var(--tb-ease-bounce), box-shadow 200ms ease',
   };
 
-  const styles = \\ \ \\;
+  const variants: Record<string, React.CSSProperties> = {
+    primary: {
+      background: 'var(--tb-primary)',
+      color: 'white',
+      boxShadow: '0 4px 0 var(--tb-primary-dark)',
+    },
+    secondary: {
+      background: 'var(--tb-surface)',
+      color: 'var(--tb-primary)',
+      boxShadow: '0 4px 0 var(--tb-border)',
+      border: '2px solid var(--tb-primary)',
+    },
+    ghost: {
+      background: 'transparent',
+      color: 'var(--tb-primary)',
+    },
+  };
 
   return (
-    <button className={styles} {...props}>
-      {icon && <span className='w-4 h-4'>{icon}</span>}
-      {children}
+    <button
+      style={{ ...baseStyle, ...variants[variant], ...style }}
+      {...props}
+    >
+      {icon && <span>{icon}</span>}
+      <span>{children}</span>
     </button>
   );
 };

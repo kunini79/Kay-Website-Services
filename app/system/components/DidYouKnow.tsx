@@ -7,15 +7,59 @@ interface DidYouKnowProps {
 
 export const DidYouKnow: React.FC<DidYouKnowProps> = ({ fact }) => {
   return (
-    <div className='bg-zinc-100 dark:bg-zinc-900 border-l-4 border-[#BBFD6A] p-6 rounded-r-xl my-8 relative'>
-      <div className='flex items-center gap-3 mb-2'>
-        <Lightbulb className='w-5 h-5 text-[#BBFD6A]' />
-        <h4 className='text-[#BBFD6A] font-bold uppercase tracking-wider text-sm'>
-          Did You Know?
-        </h4>
+    <div
+      style={{
+        margin: '32px 0',
+        padding: '28px 28px 28px 72px',
+        background: '#FFFBEB',
+        borderRadius: 'var(--tb-radius-lg)',
+        border: '2px solid var(--tb-yellow)',
+        position: 'relative',
+      }}
+    >
+      {/* Icon */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-16px',
+          left: '20px',
+          background: 'var(--tb-coral)',
+          borderRadius: '50%',
+          width: '48px',
+          height: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: 'var(--tb-shadow-md)',
+        }}
+      >
+        <Lightbulb size={24} color="white" strokeWidth={2.5} />
       </div>
-      <p className='text-lg text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed italic'>
-        {fact}
+
+      <h4
+        style={{
+          fontFamily: 'var(--tb-font-heading)',
+          fontSize: '14px',
+          fontWeight: 700,
+          color: 'var(--tb-yellow-dark)',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          marginBottom: '6px',
+        }}
+      >
+        Did You Know?
+      </h4>
+      <p
+        style={{
+          fontSize: '17px',
+          fontWeight: 600,
+          color: 'var(--tb-text)',
+          lineHeight: 1.6,
+          fontStyle: 'italic',
+          margin: 0,
+        }}
+      >
+        &ldquo;{fact}&rdquo;
       </p>
     </div>
   );

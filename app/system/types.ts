@@ -26,14 +26,19 @@ export enum ViewState {
 }
 
 export enum Category {
-  ANIMALS = 'Animals',
-  SCIENCE = 'Science',
-  SPORTS = 'Sports and Recreation',
-  ARTS = 'Arts',
-  READING = 'Reading and Writing',
-  PEOPLE = 'People',
-  PLACES = 'Places',
-  HISTORY = 'History',
-  SOCIAL_STUDIES = 'Social Studies',
-  GAMES = 'Games and Fun'
+  ANIMALS = 'Animals & Nature',
+  SCIENCE = 'Science & Space',
+  HISTORY = 'History & Civilizations',
+  PEOPLE = 'People & Leaders',
+  WORLD = 'World & Places',
+  ARTS = 'Arts & Music',
+  SPORTS = 'Sports & Games',
+  TECH = 'Technology',
+  READING = 'Reading & Stories'
+}
+
+export interface CategoryConfig {
+  icon: string;
+  description: string;
+  cssClass: string;
 }

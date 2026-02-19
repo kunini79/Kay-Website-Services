@@ -9,31 +9,27 @@ interface ArticleViewProps {
   onTopicClick: (topic: string) => void;
 }
 
-export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick }) => {
+export const ArticleView: React.FC<ArticleViewProps> = ({
+  article,
+  onTopicClick,
+}) => {
   const [heroImage, setHeroImage] = useState<string>('');
   const [heroLoading, setHeroLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
-    
     const loadHeroImage = async () => {
       try {
         const imageUrl = await fetchWikimediaImage(article.title, 1200, 600);
-        if (isMounted) {
-          setHeroImage(imageUrl);
-        }
+        if (isMounted) setHeroImage(imageUrl);
       } catch (err) {
         console.warn('Failed to load hero image:', err);
         setHeroImage('');
       } finally {
-        if (isMounted) {
-          setHeroLoading(false);
-        }
+        if (isMounted) setHeroLoading(false);
       }
     };
-
     loadHeroImage();
-    
     return () => {
       isMounted = false;
     };
@@ -42,62 +38,135 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
   const handleSpeak = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(`${article.title}. ${article.intro}`);
+      const utterance = new SpeechSynthesisUtterance(
+        `${article.title}. ${article.intro}`
+      );
       utterance.rate = 0.9;
       utterance.pitch = 1.1;
       window.speechSynthesis.speak(utterance);
     }
   };
 
+  const sectionColors = ['#0D9488', '#F97316', '#FCD34D', '#14B8A6'];
+
   return (
-    <div className='animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto'>
-      {/* Hero Section */}
-      <div className='relative w-full overflow-hidden rounded-2xl mb-8 group bg-zinc-100 dark:bg-zinc-800 aspect-video shadow-sm border border-zinc-200 dark:border-zinc-800'>
-        {heroLoading && (
-          <div className='absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800'>
-            <div className='animate-pulse w-full h-full bg-zinc-200 dark:bg-zinc-700'></div>
-          </div>
-        )}
-        {heroImage && (
-          <img
-            src={heroImage}
-            alt={article.title}
-            className='w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105'
-            loading='lazy'
-            onLoad={() => setHeroLoading(false)}
-            onError={() => setHeroLoading(false)}
-          />
-        )}
-        <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8'>
-          <div className='flex items-center gap-3 mb-4'>
-            <span className='px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider rounded-full border border-white/20'>
-              {article.category}
-            </span>
-          </div>
-          <h1 className='text-3xl md:text-5xl font-display font-bold text-white mb-2 drop-shadow-sm'>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
+      {/* Hero */}
+      <div className="tb-article-hero">
+        <div
+          style={{
+            aspectRatio: '16/9',
+            width: '100%',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {heroLoading && <div className="tb-spinner" />}
+          {heroImage && (
+            <img
+              src={heroImage}
+              alt={article.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                position: 'absolute',
+                inset: 0,
+              }}
+              loading="lazy"
+              onLoad={() => setHeroLoading(false)}
+              onError={() => setHeroLoading(false)}
+            />
+          )}
+        </div>
+
+        {/* Overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background:
+              'linear-gradient(to top, rgba(15,23,42,0.85), transparent)',
+            padding: '64px 32px 32px',
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-block',
+              background: 'var(--tb-yellow)',
+              color: 'var(--tb-text)',
+              padding: '4px 14px',
+              borderRadius: 'var(--tb-radius-full)',
+              fontFamily: 'var(--tb-font-heading)',
+              fontWeight: 700,
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginBottom: '12px',
+            }}
+          >
+            {article.category}
+          </span>
+          <h1
+            style={{
+              fontFamily: 'var(--tb-font-heading)',
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: 700,
+              color: 'white',
+              margin: 0,
+              lineHeight: 1.1,
+            }}
+          >
             {article.title}
           </h1>
         </div>
-        
-        {/* TTS Button */}
-        <button 
+
+        {/* TTS button */}
+        <button
           onClick={handleSpeak}
-          className='absolute top-6 right-6 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-md transition-all hover:scale-110 border border-white/10'
-          title='Read Aloud'
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            background: 'white',
+            border: 'none',
+            borderRadius: '50%',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--tb-shadow-md)',
+            cursor: 'pointer',
+          }}
+          aria-label="Read aloud"
         >
-          <Volume2 className='w-5 h-5' />
+          <Volume2 size={22} color="var(--tb-primary)" />
         </button>
       </div>
 
-      <div className='prose prose-zinc dark:prose-invert max-w-none'>
-        <p className='text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 font-medium leading-relaxed mb-8'>
+      {/* Body */}
+      <div className="tb-article-body">
+        <p
+          style={{
+            fontSize: '20px',
+            lineHeight: 1.7,
+            color: 'var(--tb-text)',
+            fontWeight: 600,
+            marginBottom: '32px',
+          }}
+        >
           {article.intro}
         </p>
 
         <DidYouKnow fact={article.funFact} />
 
-        {/* Chunked Sections */}
-        <div className='space-y-12 my-12'>
+        {/* Sections */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '32px' }}>
           {article.sections && article.sections.length > 0 ? (
             article.sections.map((section, idx) => (
               <SectionBlock
@@ -105,32 +174,82 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
                 section={section}
                 index={idx}
                 articleTitle={article.title}
+                accentColor={sectionColors[idx % sectionColors.length]}
               />
             ))
           ) : (
-            <div className='text-center py-8 text-zinc-500'>
-              <p>No detailed sections available.</p>
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '48px',
+                background: 'var(--tb-bg)',
+                borderRadius: 'var(--tb-radius-lg)',
+                color: 'var(--tb-text-muted)',
+                fontWeight: 700,
+              }}
+            >
+              Short article! Try searching for another topic.
             </div>
           )}
         </div>
 
-        {/* Discovery Loop */}
-        <div className='border-t border-zinc-200 dark:border-zinc-800 pt-16 mt-16'>
-          <h3 className='text-2xl font-bold mb-8 text-zinc-900 dark:text-white'>Explore Related Topics</h3>
-          <div className='flex flex-wrap gap-4'>
+        {/* Related Topics */}
+        <div
+          style={{
+            marginTop: '48px',
+            padding: '32px',
+            background: 'var(--tb-primary)',
+            borderRadius: 'var(--tb-radius-xl)',
+            textAlign: 'center',
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: 'var(--tb-font-heading)',
+              fontSize: '24px',
+              fontWeight: 700,
+              color: 'white',
+              marginBottom: '20px',
+            }}
+          >
+            What do you want to explore next?
+          </h3>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: '12px',
+            }}
+          >
             {article.relatedTopics && article.relatedTopics.length > 0 ? (
               article.relatedTopics.map((topic, i) => (
                 <button
                   key={i}
                   onClick={() => onTopicClick(topic)}
-                  className='group flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 px-5 py-3 rounded-xl transition-all border border-zinc-200 dark:border-zinc-700 font-medium text-zinc-900 dark:text-zinc-100'
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(255,255,255,0.15)',
+                    color: 'white',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    padding: '12px 20px',
+                    borderRadius: 'var(--tb-radius-md)',
+                    fontFamily: 'var(--tb-font-heading)',
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                  }}
                 >
-                  <span>{topic}</span>
-                  <ArrowRight className='w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity' />
+                  {topic}
+                  <ArrowRight size={16} />
                 </button>
               ))
             ) : (
-              <p className='text-zinc-500'>No related topics available.</p>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
+                No more suggestions for now!
+              </p>
             )}
           </div>
         </div>
@@ -139,13 +258,20 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ article, onTopicClick 
   );
 };
 
+/* Section Block */
 interface SectionBlockProps {
   section: { subtitle: string; content: string };
   index: number;
   articleTitle: string;
+  accentColor: string;
 }
 
-const SectionBlock: React.FC<SectionBlockProps> = ({ section, index, articleTitle }) => {
+const SectionBlock: React.FC<SectionBlockProps> = ({
+  section,
+  index,
+  articleTitle,
+  accentColor,
+}) => {
   const [sectionImage, setSectionImage] = useState<string>('');
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -156,43 +282,84 @@ const SectionBlock: React.FC<SectionBlockProps> = ({ section, index, articleTitl
         try {
           const imageUrl = await fetchWikimediaImage(articleTitle, 400, 300);
           if (isMounted) setSectionImage(imageUrl);
-        } catch (err) {
-          console.warn('Failed to load section image', err);
+        } catch {
           setSectionImage('');
         } finally {
           if (isMounted) setImageLoading(false);
         }
       };
       loadImage();
-      return () => { isMounted = false; };
+      return () => {
+        isMounted = false;
+      };
     } else {
       setImageLoading(false);
     }
   }, [articleTitle, index]);
 
   return (
-    <div className='flex flex-col md:flex-row gap-8 items-start group'>
-      <div className='flex-1'>
-        <h2 className='text-2xl font-bold text-zinc-900 dark:text-white mb-4 flex items-center gap-3'>
-          <span className='w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white flex items-center justify-center text-sm font-bold border border-zinc-200 dark:border-zinc-700'>
+    <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      <div style={{ flex: 1, minWidth: '280px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+          <div className="tb-section-number" style={{ background: accentColor }}>
             {index + 1}
-          </span>
-          {section.subtitle}
-        </h2>
-        <p className='text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed'>
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--tb-font-heading)',
+              fontSize: '22px',
+              fontWeight: 700,
+              color: accentColor,
+              margin: 0,
+            }}
+          >
+            {section.subtitle}
+          </h2>
+        </div>
+        <p
+          style={{
+            fontSize: '16px',
+            lineHeight: 1.7,
+            color: 'var(--tb-text)',
+            fontWeight: 500,
+          }}
+        >
           {section.content}
         </p>
       </div>
       {index % 2 === 0 && (
-        <div className='w-full md:w-64 aspect-video rounded-xl overflow-hidden shrink-0 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800'>
+        <div
+          style={{
+            width: '260px',
+            aspectRatio: '4/3',
+            borderRadius: 'var(--tb-radius-lg)',
+            overflow: 'hidden',
+            background: 'var(--tb-bg)',
+            flexShrink: 0,
+            boxShadow: 'var(--tb-shadow-sm)',
+          }}
+        >
           {imageLoading ? (
-            <div className='w-full h-full animate-pulse bg-zinc-200 dark:bg-zinc-700'></div>
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--tb-text-muted)',
+                fontWeight: 700,
+                fontSize: '13px',
+              }}
+            >
+              Loading...
+            </div>
           ) : sectionImage ? (
             <img
               src={sectionImage}
-              className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
               alt={section.subtitle}
-              loading='lazy'
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              loading="lazy"
             />
           ) : null}
         </div>

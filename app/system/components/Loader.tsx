@@ -1,15 +1,54 @@
 import React from 'react';
-import { Loader2 } from 'lucide-react';
 
-export const Loader: React.FC<{ message?: string }> = ({ message = 'Processing...' }) => {
+export const Loader: React.FC<{ message?: string }> = ({
+  message = 'Loading...',
+}) => {
   return (
-    <div className='flex flex-col items-center justify-center p-12 w-full'>
-      <div className='relative'>
-        <div className='w-12 h-12 rounded-full border-4 border-zinc-200 dark:border-zinc-800 border-t-[#BBFD6A] animate-spin'></div>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '300px',
+        width: '100%',
+        gap: '24px',
+      }}
+    >
+      {/* Animated icon */}
+      <div className="tb-float">
+        <div
+          style={{
+            width: '72px',
+            height: '72px',
+            borderRadius: 'var(--tb-radius-lg)',
+            background: 'linear-gradient(135deg, var(--tb-primary), var(--tb-yellow))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--tb-shadow-lg)',
+          }}
+        >
+          <span style={{ fontSize: '36px' }} role="img" aria-hidden="true">
+            💡
+          </span>
+        </div>
       </div>
-      <h3 className='mt-6 text-lg font-medium text-zinc-900 dark:text-white animate-pulse'>
+
+      {/* Spinner */}
+      <div className="tb-spinner" aria-hidden="true" />
+
+      {/* Message */}
+      <p
+        style={{
+          fontFamily: 'var(--tb-font-heading)',
+          fontSize: '18px',
+          fontWeight: 700,
+          color: 'var(--tb-text-muted)',
+        }}
+      >
         {message}
-      </h3>
+      </p>
     </div>
   );
 };

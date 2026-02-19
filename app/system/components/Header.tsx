@@ -1,55 +1,87 @@
 import React, { useState } from 'react';
-import { Search, Compass } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface HeaderProps {
   onSearch: (term: string) => void;
   onHome: () => void;
+  searchFilter: string;
+  onSearchFilterChange: (value: string) => void;
+  streakCount?: number;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onSearch, onHome }) => {
-  const [term, setTerm] = useState('');
-
+export const Header: React.FC<HeaderProps> = ({
+  onSearch,
+  onHome,
+  searchFilter,
+  onSearchFilterChange,
+  streakCount = 7,
+}) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (term.trim()) {
-      onSearch(term);
-      setTerm('');
+    if (searchFilter.trim()) {
+      onSearch(searchFilter);
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 px-4 py-3">
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+    <header className="tb-navbar" role="banner">
+      <div className="tb-navbar-inner">
         {/* Logo */}
-        <button 
+        <button
           onClick={onHome}
-          className="flex items-center gap-2 group outline-none"
+          className="tb-logo-pulse flex items-center gap-2 shrink-0"
+          aria-label="ThinkBox home"
         >
-          <div className="flex items-center gap-2">
-             <span className="font-display text-2xl tracking-tight font-bold text-zinc-900 dark:text-white group-hover:text-[#BBFD6A] transition-colors">THINKBOX</span>
+          <div
+            style={{
+              background: 'var(--tb-primary)',
+              borderRadius: 'var(--tb-radius-sm)',
+              padding: '8px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <span style={{ fontSize: '22px' }} role="img" aria-hidden="true">
+              💡
+            </span>
+            <span
+              style={{
+                fontFamily: 'var(--tb-font-heading)',
+                fontWeight: 700,
+                fontSize: '20px',
+                color: 'white',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              ThinkBox
+            </span>
           </div>
         </button>
 
         {/* Search Bar */}
-        <form onSubmit={handleSubmit} className="flex-1 max-w-md relative group">
+        <form onSubmit={handleSubmit} className="tb-search" role="search">
+          <Search className="tb-search-icon" size={18} aria-hidden="true" />
           <input
             type="text"
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
+            value={searchFilter}
+            onChange={(e) => onSearchFilterChange(e.target.value)}
             placeholder="Search topics..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 focus:border-[#BBFD6A] focus:ring-1 focus:ring-[#BBFD6A] focus:bg-white dark:focus:bg-black focus:outline-none transition-all placeholder-zinc-500 text-zinc-900 dark:text-white shadow-sm"
+            aria-label="Search topics"
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#BBFD6A] transition-colors w-4 h-4" />
         </form>
 
-        {/* Action */}
-        <button 
-          onClick={() => onSearch("Random")}
-          className="hidden md:flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-[#BBFD6A] font-medium transition-colors text-sm"
-        >
-          <Compass className="w-4 h-4" />
-          <span>Random</span>
-        </button>
+        {/* Right section: Streak + Avatar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="tb-streak" aria-label={`${streakCount} day streak`}>
+            <span role="img" aria-hidden="true">🔥</span>
+            <span>{streakCount} day streak</span>
+          </div>
+
+          <button className="tb-avatar" aria-label="User profile">
+            T
+          </button>
+        </div>
       </div>
     </header>
   );
