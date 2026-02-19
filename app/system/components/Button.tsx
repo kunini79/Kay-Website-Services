@@ -20,17 +20,18 @@ export const Button: React.FC<ButtonProps> = ({
     padding: '12px 28px',
     borderRadius: 'var(--tb-radius-full)',
     fontFamily: 'var(--tb-font-heading)',
-    fontWeight: 700,
+    fontWeight: 800,
     fontSize: '15px',
-    border: 'none',
+    border: '2px solid transparent',
     cursor: 'pointer',
-    transition: 'transform 200ms var(--tb-ease-bounce), box-shadow 200ms ease',
+    transition: 'transform 120ms ease, box-shadow 120ms ease, filter 120ms ease',
   };
 
   const variants: Record<string, React.CSSProperties> = {
     primary: {
       background: 'var(--tb-primary)',
       color: 'white',
+      borderColor: 'var(--tb-primary-light)',
       boxShadow: '0 4px 0 var(--tb-primary-dark)',
     },
     secondary: {
@@ -45,9 +46,27 @@ export const Button: React.FC<ButtonProps> = ({
     },
   };
 
+  const pressedShadowByVariant: Record<string, string> = {
+    primary: '0 2px 0 var(--tb-primary-dark)',
+    secondary: '0 2px 0 var(--tb-border)',
+    ghost: 'none',
+  };
+
   return (
     <button
       style={{ ...baseStyle, ...variants[variant], ...style }}
+      onMouseDown={(e) => {
+        e.currentTarget.style.transform = 'translateY(2px)';
+        e.currentTarget.style.boxShadow = pressedShadowByVariant[variant];
+      }}
+      onMouseUp={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = variants[variant].boxShadow as string;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = variants[variant].boxShadow as string;
+      }}
       {...props}
     >
       {icon && <span>{icon}</span>}

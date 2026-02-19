@@ -4,10 +4,13 @@ import { STATIC_TOPICS } from "../constants";
 import { getOfflineTopic, toArticleFromOffline } from './offlineTopics';
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
+const openRouterApiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '';
+const openRouterModel = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
 const ai = new GoogleGenAI({ apiKey });
 
 // Image and content cache to avoid repeated API calls
 const imageCache = new Map<string, string>();
+const imageListCache = new Map<string, string[]>();
 const contentCache = new Map<string, any>();
 
 // Map friendly topic names to Wikipedia article names for better image results
@@ -62,11 +65,55 @@ const TOPIC_TO_WIKIPEDIA_MAP: Record<string, string> = {
   "Photography": "Photography",
 };
 
+const getCuratedArticleOverride = (topic: string): Article | null => {
+  const normalized = topic.toLowerCase();
+
+  if (
+    normalized.includes('seven wonders') ||
+    normalized.includes('7 wonders') ||
+    normalized.includes('wonders of the world')
+  ) {
+    return {
+      title: 'Seven Wonders of the Ancient World',
+      category: Category.WORLD,
+      intro:
+        'The Seven Wonders of the Ancient World were famous human-made marvels chosen in ancient times. Today, only one still stands, but all seven helped people imagine what was possible with engineering, art, and ambition.',
+      funFact:
+        'The Great Pyramid of Giza is the only Ancient Wonder that still survives today.',
+      sections: [
+        {
+          subtitle: 'The Original Seven Wonders',
+          content:
+            '1) Great Pyramid of Giza (Egypt)\n2) Hanging Gardens of Babylon (Iraq, traditional location)\n3) Statue of Zeus at Olympia (Greece)\n4) Temple of Artemis at Ephesus (Turkey)\n5) Mausoleum at Halicarnassus (Turkey)\n6) Colossus of Rhodes (Greece)\n7) Lighthouse of Alexandria, also called the Pharos (Egypt)',
+        },
+        {
+          subtitle: 'Which One Still Exists?',
+          content:
+            'Only the Great Pyramid of Giza still exists. The others were destroyed over time by earthquakes, fires, or war.',
+        },
+        {
+          subtitle: 'Ancient vs New Wonders',
+          content:
+            'People also talk about the New 7 Wonders of the World (chosen in 2007): Great Wall of China, Petra, Christ the Redeemer, Machu Picchu, Chichen Itza, Colosseum, and Taj Mahal. These are different from the ancient list.',
+        },
+      ],
+      relatedTopics: [
+        'Great Pyramid of Giza',
+        'Ancient Egypt',
+        'New 7 Wonders of the World',
+        'Archaeology',
+      ],
+    };
+  }
+
+  return null;
+};
+
 // Fetch Wikipedia API data
 const fetchWikipediaData = async (query: string) => {
   try {
     const response = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=extracts|pageimages&explaintext=true&exintro=true&piprop=original&format=json&origin=*`
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=extracts|pageimages&explaintext=true&exintro=true&piprop=original|thumbnail&pithumbsize=1200&format=json&origin=*`
     );
     const data = await response.json();
     const pages = data.query.pages;
@@ -78,6 +125,197 @@ const fetchWikipediaData = async (query: string) => {
   }
 };
 
+const parseTopicQuery = (topic: string) => {
+  const topicParts = topic.split(/\s[-–—]\s/);
+  const baseTopic = topicParts[0]?.trim() || topic;
+  const focusArea = topicParts.length > 1 ? topicParts.slice(1).join(' - ').trim() : null;
+  return { baseTopic, focusArea };
+};
+
+const uniqueNonEmpty = (items: Array<string | null | undefined>) => {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of items) {
+    const value = (raw || '').trim();
+    if (!value) continue;
+    const key = value.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(value);
+  }
+  return out;
+};
+
+const hasUsableWikiExtract = (extract: string) => {
+  return Boolean(
+    extract &&
+    extract.length >= 200 &&
+    !extract.toLowerCase().includes('may refer to:')
+  );
+};
+
+const fetchWikipediaSearchTitle = async (query: string): Promise<string | null> => {
+  try {
+    const response = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=1&format=json&origin=*`
+    );
+    const data = await response.json();
+    return data?.query?.search?.[0]?.title || null;
+  } catch (error) {
+    console.warn('[Wikipedia Search] error:', error);
+    return null;
+  }
+};
+
+const extractBestImageFromPage = (wikiData: any): string | null => {
+  if (wikiData?.original?.source) return wikiData.original.source;
+  if (wikiData?.thumbnail?.source) return wikiData.thumbnail.source;
+  if (wikiData?.pageimage) {
+    return `https://en.wikipedia.org/wiki/Special:FilePath/${wikiData.pageimage}`;
+  }
+  return null;
+};
+
+const resolveImageCandidates = async (
+  seed: string,
+  limit: number
+): Promise<string[]> => {
+  const { baseTopic, focusArea } = parseTopicQuery(seed);
+  const mappedBase = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
+
+  const directCandidates = uniqueNonEmpty([
+    mappedBase,
+    baseTopic,
+    focusArea ? `${mappedBase} ${focusArea}` : null,
+    focusArea ? `${baseTopic} ${focusArea}` : null,
+    focusArea,
+    seed,
+  ]);
+
+  const images: string[] = [];
+  const seen = new Set<string>();
+
+  const addIfUnique = (value: string | null) => {
+    if (!value) return;
+    if (seen.has(value)) return;
+    seen.add(value);
+    images.push(value);
+  };
+
+  for (const candidate of directCandidates) {
+    const wikiData = await fetchWikipediaData(candidate);
+    addIfUnique(extractBestImageFromPage(wikiData));
+    if (images.length >= limit) return images;
+  }
+
+  for (const candidate of directCandidates) {
+    const searchTitle = await fetchWikipediaSearchTitle(candidate);
+    if (!searchTitle) continue;
+    const wikiData = await fetchWikipediaData(searchTitle);
+    addIfUnique(extractBestImageFromPage(wikiData));
+    if (images.length >= limit) return images;
+  }
+
+  return images;
+};
+
+const fetchBestWikipediaExtract = async (preferredQuery: string, fallbackQuery: string) => {
+  const tried = new Set<string>();
+
+  const tryQuery = async (query: string) => {
+    const normalized = query.trim();
+    if (!normalized || tried.has(normalized)) return null;
+    tried.add(normalized);
+
+    const page = await fetchWikipediaData(normalized);
+    const extract = page?.extract || '';
+    if (hasUsableWikiExtract(extract)) {
+      return { extract, resolvedTitle: normalized };
+    }
+    return null;
+  };
+
+  const directHit = await tryQuery(preferredQuery);
+  if (directHit) return directHit;
+
+  const fallbackHit = await tryQuery(fallbackQuery);
+  if (fallbackHit) return fallbackHit;
+
+  const preferredSearchTitle = await fetchWikipediaSearchTitle(preferredQuery);
+  if (preferredSearchTitle) {
+    const preferredSearchHit = await tryQuery(preferredSearchTitle);
+    if (preferredSearchHit) return preferredSearchHit;
+  }
+
+  const fallbackSearchTitle = await fetchWikipediaSearchTitle(fallbackQuery);
+  if (fallbackSearchTitle) {
+    const fallbackSearchHit = await tryQuery(fallbackSearchTitle);
+    if (fallbackSearchHit) return fallbackSearchHit;
+  }
+
+  return null;
+};
+
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+};
+
+const isRateLimitOrQuotaError = (message: string): boolean => {
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes('resource_exhausted') ||
+    normalized.includes('quota') ||
+    normalized.includes('rate limit') ||
+    normalized.includes('429')
+  );
+};
+
+const generateWithOpenRouter = async (prompt: string): Promise<string> => {
+  if (!openRouterApiKey) {
+    throw new Error('OpenRouter API key not configured');
+  }
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${openRouterApiKey}`,
+      'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+      'X-Title': 'ThinkBox',
+    },
+    body: JSON.stringify({
+      model: openRouterModel,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are generating educational encyclopedia JSON. Return valid JSON only with no markdown fences.',
+        },
+        { role: 'user', content: prompt },
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.3,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenRouter error (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content || typeof content !== 'string') {
+    throw new Error('OpenRouter returned no structured content');
+  }
+
+  return content;
+};
+
 // Get image from Wikipedia
 export const getImageUrl = async (seed: string, width = 800, height = 600): Promise<string> => {
   const cacheKey = `image_${seed}_${width}x${height}`;
@@ -86,37 +324,17 @@ export const getImageUrl = async (seed: string, width = 800, height = 600): Prom
     return imageCache.get(cacheKey)!;
   }
 
-  // Map friendly title to Wikipedia article name
-  const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[seed] || seed;
-  console.log(`[Image Fetch] Fetching image for: ${seed} (Wikipedia: ${wikipediaQuery})`);
+  console.log(`[Image Fetch] Resolving image for: ${seed}`);
 
   try {
-    const wikiData = await fetchWikipediaData(wikipediaQuery);
-
-    if (wikiData?.original?.source) {
-      const imageUrl = wikiData.original.source;
-      console.log(`[Image Found - Original] ${seed}: ${imageUrl.substring(0, 80)}...`);
-      imageCache.set(cacheKey, imageUrl);
-      return imageUrl;
+    const images = await resolveImageCandidates(seed, 1);
+    if (images.length > 0) {
+      const best = images[0];
+      imageCache.set(cacheKey, best);
+      return best;
     }
 
-    // Try thumbnail as fallback
-    if (wikiData?.thumbnail?.source) {
-      const imageUrl = wikiData.thumbnail.source;
-      console.log(`[Image Found - Thumbnail] ${seed}: ${imageUrl.substring(0, 80)}...`);
-      imageCache.set(cacheKey, imageUrl);
-      return imageUrl;
-    }
-
-    // Try pageimage field
-    if (wikiData?.pageimage) {
-      const imageUrl = `https://en.wikipedia.org/wiki/Special:FilePath/${wikiData.pageimage}`;
-      console.log(`[Image Found - PageImage] ${seed}`);
-      imageCache.set(cacheKey, imageUrl);
-      return imageUrl;
-    }
-
-    console.log(`[Image No Match] No image found for ${seed} (tried ${wikipediaQuery})`);
+    console.log(`[Image No Match] No image found for ${seed}`);
   } catch (error) {
     console.warn(`[Image Error] Failed to fetch Wikipedia image for ${seed}:`, error);
   }
@@ -128,6 +346,37 @@ export const getImageUrl = async (seed: string, width = 800, height = 600): Prom
   return fallback;
 };
 
+export const getImageUrls = async (
+  seed: string,
+  width = 800,
+  height = 600,
+  limit = 4
+): Promise<string[]> => {
+  const safeLimit = Math.max(1, Math.min(limit, 8));
+  const cacheKey = `image_list_${seed}_${width}x${height}_${safeLimit}`;
+
+  if (imageListCache.has(cacheKey)) {
+    return imageListCache.get(cacheKey)!;
+  }
+
+  try {
+    const images = await resolveImageCandidates(seed, safeLimit);
+    if (images.length > 0) {
+      imageListCache.set(cacheKey, images);
+      const singleKey = `image_${seed}_${width}x${height}`;
+      imageCache.set(singleKey, images[0]);
+      return images;
+    }
+  } catch (error) {
+    console.warn(`[Image List Error] Failed to fetch images for ${seed}:`, error);
+  }
+
+  const fallback = `https://placehold.co/${width}x${height}/e0e7ff/6366f1?text=${encodeURIComponent(seed)}`;
+  const fallbackList = [fallback];
+  imageListCache.set(cacheKey, fallbackList);
+  return fallbackList;
+};
+
 // Fetch properly aligned images from Wikipedia
 export const fetchWikimediaImage = async (
   topic: string,
@@ -135,6 +384,15 @@ export const fetchWikimediaImage = async (
   height: number = 600
 ): Promise<string> => {
   return getImageUrl(topic, width, height);
+};
+
+export const fetchWikimediaImages = async (
+  topic: string,
+  width: number = 800,
+  height: number = 600,
+  limit: number = 4
+): Promise<string[]> => {
+  return getImageUrls(topic, width, height, limit);
 };
 
 // Get Wikipedia content and enrich with Gemini for ThinkBox structure
@@ -145,6 +403,12 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
   }
 
   try {
+    const curatedArticle = getCuratedArticleOverride(topic);
+    if (curatedArticle) {
+      contentCache.set(cacheKey, curatedArticle);
+      return curatedArticle;
+    }
+
     // If offline, try local cache first.
     if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) {
       const offlineHit = await getOfflineTopic(topic);
@@ -155,27 +419,26 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       }
     }
 
-    // Map friendly title to Wikipedia article name
-    const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[topic] || topic;
-    console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (mapped to: ${wikipediaQuery})`);
+    const { baseTopic, focusArea } = parseTopicQuery(topic);
 
-    // Get Wikipedia content first
-    const wikiData = await fetchWikipediaData(wikipediaQuery);
-    const wikiContent = wikiData?.extract || '';
+    // Map friendly title to Wikipedia article name (resolve with base topic for option-queries)
+    const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
+    console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (base: ${baseTopic}, mapped to: ${wikipediaQuery})`);
 
-    // Check for disambiguation or too-short content
-    if (!wikiContent || wikiContent.length < 200 || wikiContent.includes('may refer to:')) {
-      throw new Error(`Could not find detailed information about "${topic}". Try a more specific search term.`);
+    // Get Wikipedia content with fallback resolution
+    const wikiHit = await fetchBestWikipediaExtract(wikipediaQuery, baseTopic);
+    if (!wikiHit) {
+      throw new Error(`Could not find detailed information about "${baseTopic}". Try a more specific search term.`);
     }
 
-    if (!apiKey) {
-      throw new Error('Gemini API key not configured');
-    }
+    console.log(`[Article Fetch] Wikipedia resolved title: ${wikiHit.resolvedTitle}`);
+    const wikiContent = wikiHit.extract;
 
     // Use Gemini to structure Wikipedia content into ThinkBox format
     const model = "gemini-2.5-flash";
     const prompt = `
       Take this Wikipedia content about "${topic}" and structure it for an 8-12 year old educational app (ThinkBox).
+      ${focusArea ? `Focus the explanation on this subtopic: "${focusArea}" while still keeping a clear overview.` : ''}
 
       Wikipedia Content:
       ${wikiContent.substring(0, 2000)}
@@ -183,6 +446,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       Requirements:
       - Tone: Enthusiastic, clear, encouraging (Encarta style)
       - Structure: 3-4 chunked sections with short paragraphs (keep content concise)
+      - For list-style topics (e.g., "Seven Wonders", "planets", "continents"), include the complete canonical list with exact item names
       - For animals: Use headers like "Habitat & Home", "What's on the Menu?", "Family Life & Babies", "Super Senses & Body"
       - Include one "Did You Know?" fun fact from the Wikipedia content
       - Suggest 3 related topics for further learning
@@ -191,51 +455,80 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       Return pure JSON with: title, category, intro (2-3 sentences), funFact, sections (array with subtitle and content), relatedTopics (array)
     `;
 
-    // Create a timeout promise (40 seconds to allow for Gemini processing)
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Request timed out. Please try again.')), 40000)
-    );
+    let text = '';
+    let geminiError: unknown = null;
 
-    const apiPromise = ai.models.generateContent({
-      model,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            title: { type: Type.STRING },
-            category: { type: Type.STRING },
-            intro: { type: Type.STRING },
-            funFact: { type: Type.STRING },
-            sections: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  subtitle: { type: Type.STRING },
-                  content: { type: Type.STRING }
+    if (apiKey) {
+      try {
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Request timed out. Please try again.')), 40000)
+        );
+
+        const apiPromise = ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                category: { type: Type.STRING },
+                intro: { type: Type.STRING },
+                funFact: { type: Type.STRING },
+                sections: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      subtitle: { type: Type.STRING },
+                      content: { type: Type.STRING }
+                    },
+                    required: ['subtitle', 'content']
+                  }
                 },
-                required: ['subtitle', 'content']
-              }
-            },
-            relatedTopics: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING }
+                relatedTopics: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                }
+              },
+              required: ['title', 'category', 'intro', 'funFact', 'sections', 'relatedTopics']
             }
-          },
-          required: ['title', 'category', 'intro', 'funFact', 'sections', 'relatedTopics']
-        }
+          }
+        });
+
+        const response = await Promise.race([apiPromise, timeoutPromise]) as any;
+        text = response.text || '';
+        if (!text) throw new Error('No structured content returned from Gemini');
+        console.log('[Article] Gemini response length:', text.length);
+      } catch (error) {
+        geminiError = error;
+        console.warn('[Article] Gemini failed, attempting OpenRouter fallback:', getErrorMessage(error));
       }
-    });
+    }
 
-    const response = await Promise.race([apiPromise, timeoutPromise]) as any;
+    if (!text && openRouterApiKey) {
+      try {
+        text = await generateWithOpenRouter(prompt);
+        console.log('[Article] OpenRouter response length:', text.length);
+      } catch (openRouterError) {
+        console.error('[Article] OpenRouter fallback failed:', openRouterError);
+        if (geminiError) {
+          const geminiMessage = getErrorMessage(geminiError);
+          if (isRateLimitOrQuotaError(geminiMessage)) {
+            throw new Error(`Gemini quota reached and OpenRouter fallback failed: ${getErrorMessage(openRouterError)}`);
+          }
+        }
+        throw openRouterError;
+      }
+    }
 
-    const text = response.text;
-    console.log('[Article] Raw Gemini response length:', text?.length || 0);
-    console.log('[Article] Raw response preview:', text?.substring(0, 200));
-
-    if (!text) throw new Error("No structured content returned");
+    if (!text) {
+      if (geminiError) {
+        throw geminiError;
+      }
+      throw new Error('No AI provider configured. Add NEXT_PUBLIC_GEMINI_API_KEY or NEXT_PUBLIC_OPENROUTER_API_KEY.');
+    }
 
     let article: Article;
     try {

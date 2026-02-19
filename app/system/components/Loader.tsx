@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 export const Loader: React.FC<{ message?: string }> = ({
   message = 'Loading...',
@@ -19,19 +20,25 @@ export const Loader: React.FC<{ message?: string }> = ({
       <div className="tb-float">
         <div
           style={{
-            width: '72px',
-            height: '72px',
+            width: '170px',
+            height: '100px',
             borderRadius: 'var(--tb-radius-lg)',
             background: 'linear-gradient(135deg, var(--tb-primary), var(--tb-yellow))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: 'var(--tb-shadow-lg)',
+            padding: '14px 16px',
           }}
         >
-          <span style={{ fontSize: '36px' }} role="img" aria-hidden="true">
-            💡
-          </span>
+          <Image
+            src="/ThinkBox/Think Box Logo.png"
+            alt="ThinkBox"
+            width={140}
+            height={46}
+            priority
+            style={{ height: '46px', width: 'auto' }}
+          />
         </div>
       </div>
 

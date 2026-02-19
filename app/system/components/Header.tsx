@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Image from 'next/image';
 import { Search } from 'lucide-react';
 
 interface HeaderProps {
@@ -32,31 +33,14 @@ export const Header: React.FC<HeaderProps> = ({
           className="tb-logo-pulse flex items-center gap-2 shrink-0"
           aria-label="ThinkBox home"
         >
-          <div
-            style={{
-              background: 'var(--tb-primary)',
-              borderRadius: 'var(--tb-radius-sm)',
-              padding: '8px 14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span style={{ fontSize: '22px' }} role="img" aria-hidden="true">
-              💡
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--tb-font-heading)',
-                fontWeight: 700,
-                fontSize: '20px',
-                color: 'white',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              ThinkBox
-            </span>
-          </div>
+          <Image
+            src="/ThinkBox/Think Box Logo.png"
+            alt="ThinkBox"
+            width={480}
+            height={184}
+            priority
+            style={{ height: '112px', width: 'auto' }}
+          />
         </button>
 
         {/* Search Bar */}

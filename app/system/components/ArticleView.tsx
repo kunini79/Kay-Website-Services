@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Article } from '../types';
 import { DidYouKnow } from './DidYouKnow';
-import { fetchWikimediaImage } from '../services/geminiService';
+import { fetchWikimediaImage, fetchWikimediaImages } from '../services/geminiService';
 import { ArrowRight, Volume2 } from 'lucide-react';
 
 interface ArticleViewProps {
@@ -14,17 +14,22 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
   onTopicClick,
 }) => {
   const [heroImage, setHeroImage] = useState<string>('');
+  const [heroImages, setHeroImages] = useState<string[]>([]);
   const [heroLoading, setHeroLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     const loadHeroImage = async () => {
       try {
-        const imageUrl = await fetchWikimediaImage(article.title, 1200, 600);
-        if (isMounted) setHeroImage(imageUrl);
+        const imageUrls = await fetchWikimediaImages(article.title, 1200, 600, 4);
+        if (isMounted) {
+          setHeroImages(imageUrls);
+          setHeroImage(imageUrls[0] || '');
+        }
       } catch (err) {
         console.warn('Failed to load hero image:', err);
         setHeroImage('');
+        setHeroImages([]);
       } finally {
         if (isMounted) setHeroLoading(false);
       }
@@ -149,6 +154,44 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
         </button>
       </div>
 
+      {heroImages.length > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            padding: '10px 14px',
+            overflowX: 'auto',
+            background: 'rgba(255,255,255,0.05)',
+          }}
+        >
+          {heroImages.map((imgUrl, idx) => (
+            <button
+              key={`${imgUrl}-${idx}`}
+              onClick={() => setHeroImage(imgUrl)}
+              style={{
+                border: imgUrl === heroImage ? '2px solid var(--tb-yellow)' : '2px solid transparent',
+                borderRadius: '10px',
+                padding: 0,
+                width: '88px',
+                height: '56px',
+                overflow: 'hidden',
+                cursor: 'pointer',
+                flexShrink: 0,
+                background: 'transparent',
+              }}
+              aria-label={`Select hero image ${idx + 1}`}
+            >
+              <img
+                src={imgUrl}
+                alt={`${article.title} preview ${idx + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Body */}
       <div className="tb-article-body">
         <p
@@ -272,7 +315,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   articleTitle,
   accentColor,
 }) => {
-  const [sectionImage, setSectionImage] = useState<string>('');
+  const [sectionImages, setSectionImages] = useState<string[]>([]);
   const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
@@ -280,10 +323,11 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
       let isMounted = true;
       const loadImage = async () => {
         try {
-          const imageUrl = await fetchWikimediaImage(articleTitle, 400, 300);
-          if (isMounted) setSectionImage(imageUrl);
+          const seed = `${articleTitle} - ${section.subtitle}`;
+          const imageUrls = await fetchWikimediaImages(seed, 400, 300, 3);
+          if (isMounted) setSectionImages(imageUrls);
         } catch {
-          setSectionImage('');
+          setSectionImages([]);
         } finally {
           if (isMounted) setImageLoading(false);
         }
@@ -354,13 +398,41 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
             >
               Loading...
             </div>
-          ) : sectionImage ? (
-            <img
-              src={sectionImage}
-              alt={section.subtitle}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              loading="lazy"
-            />
+          ) : sectionImages.length > 0 ? (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gridTemplateRows: '1fr 1fr',
+                gap: '4px',
+                padding: '4px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <img
+                src={sectionImages[0]}
+                alt={section.subtitle}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  gridColumn: '1 / 3',
+                  borderRadius: '8px',
+                }}
+                loading="lazy"
+              />
+              {sectionImages.slice(1).map((imgUrl, idx) => (
+                <img
+                  key={`${imgUrl}-${idx}`}
+                  src={imgUrl}
+                  alt={`${section.subtitle} ${idx + 2}`}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                  loading="lazy"
+                />
+              ))}
+            </div>
           ) : null}
         </div>
       )}

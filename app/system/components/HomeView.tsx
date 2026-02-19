@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CATEGORY_CONFIG, STATIC_TOPICS } from '../constants';
 import { Category, TopicPreview } from '../types';
-import { X, ArrowRight, Lightbulb } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface HomeViewProps {
   onTopicClick: (topic: string) => void;
@@ -9,232 +9,573 @@ interface HomeViewProps {
   exploredCategories: Set<string>;
 }
 
+type TopicOption = {
+  label: string;
+  query: string;
+  meta?: string;
+};
+
 export const HomeView: React.FC<HomeViewProps> = ({
   onTopicClick,
   searchFilter,
   exploredCategories,
 }) => {
-  const [modalCategory, setModalCategory] = useState<Category | null>(null);
-  const [ripple, setRipple] = useState<{ x: number; y: number; key: number } | null>(null);
-  const rippleKey = useRef(0);
+  const orderedCategories: Category[] = [
+    Category.ANIMALS,
+    Category.SCIENCE,
+    Category.SPORTS,
+    Category.ARTS,
+    Category.READING,
+    Category.PEOPLE,
+    Category.WORLD,
+    Category.HISTORY,
+    Category.TECH,
+  ];
 
-  const categories = Object.keys(CATEGORY_CONFIG) as Category[];
+  const leftCategories = orderedCategories.slice(0, 5);
+  const rightCategories = orderedCategories.slice(5);
 
-  /* Live-filter categories by search term */
-  const filteredCategories = searchFilter.trim()
-    ? categories.filter(
-        (cat) =>
-          cat.toLowerCase().includes(searchFilter.toLowerCase()) ||
-          CATEGORY_CONFIG[cat].description
-            .toLowerCase()
-            .includes(searchFilter.toLowerCase())
-      )
-    : categories;
-
-  /* Card click with ripple animation */
-  const handleCardClick = useCallback(
-    (cat: Category, e: React.MouseEvent<HTMLButtonElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      rippleKey.current += 1;
-      setRipple({ x, y, key: rippleKey.current });
-
-      setTimeout(() => {
-        setModalCategory(cat);
-        setRipple(null);
-      }, 350);
-    },
-    []
-  );
-
-  /* Close modal */
-  const closeModal = useCallback(() => setModalCategory(null), []);
-
-  /* Keyboard: close on Escape */
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [closeModal]);
-
-  /* Get 3 sample stubs for the modal */
-  const getStubs = (cat: Category): TopicPreview[] => {
-    const all = STATIC_TOPICS[cat] || [];
-    return all.slice(0, 3);
+  const categoryDisplayNames: Record<Category, string> = {
+    [Category.ANIMALS]: 'Animals & Nature',
+    [Category.SCIENCE]: 'Science & Space',
+    [Category.SPORTS]: 'Sports & Games',
+    [Category.ARTS]: 'Arts & Music',
+    [Category.READING]: 'Reading & Stories',
+    [Category.PEOPLE]: 'People & Leaders',
+    [Category.WORLD]: 'Places & Cultures',
+    [Category.HISTORY]: 'History & Civilizations',
+    [Category.TECH]: 'Technology & Innovation',
   };
+
+  const [selectedCategory, setSelectedCategory] = useState<Category>(Category.ANIMALS);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+
+  const normalizedQuery = searchFilter.trim().toLowerCase();
+
+  const getCategoryTopics = (cat: Category) => (STATIC_TOPICS[cat] || []) as TopicPreview[];
+
+  const isCategoryMatch = (cat: Category) => {
+    if (!normalizedQuery) return true;
+    if (
+      cat.toLowerCase().includes(normalizedQuery) ||
+      CATEGORY_CONFIG[cat].description.toLowerCase().includes(normalizedQuery)
+    ) {
+      return true;
+    }
+
+    return getCategoryTopics(cat).some(
+      (topic) =>
+        topic.title.toLowerCase().includes(normalizedQuery) ||
+        topic.description.toLowerCase().includes(normalizedQuery)
+    );
+  };
+
+  const filteredTopics = useMemo(() => {
+    const topics = getCategoryTopics(selectedCategory);
+    if (!normalizedQuery) return topics;
+    return topics.filter(
+      (topic) =>
+        topic.title.toLowerCase().includes(normalizedQuery) ||
+        topic.description.toLowerCase().includes(normalizedQuery)
+    );
+  }, [selectedCategory, normalizedQuery]);
+
+  useEffect(() => {
+    setSelectedTopic(null);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (!selectedTopic) return;
+    if (!filteredTopics.some((topic) => topic.title === selectedTopic)) {
+      setSelectedTopic(null);
+    }
+  }, [filteredTopics, selectedTopic]);
+
+  const topicOptionOverrides: Partial<Record<string, TopicOption[]>> = {
+    'African Heroes': [
+      { label: 'Nelson Mandela', query: 'Nelson Mandela', meta: 'South Africa' },
+      { label: 'Queen Amina', query: 'Queen Amina', meta: 'Zazzau (Zaria)' },
+      { label: 'Mansa Musa', query: 'Mansa Musa', meta: 'Mali Empire' },
+      { label: 'Wangari Maathai', query: 'Wangari Maathai', meta: 'Kenya' },
+      { label: 'Nnamdi Azikiwe', query: 'Nnamdi Azikiwe', meta: 'Nigeria' },
+      { label: 'Thomas Sankara', query: 'Thomas Sankara', meta: 'Burkina Faso' },
+    ],
+    Inventors: [
+      { label: 'Thomas Edison', query: 'Thomas Edison' },
+      { label: 'Nikola Tesla', query: 'Nikola Tesla' },
+      { label: 'Garrett Morgan', query: 'Garrett Morgan' },
+      { label: 'Marie Curie', query: 'Marie Curie' },
+      { label: 'Alexander Graham Bell', query: 'Alexander Graham Bell' },
+      { label: 'Ibn al-Haytham', query: 'Ibn al-Haytham' },
+    ],
+    'Famous Scientists': [
+      { label: 'Albert Einstein', query: 'Albert Einstein' },
+      { label: 'Isaac Newton', query: 'Isaac Newton' },
+      { label: 'Rosalind Franklin', query: 'Rosalind Franklin' },
+      { label: 'Galileo Galilei', query: 'Galileo Galilei' },
+      { label: 'Katherine Johnson', query: 'Katherine Johnson' },
+      { label: 'Charles Darwin', query: 'Charles Darwin' },
+    ],
+    'World Leaders': [
+      { label: 'Abraham Lincoln', query: 'Abraham Lincoln' },
+      { label: 'Julius Nyerere', query: 'Julius Nyerere' },
+      { label: 'Mahatma Gandhi', query: 'Mahatma Gandhi' },
+      { label: 'Winston Churchill', query: 'Winston Churchill' },
+      { label: 'Ellen Johnson Sirleaf', query: 'Ellen Johnson Sirleaf' },
+      { label: 'Barack Obama', query: 'Barack Obama' },
+    ],
+    'Everyday Heroes': [
+      { label: 'Nurses and Midwives', query: 'Nurse', meta: 'Healthcare' },
+      { label: 'Firefighters', query: 'Firefighter', meta: 'Emergency service' },
+      { label: 'Teachers', query: 'Teacher', meta: 'Education' },
+      { label: 'Farmers', query: 'Farmer', meta: 'Food and agriculture' },
+      { label: 'Rescue Workers', query: 'Search and rescue', meta: 'Safety and rescue' },
+      { label: 'Community Volunteers', query: 'Volunteering', meta: 'Community impact' },
+    ],
+    'Artists & Musicians': [
+      { label: 'Fela Kuti', query: 'Fela Kuti', meta: 'Afrobeat pioneer' },
+      { label: 'Miriam Makeba', query: 'Miriam Makeba', meta: 'Singer and activist' },
+      { label: 'Vincent van Gogh', query: 'Vincent van Gogh', meta: 'Painter' },
+      { label: 'Pablo Picasso', query: 'Pablo Picasso', meta: 'Modern art' },
+      { label: 'Michael Jackson', query: 'Michael Jackson', meta: 'Pop music' },
+      { label: 'Ludwig van Beethoven', query: 'Ludwig van Beethoven', meta: 'Classical music' },
+    ],
+    Careers: [
+      { label: 'Doctor', query: 'Physician' },
+      { label: 'Software Engineer', query: 'Software engineer' },
+      { label: 'Architect', query: 'Architect' },
+      { label: 'Pilot', query: 'Pilot (aeronautics)' },
+      { label: 'Journalist', query: 'Journalist' },
+      { label: 'Marine Biologist', query: 'Marine biology' },
+    ],
+    'Family & Traditions': [
+      { label: 'Naming Ceremonies', query: 'Naming ceremony' },
+      { label: 'Wedding Traditions', query: 'Wedding' },
+      { label: 'Festivals', query: 'Festival' },
+      { label: 'Storytelling Nights', query: 'Oral tradition' },
+      { label: 'Traditional Clothing', query: 'Traditional dress' },
+      { label: 'Respect for Elders', query: 'Filial piety' },
+    ],
+    'Ancient Civilizations': [
+      { label: 'Ancient Egypt', query: 'Ancient Egypt' },
+      { label: 'Mesopotamia', query: 'Mesopotamia' },
+      { label: 'Ancient Greece', query: 'Ancient Greece' },
+      { label: 'Ancient Rome', query: 'Ancient Rome' },
+      { label: 'Indus Valley Civilization', query: 'Indus Valley Civilisation' },
+      { label: 'Maya Civilization', query: 'Maya civilization' },
+    ],
+    'African Kingdoms': [
+      { label: 'Mali Empire', query: 'Mali Empire' },
+      { label: 'Songhai Empire', query: 'Songhai Empire' },
+      { label: 'Kingdom of Benin', query: 'Kingdom of Benin' },
+      { label: 'Kingdom of Kush', query: 'Kingdom of Kush' },
+      { label: 'Great Zimbabwe', query: 'Great Zimbabwe' },
+      { label: 'Oyo Empire', query: 'Oyo Empire' },
+    ],
+    'Early Humans': [
+      { label: 'Australopithecus', query: 'Australopithecus' },
+      { label: 'Homo habilis', query: 'Homo habilis' },
+      { label: 'Homo erectus', query: 'Homo erectus' },
+      { label: 'Neanderthals', query: 'Neanderthal' },
+      { label: 'Stone Age Tools', query: 'Stone tool' },
+      { label: 'Cave Paintings', query: 'Cave painting' },
+    ],
+    Explorers: [
+      { label: 'Ibn Battuta', query: 'Ibn Battuta' },
+      { label: 'Zheng He', query: 'Zheng He' },
+      { label: 'Christopher Columbus', query: 'Christopher Columbus' },
+      { label: 'Mungo Park', query: 'Mungo Park' },
+      { label: 'Roald Amundsen', query: 'Roald Amundsen' },
+      { label: 'Neil Armstrong', query: 'Neil Armstrong' },
+    ],
+    Inventions: [
+      { label: 'Wheel', query: 'Wheel' },
+      { label: 'Printing Press', query: 'Printing press' },
+      { label: 'Compass', query: 'Compass' },
+      { label: 'Steam Engine', query: 'Steam engine' },
+      { label: 'Telephone', query: 'Telephone' },
+      { label: 'Internet', query: 'Internet' },
+    ],
+    'Nigerian History': [
+      { label: 'Nok Culture', query: 'Nok culture' },
+      { label: 'Benin Kingdom', query: 'Kingdom of Benin' },
+      { label: 'Sokoto Caliphate', query: 'Sokoto Caliphate' },
+      { label: 'Colonial Nigeria', query: 'Colonial Nigeria' },
+      { label: 'Nigerian Independence', query: 'Nigerian independence' },
+      { label: 'Nigerian Civil War', query: 'Nigerian Civil War' },
+    ],
+    Timelines: [
+      { label: 'Prehistoric Era', query: 'Prehistory' },
+      { label: 'Ancient Era', query: 'Ancient history' },
+      { label: 'Middle Ages', query: 'Middle Ages' },
+      { label: 'Renaissance', query: 'Renaissance' },
+      { label: 'Industrial Revolution', query: 'Industrial Revolution' },
+      { label: 'Modern History', query: 'Contemporary history' },
+    ],
+    'Castles & Pyramids': [
+      { label: 'Great Pyramid of Giza', query: 'Great Pyramid of Giza' },
+      { label: 'Pyramid of Khafre', query: 'Pyramid of Khafre' },
+      { label: 'Windsor Castle', query: 'Windsor Castle' },
+      { label: 'Edinburgh Castle', query: 'Edinburgh Castle' },
+      { label: 'Alhambra', query: 'Alhambra' },
+      { label: 'Lalibela Churches', query: 'Rock-Hewn Churches, Lalibela' },
+    ],
+    Mammals: [
+      { label: 'Big Cats', query: 'Big cat', meta: 'Lions, tigers, leopards' },
+      { label: 'Whales & Dolphins', query: 'Cetacea', meta: 'Ocean mammals' },
+      { label: 'Primates', query: 'Primate', meta: 'Monkeys and apes' },
+      { label: 'Marsupials', query: 'Marsupial', meta: 'Kangaroos and koalas' },
+      { label: 'Bats', query: 'Bat', meta: 'Flying mammals' },
+      { label: 'How Mammals Care for Babies', query: 'Parental care in mammals', meta: 'Family life' },
+    ],
+    Birds: [
+      { label: 'Eagles', query: 'Eagle' },
+      { label: 'Parrots', query: 'Parrot' },
+      { label: 'Penguins', query: 'Penguin' },
+      { label: 'Owls', query: 'Owl' },
+      { label: 'Ostriches', query: 'Ostrich' },
+      { label: 'Migration', query: 'Bird migration' },
+    ],
+    'Reptiles & Amphibians': [
+      { label: 'Crocodiles', query: 'Crocodile' },
+      { label: 'Snakes', query: 'Snake' },
+      { label: 'Turtles', query: 'Turtle' },
+      { label: 'Frogs', query: 'Frog' },
+      { label: 'Salamanders', query: 'Salamander' },
+      { label: 'Metamorphosis', query: 'Metamorphosis' },
+    ],
+    'Ocean Giants': [
+      { label: 'Blue Whale', query: 'Blue whale' },
+      { label: 'Orca', query: 'Orca' },
+      { label: 'Whale Shark', query: 'Whale shark' },
+      { label: 'Giant Squid', query: 'Giant squid' },
+      { label: 'Manta Ray', query: 'Manta ray' },
+      { label: 'Deep Ocean', query: 'Deep sea' },
+    ],
+    'Insects & Bugs': [
+      { label: 'Butterflies', query: 'Butterfly' },
+      { label: 'Bees', query: 'Bee' },
+      { label: 'Ant Colonies', query: 'Ant' },
+      { label: 'Beetles', query: 'Beetle' },
+      { label: 'Mosquitoes', query: 'Mosquito' },
+      { label: 'Life Cycle of Insects', query: 'Insect life cycle' },
+    ],
+    'Endangered Animals': [
+      { label: 'Mountain Gorilla', query: 'Mountain gorilla' },
+      { label: 'Black Rhino', query: 'Black rhinoceros' },
+      { label: 'Sea Turtles', query: 'Sea turtle' },
+      { label: 'Amur Leopard', query: 'Amur leopard' },
+      { label: 'Pangolin', query: 'Pangolin' },
+      { label: 'Wildlife Conservation', query: 'Wildlife conservation' },
+    ],
+    Plants: [
+      { label: 'Parts of a Plant', query: 'Plant anatomy' },
+      { label: 'Photosynthesis', query: 'Photosynthesis' },
+      { label: 'Rainforest Plants', query: 'Rainforest flora' },
+      { label: 'Desert Plants', query: 'Xerophyte' },
+      { label: 'Flowering Plants', query: 'Flowering plant' },
+      { label: 'Plant Adaptations', query: 'Plant adaptation' },
+    ],
+    'The Human Body': [
+      { label: 'Brain', query: 'Human brain' },
+      { label: 'Heart', query: 'Heart' },
+      { label: 'Lungs', query: 'Lung' },
+      { label: 'Digestive System', query: 'Human digestive system' },
+      { label: 'Skeleton', query: 'Human skeleton' },
+      { label: 'Immune System', query: 'Immune system' },
+    ],
+    'The Solar System': [
+      { label: 'The Sun', query: 'Sun' },
+      { label: 'Inner Planets', query: 'Inner planets' },
+      { label: 'Gas Giants', query: 'Gas giant' },
+      { label: 'Moons', query: 'Natural satellite' },
+      { label: 'Asteroids', query: 'Asteroid' },
+      { label: 'Comets', query: 'Comet' },
+    ],
+    'Weather & Climate': [
+      { label: 'Cloud Types', query: 'Cloud' },
+      { label: 'Rain and Storms', query: 'Thunderstorm' },
+      { label: 'Hurricanes', query: 'Tropical cyclone' },
+      { label: 'Climate Zones', query: 'Climate' },
+      { label: 'Seasons', query: 'Season' },
+      { label: 'Climate Change', query: 'Climate change' },
+    ],
+    Electricity: [
+      { label: 'Electric Circuits', query: 'Electrical circuit' },
+      { label: 'Static Electricity', query: 'Static electricity' },
+      { label: 'Batteries', query: 'Battery (electricity)' },
+      { label: 'Power Stations', query: 'Power station' },
+      { label: 'Renewable Energy', query: 'Renewable energy' },
+      { label: 'Safety Rules', query: 'Electrical safety' },
+    ],
+    'States of Matter': [
+      { label: 'Solids', query: 'Solid' },
+      { label: 'Liquids', query: 'Liquid' },
+      { label: 'Gases', query: 'Gas' },
+      { label: 'Plasma', query: 'Plasma (physics)' },
+      { label: 'Melting and Freezing', query: 'Melting' },
+      { label: 'Evaporation and Condensation', query: 'Evaporation' },
+    ],
+    'Football (Soccer)': [
+      { label: 'Rules of the Game', query: 'Laws of the Game (association football)' },
+      { label: 'Player Positions', query: 'Association football positions' },
+      { label: 'FIFA World Cup', query: 'FIFA World Cup' },
+      { label: 'African Football', query: 'CAF Africa Cup of Nations' },
+      { label: 'Famous Footballers', query: 'List of association football players' },
+      { label: 'How to Train', query: 'Association football training' },
+    ],
+    Basketball: [
+      { label: 'Rules and Scoring', query: 'Basketball rules' },
+      { label: 'NBA', query: 'National Basketball Association' },
+      { label: 'Women in Basketball', query: 'Women\'s National Basketball Association' },
+      { label: 'Passing and Dribbling', query: 'Dribble' },
+      { label: 'Slam Dunks', query: 'Slam dunk' },
+      { label: 'Famous Players', query: 'List of National Basketball Association players' },
+    ],
+    Athletics: [
+      { label: 'Sprinting', query: 'Sprint (running)' },
+      { label: 'Long Jump', query: 'Long jump' },
+      { label: 'High Jump', query: 'High jump' },
+      { label: 'Relay Races', query: 'Relay race' },
+      { label: 'Marathon', query: 'Marathon' },
+      { label: 'Track and Field Events', query: 'Track and field' },
+    ],
+    Swimming: [
+      { label: 'Freestyle', query: 'Freestyle swimming' },
+      { label: 'Backstroke', query: 'Backstroke' },
+      { label: 'Breaststroke', query: 'Breaststroke' },
+      { label: 'Butterfly Stroke', query: 'Butterfly stroke' },
+      { label: 'Swimming Safety', query: 'Water safety' },
+      { label: 'Olympic Swimming', query: 'Swimming at the Summer Olympics' },
+    ],
+    'The Olympics': [
+      { label: 'Ancient Olympics', query: 'Ancient Olympic Games' },
+      { label: 'Modern Olympics', query: 'Olympic Games' },
+      { label: 'Olympic Symbols', query: 'Olympic symbols' },
+      { label: 'Summer Sports', query: 'Summer Olympic Games' },
+      { label: 'Winter Sports', query: 'Winter Olympic Games' },
+      { label: 'Paralympics', query: 'Paralympic Games' },
+    ],
+    'Martial Arts': [
+      { label: 'Karate', query: 'Karate' },
+      { label: 'Taekwondo', query: 'Taekwondo' },
+      { label: 'Judo', query: 'Judo' },
+      { label: 'Kung Fu', query: 'Chinese martial arts' },
+      { label: 'Self-Discipline', query: 'Self-discipline' },
+      { label: 'Belt Levels', query: 'Rank in martial arts' },
+    ],
+    'Drawing & Painting': [
+      { label: 'Sketching Basics', query: 'Drawing' },
+      { label: 'Watercolor', query: 'Watercolor painting' },
+      { label: 'Acrylic Painting', query: 'Acrylic paint' },
+      { label: 'Color Theory', query: 'Color theory' },
+      { label: 'Portrait Art', query: 'Portrait painting' },
+      { label: 'Landscape Art', query: 'Landscape painting' },
+    ],
+    Music: [
+      { label: 'Rhythm and Beat', query: 'Rhythm' },
+      { label: 'Melody', query: 'Melody' },
+      { label: 'Instruments', query: 'Musical instrument' },
+      { label: 'Choir and Singing', query: 'Choir' },
+      { label: 'African Music', query: 'Music of Africa' },
+      { label: 'Classical Music', query: 'Classical music' },
+    ],
+    Dance: [
+      { label: 'Ballet', query: 'Ballet' },
+      { label: 'Hip-Hop Dance', query: 'Hip-hop dance' },
+      { label: 'Traditional African Dance', query: 'African dance' },
+      { label: 'Contemporary Dance', query: 'Contemporary dance' },
+      { label: 'Dance Costumes', query: 'Dance costume' },
+      { label: 'Famous Dancers', query: 'List of dancers' },
+    ],
+    Sculpture: [
+      { label: 'Clay Sculpture', query: 'Clay' },
+      { label: 'Stone Carving', query: 'Stone carving' },
+      { label: 'Bronze Sculpture', query: 'Bronze sculpture' },
+      { label: 'Public Monuments', query: 'Monument' },
+      { label: 'Relief Sculpture', query: 'Relief' },
+      { label: 'Famous Sculptors', query: 'List of sculptors' },
+    ],
+    Photography: [
+      { label: 'Camera Basics', query: 'Camera' },
+      { label: 'Portrait Photography', query: 'Portrait photography' },
+      { label: 'Nature Photography', query: 'Nature photography' },
+      { label: 'Photo Composition', query: 'Composition (visual arts)' },
+      { label: 'Lighting', query: 'Photographic lighting' },
+      { label: 'Photo Editing', query: 'Image editing' },
+    ],
+    Folktales: [
+      { label: 'Anansi Stories', query: 'Anansi' },
+      { label: 'Tortoise Tales', query: 'Tortoise in folklore' },
+      { label: 'Moral Lessons', query: 'Moral' },
+      { label: 'Oral Tradition', query: 'Oral tradition' },
+      { label: 'Trickster Characters', query: 'Trickster' },
+      { label: 'World Folktales', query: 'Folklore' },
+    ],
+    'African Proverbs': [
+      { label: 'Wisdom About Community', query: 'African philosophy' },
+      { label: 'Respect and Character', query: 'Virtue ethics' },
+      { label: 'Work and Patience', query: 'Patience' },
+      { label: 'Learning Through Proverbs', query: 'Proverb' },
+      { label: 'Yoruba Proverbs', query: 'Yoruba culture' },
+      { label: 'Akan Proverbs', query: 'Akan people' },
+    ],
+    Poetry: [
+      { label: 'Rhymes', query: 'Rhyme' },
+      { label: 'Haiku', query: 'Haiku' },
+      { label: 'Acrostic Poems', query: 'Acrostic' },
+      { label: 'Spoken Word', query: 'Spoken word' },
+      { label: 'Poetic Devices', query: 'Poetic device' },
+      { label: 'Famous Poets', query: 'List of poets' },
+    ],
+    'Creative Writing': [
+      { label: 'Story Starters', query: 'Creative writing' },
+      { label: 'Character Building', query: 'Character (arts)' },
+      { label: 'Setting and Atmosphere', query: 'Setting (narrative)' },
+      { label: 'Plot Twists', query: 'Plot twist' },
+      { label: 'Dialogue Tips', query: 'Dialogue' },
+      { label: 'Editing Drafts', query: 'Revision (writing)' },
+    ],
+    'Myths & Legends': [
+      { label: 'Greek Myths', query: 'Greek mythology' },
+      { label: 'Norse Legends', query: 'Norse mythology' },
+      { label: 'African Legends', query: 'African mythology' },
+      { label: 'Heroes and Monsters', query: 'Hero' },
+      { label: 'Creation Stories', query: 'Creation myth' },
+      { label: 'Legend vs Myth', query: 'Legend' },
+    ],
+    'Great Books': [
+      { label: 'Adventure Classics', query: 'Adventure novel' },
+      { label: 'Children\'s Literature', query: 'Children\'s literature' },
+      { label: 'Fantasy Stories', query: 'Fantasy literature' },
+      { label: 'Mystery Books', query: 'Mystery fiction' },
+      { label: 'African Authors', query: 'African literature' },
+      { label: 'Book Reviews', query: 'Book review' },
+    ],
+  };
+
+  const topicOptions = useMemo(() => {
+    if (!selectedTopic) return [];
+    const overrideOptions = topicOptionOverrides[selectedTopic];
+    if (overrideOptions && overrideOptions.length > 0) {
+      return overrideOptions;
+    }
+
+    const siblings = getCategoryTopics(selectedCategory)
+      .filter((topic) => topic.title !== selectedTopic)
+      .slice(0, 5)
+      .map((topic) => ({
+        label: topic.title,
+        query: topic.title,
+        meta: topic.description,
+      }));
+
+    return [
+      { label: `About ${selectedTopic}`, query: selectedTopic, meta: 'Overview' },
+      ...siblings,
+    ];
+  }, [selectedTopic, selectedCategory]);
 
   return (
     <div>
       {/* ── Hero Section ─────────────────────────────── */}
       <section className="tb-hero" aria-labelledby="hero-title">
-        <div className="tb-logo-pulse" style={{ display: 'inline-block', marginBottom: '8px' }}>
-          <span className="tb-glow" style={{ fontSize: '56px', display: 'inline-block' }} role="img" aria-hidden="true">
-            💡
-          </span>
-        </div>
-        <h1 id="hero-title" className="tb-hero-title">
-          ThinkBox
-        </h1>
+        <h1 id="hero-title" className="sr-only">ThinkBox</h1>
         <p className="tb-hero-subtitle">What do you want to explore today?</p>
       </section>
 
-      {/* ── Category Grid ────────────────────────────── */}
-      <section aria-label="Browse categories">
-        <div className="tb-grid">
-          {categories.map((cat, idx) => {
-            const config = CATEGORY_CONFIG[cat];
-            const isDimmed =
-              searchFilter.trim() !== '' && !filteredCategories.includes(cat);
-
-            return (
+      {/* ── Encarta-style Navigation ─────────────────── */}
+      <section aria-label="Browse categories" className="tb-encarta-wrap">
+        <div className="tb-encarta-layout">
+          <aside className="tb-encarta-rail" aria-label="Left categories">
+            {leftCategories.map((cat) => (
               <button
                 key={cat}
-                onClick={(e) => handleCardClick(cat, e)}
-                className={`tb-card ${config.cssClass} tb-card-enter tb-card-delay-${idx} ${
-                  isDimmed ? 'tb-card--dimmed' : ''
-                }`}
-                style={{ padding: '28px 24px', textAlign: 'left', border: 'none' }}
-                aria-label={`${cat} category. ${config.description}`}
-                tabIndex={isDimmed ? -1 : 0}
+                className={`tb-encarta-category-btn ${
+                  selectedCategory === cat ? 'tb-encarta-category-btn--active' : ''
+                } ${isCategoryMatch(cat) ? '' : 'tb-encarta-category-btn--dimmed'}`}
+                onClick={() => setSelectedCategory(cat)}
+                aria-label={`${cat} category`}
               >
-                {/* XP badge */}
-                <span className="tb-xp-badge" aria-label="Earn 50 XP">
-                  +50 XP
+                <span className="tb-encarta-category-icon" role="img" aria-hidden="true">
+                  {CATEGORY_CONFIG[cat].icon}
                 </span>
-
-                {/* Ripple */}
-                {ripple && (
-                  <span
-                    className="tb-ripple"
-                    style={{ left: ripple.x, top: ripple.y }}
-                    key={ripple.key}
-                  />
-                )}
-
-                <span className="tb-card-emoji" role="img" aria-hidden="true">
-                  {config.icon}
-                </span>
-                <span className="tb-card-name">{cat}</span>
-                <span className="tb-card-desc">{config.description}</span>
+                <span>{categoryDisplayNames[cat]}</span>
               </button>
-            );
-          })}
+            ))}
+          </aside>
+
+          <div className="tb-encarta-panel" aria-label={`${selectedCategory} submenu`}>
+            <h2 className="tb-encarta-panel-title">{categoryDisplayNames[selectedCategory]}</h2>
+            <p className="tb-encarta-panel-subtitle">{CATEGORY_CONFIG[selectedCategory].description}</p>
+
+            {selectedTopic && (
+              <div className="tb-encarta-submenu" aria-label={`${selectedTopic} options`}>
+                <p className="tb-encarta-submenu-heading">{selectedTopic}</p>
+                <div className="tb-encarta-option-grid">
+                  {topicOptions.map((option) => (
+                    <button
+                      key={`${option.label}-${option.query}`}
+                      className="tb-encarta-option"
+                      onClick={() => onTopicClick(option.query)}
+                      aria-label={`Open ${option.query}`}
+                    >
+                      <span className="tb-encarta-option-title">{option.label}</span>
+                      <span className="tb-encarta-option-meta">{option.meta || selectedTopic}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="tb-encarta-topic-list">
+              {filteredTopics.length === 0 ? (
+                <p className="tb-encarta-empty">No topics match your search in {selectedCategory}.</p>
+              ) : (
+                filteredTopics.map((topic) => (
+                  <button
+                    key={topic.title}
+                    className={`tb-encarta-topic ${
+                      selectedTopic === topic.title ? 'tb-encarta-topic--active' : ''
+                    }`}
+                    onClick={() => setSelectedTopic(topic.title)}
+                    aria-label={`Show options for ${topic.title}`}
+                  >
+                    <span className="tb-encarta-topic-icon" role="img" aria-hidden="true">
+                      {CATEGORY_CONFIG[selectedCategory].icon}
+                    </span>
+                    <span className="tb-encarta-topic-text">{topic.title}</span>
+                    <ArrowRight size={16} className="tb-encarta-topic-arrow" />
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+
+          <aside className="tb-encarta-rail" aria-label="Right categories">
+            {rightCategories.map((cat) => (
+              <button
+                key={cat}
+                className={`tb-encarta-category-btn ${
+                  selectedCategory === cat ? 'tb-encarta-category-btn--active' : ''
+                } ${isCategoryMatch(cat) ? '' : 'tb-encarta-category-btn--dimmed'}`}
+                onClick={() => setSelectedCategory(cat)}
+                aria-label={`${cat} category`}
+              >
+                <span className="tb-encarta-category-icon" role="img" aria-hidden="true">
+                  {CATEGORY_CONFIG[cat].icon}
+                </span>
+                <span>{categoryDisplayNames[cat]}</span>
+              </button>
+            ))}
+          </aside>
         </div>
       </section>
 
-      {/* ── Category Modal ───────────────────────────── */}
-      {modalCategory && (
-        <div
-          className="tb-overlay"
-          onClick={closeModal}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${modalCategory} articles`}
-        >
-          <div
-            className="tb-modal"
-            onClick={(e) => e.stopPropagation()}
-            style={{ padding: '32px' }}
-          >
-            {/* Modal header */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '24px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '32px' }} role="img" aria-hidden="true">
-                  {CATEGORY_CONFIG[modalCategory].icon}
-                </span>
-                <h2
-                  style={{
-                    fontFamily: 'var(--tb-font-heading)',
-                    fontSize: '24px',
-                    fontWeight: 700,
-                    color: 'var(--tb-text)',
-                    margin: 0,
-                  }}
-                >
-                  {modalCategory}
-                </h2>
-              </div>
-              <button
-                onClick={closeModal}
-                style={{
-                  background: 'var(--tb-bg)',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                aria-label="Close"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Article stubs */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {getStubs(modalCategory).map((stub) => (
-                <button
-                  key={stub.title}
-                  className="tb-stub"
-                  onClick={() => {
-                    closeModal();
-                    onTopicClick(stub.title);
-                  }}
-                  style={{ border: 'none', width: '100%', textAlign: 'left' }}
-                >
-                  <div>
-                    <div className="tb-stub-title">{stub.title}</div>
-                    <div className="tb-stub-desc">{stub.description}</div>
-                  </div>
-                  <ArrowRight
-                    size={16}
-                    style={{ marginLeft: 'auto', color: 'var(--tb-primary)', flexShrink: 0 }}
-                  />
-                </button>
-              ))}
-            </div>
-
-            {/* View all link */}
-            <button
-              onClick={() => {
-                closeModal();
-                onTopicClick(modalCategory);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                width: '100%',
-                marginTop: '20px',
-                padding: '14px',
-                background: 'var(--tb-primary)',
-                color: 'white',
-                border: 'none',
-                borderRadius: 'var(--tb-radius-md)',
-                fontFamily: 'var(--tb-font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              Explore all {modalCategory}
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        </div>
+      {exploredCategories.size > 0 && (
+        <p className="tb-encarta-footer-note">
+          Explored categories today: {Array.from(exploredCategories).join(', ')}
+        </p>
       )}
     </div>
   );
