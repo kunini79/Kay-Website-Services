@@ -1259,3 +1259,47 @@ input:checked + .tb-switch-slider:before {
   transform: scale(0.96);
   box-shadow: var(--tb-shadow-sm);
 }
+
+/* ============================================================
+   ThinkBox Product Page — Dark Mode Isolation
+   Prevents KayCorp site dark mode (data-theme="dark" on <html>)
+   from ever affecting .thinkbox-root and its descendants.
+   ============================================================ */
+
+.thinkbox-root {
+  color-scheme: light !important;
+  background-color: #F7F7F7 !important;
+  color: #3C3C3C !important;
+}
+
+/* Reset every descendant to light-mode values */
+[data-theme="dark"] .thinkbox-root,
+[data-theme="dark"] .thinkbox-root * {
+  color-scheme: light !important;
+}
+
+[data-theme="dark"] .thinkbox-root {
+  background-color: #F7F7F7 !important;
+  color: #3C3C3C !important;
+}
+
+/* Tailwind utility overrides inside ThinkBox */
+[data-theme="dark"] .thinkbox-root .bg-white { background-color: #ffffff !important; }
+[data-theme="dark"] .thinkbox-root .text-white { color: #ffffff !important; }
+[data-theme="dark"] .thinkbox-root .text-black { color: #000000 !important; }
+[data-theme="dark"] .thinkbox-root .border-white { border-color: #ffffff !important; }
+
+/* Inputs & selects always light */
+[data-theme="dark"] .thinkbox-root input,
+[data-theme="dark"] .thinkbox-root textarea,
+[data-theme="dark"] .thinkbox-root select {
+  background-color: #ffffff !important;
+  color: #3C3C3C !important;
+  border-color: #E5E5E5 !important;
+  color-scheme: light !important;
+}
+
+[data-theme="dark"] .thinkbox-root option {
+  background-color: #ffffff !important;
+  color: #3C3C3C !important;
+}

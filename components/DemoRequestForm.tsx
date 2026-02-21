@@ -33,12 +33,12 @@ const ROLE_OPTIONS = [
 ];
 
 const USE_CASE_OPTIONS = [
-  'Personal learning & self-improvement',
-  'Academic research',
-  'Team training & onboarding',
-  'Content creation & writing',
-  'Educational curriculum support',
-  'Business intelligence',
+  'Learning at home (self-study)',
+  'Classroom / school use',
+  'Supporting my child\'s education',
+  'Homeschooling',
+  'After-school or tutoring programme',
+  'Educational research or evaluation',
   'Other',
 ];
 
@@ -303,12 +303,13 @@ export default function DemoRequestForm({ onSuccess }: DemoRequestFormProps) {
                   value={formData.role}
                   onChange={handleChange}
                   className={`${inputClass} pl-9 appearance-none cursor-pointer`}
+                  style={{ backgroundColor: '#fff', color: '#3C3C3C', colorScheme: 'light' }}
                 >
-                  <option value="" className="bg-gray-900">
+                  <option value="" style={{ backgroundColor: '#fff', color: '#3C3C3C' }}>
                     Select your role…
                   </option>
                   {ROLE_OPTIONS.map((r) => (
-                    <option key={r} value={r} className="bg-gray-900">
+                    <option key={r} value={r} style={{ backgroundColor: '#fff', color: '#3C3C3C' }}>
                       {r}
                     </option>
                   ))}
@@ -331,12 +332,13 @@ export default function DemoRequestForm({ onSuccess }: DemoRequestFormProps) {
                   value={formData.useCase}
                   onChange={handleChange}
                   className={`${inputClass} pl-9 appearance-none cursor-pointer`}
+                  style={{ backgroundColor: '#fff', color: '#3C3C3C', colorScheme: 'light' }}
                 >
-                  <option value="" className="bg-gray-900">
+                  <option value="" style={{ backgroundColor: '#fff', color: '#3C3C3C' }}>
                     How will you use ThinkBox?
                   </option>
                   {USE_CASE_OPTIONS.map((u) => (
-                    <option key={u} value={u} className="bg-gray-900">
+                    <option key={u} value={u} style={{ backgroundColor: '#fff', color: '#3C3C3C' }}>
                       {u}
                     </option>
                   ))}
