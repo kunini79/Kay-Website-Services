@@ -7,7 +7,17 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const openRouterApiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '';
 const openRouterModel = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
 const nasaApiKey = process.env.NEXT_PUBLIC_NASA_API_KEY || process.env.NASA_API_KEY || 'DEMO_KEY';
-const ai = new GoogleGenAI({ apiKey });
+
+// Lazy-initialize the Gemini client so module import doesn't throw during
+// static prerendering when the API key env var isn't available at build time.
+let _ai: GoogleGenAI | null = null;
+function getAI(): GoogleGenAI {
+  if (!_ai) {
+    if (!apiKey) throw new Error('NEXT_PUBLIC_GEMINI_API_KEY is not set.');
+    _ai = new GoogleGenAI({ apiKey });
+  }
+  return _ai;
+}
 
 // Image and content cache to avoid repeated API calls
 const imageCache = new Map<string, string>();
@@ -675,7 +685,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
           setTimeout(() => reject(new Error('Request timed out. Please try again.')), 40000)
         );
 
-        const apiPromise = ai.models.generateContent({
+        const apiPromise = getAI().models.generateContent({
           model,
           contents: prompt,
           config: {
@@ -830,7 +840,7 @@ export const fetchSuggestions = async (category: Category): Promise<TopicPreview
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model,
       contents: prompt,
       config: {
