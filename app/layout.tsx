@@ -1,25 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Bebas_Neue, Inter_Tight, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import BodyContent from "@/app/components/BodyContent";
-
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas-neue",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
-  subsets: ["latin"],
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kaycorp.tech"),
@@ -79,9 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${bebasNeue.variable} ${interTight.variable} ${plusJakartaSans.variable} antialiased`}
-      >
+      <body className="antialiased">
         <Script id="ld-json" type="application/ld+json" strategy="beforeInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

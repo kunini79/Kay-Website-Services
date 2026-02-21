@@ -1,34 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Article } from '../types';
 import { DidYouKnow } from './DidYouKnow';
+import { QuizView } from './QuizView';
 import { fetchWikimediaImage, fetchWikimediaImages } from '../services/geminiService';
-import { ArrowRight, Volume2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Volume2, Bookmark, Check } from 'lucide-react';
+import { TextWithTTS } from './TextWithTTS';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 interface ArticleViewProps {
   article: Article;
   onTopicClick: (topic: string) => void;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
+  onEarnXP?: (amount: number) => void;
 }
 
 export const ArticleView: React.FC<ArticleViewProps> = ({
   article,
   onTopicClick,
+  isSaved = false,
+  onToggleSave,
+  onEarnXP,
 }) => {
-  const [heroImage, setHeroImage] = useState<string>('');
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [heroLoading, setHeroLoading] = useState(true);
+  const imageSeed = article.imageSeed || article.title;
+  
+  // Embla Carousel hook
+  const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
 
   useEffect(() => {
     let isMounted = true;
     const loadHeroImage = async () => {
       try {
-        const imageUrls = await fetchWikimediaImages(article.title, 1200, 600, 4);
+        const imageUrls = await fetchWikimediaImages(imageSeed, 1200, 600, 5);
         if (isMounted) {
-          setHeroImages(imageUrls);
-          setHeroImage(imageUrls[0] || '');
+          setHeroImages(imageUrls.length > 0 ? imageUrls : []);
         }
       } catch (err) {
         console.warn('Failed to load hero image:', err);
-        setHeroImage('');
         setHeroImages([]);
       } finally {
         if (isMounted) setHeroLoading(false);
@@ -38,178 +49,161 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [article.title]);
-
-  const handleSpeak = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(
-        `${article.title}. ${article.intro}`
-      );
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
+  }, [imageSeed]);
 
   const sectionColors = ['#0D9488', '#F97316', '#FCD34D', '#14B8A6'];
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
-      {/* Hero */}
-      <div className="tb-article-hero">
-        <div
-          style={{
-            aspectRatio: '16/9',
-            width: '100%',
-            position: 'relative',
+    <div className="tb-article-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
+      
+      {/* Back button */}
+      <button
+        onClick={() => onTopicClick('back')}
+        style={{
+            marginBottom: '16px',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {heroLoading && <div className="tb-spinner" />}
-          {heroImage && (
-            <img
-              src={heroImage}
-              alt={article.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                position: 'absolute',
-                inset: 0,
-              }}
-              loading="lazy"
-              onLoad={() => setHeroLoading(false)}
-              onError={() => setHeroLoading(false)}
-            />
-          )}
-        </div>
+            gap: '8px',
+            color: 'var(--tb-text-muted)',
+            fontWeight: 600,
+            fontSize: '14px'
+        }}
+      >
+        <ArrowLeft size={16} /> Back to Topics
+      </button>
 
-        {/* Overlay */}
+      {/* Hero Header with Carousel */}
+      <div className="tb-article-hero" style={{ position: 'relative', borderRadius: 'var(--tb-radius-xl)', overflow: 'hidden', boxShadow: 'var(--tb-shadow-lg)', marginBottom: '32px' }}>
+        {heroLoading ? (
+            <div style={{ aspectRatio: '16/9', width: '100%', background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="text-gray-400 font-bold">Loading visuals...</span>
+            </div>
+        ) : (
+          <div className="embla" ref={emblaRef} style={{ overflow: 'hidden', height: '100%', aspectRatio: '16/9' }}>
+            <div className="embla__container" style={{ display: 'flex', height: '100%' }}>
+              {(heroImages.length > 0 ? heroImages : ['/placeholder.jpg']).map((src, index) => (
+                 <div className="embla__slide" key={index} style={{ flex: '0 0 100%', minWidth: 0, position: 'relative' }}>
+                    <img
+                      src={src}
+                      alt={`${article.title} - view ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        filter: 'brightness(0.7)',
+                      }}
+                      onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Title Overlay */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
-            right: 0,
-            background:
-              'linear-gradient(to top, rgba(15,23,42,0.85), transparent)',
-            padding: '64px 32px 32px',
-          }}
-        >
-          <span
-            style={{
-              display: 'inline-block',
-              background: 'var(--tb-yellow)',
-              color: 'var(--tb-text)',
-              padding: '4px 14px',
-              borderRadius: 'var(--tb-radius-full)',
-              fontFamily: 'var(--tb-font-heading)',
-              fontWeight: 700,
-              fontSize: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              marginBottom: '12px',
-            }}
-          >
-            {article.category}
-          </span>
-          <h1
-            style={{
-              fontFamily: 'var(--tb-font-heading)',
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontWeight: 700,
-              color: 'white',
-              margin: 0,
-              lineHeight: 1.1,
-            }}
-          >
-            {article.title}
-          </h1>
-        </div>
-
-        {/* TTS button */}
-        <button
-          onClick={handleSpeak}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            background: 'white',
-            border: 'none',
-            borderRadius: '50%',
-            width: '48px',
-            height: '48px',
+            width: '100%',
+            padding: '40px 32px',
+            backgroundColor: 'rgba(0,0,0,0.5)',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: 'var(--tb-shadow-md)',
-            cursor: 'pointer',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            pointerEvents: 'none'
           }}
-          aria-label="Read aloud"
         >
-          <Volume2 size={22} color="var(--tb-primary)" />
-        </button>
+          <div style={{ pointerEvents: 'auto' }}>
+            <div style={{ marginBottom: '16px' }}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    background: 'var(--tb-yellow)',
+                    color: 'var(--tb-text)',
+                    padding: '4px 14px',
+                    borderRadius: 'var(--tb-radius-full)',
+                    fontFamily: 'var(--tb-font-heading)',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                  }}
+                >
+                  {article.category}
+                </span>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h1
+                style={{
+                    fontFamily: 'var(--tb-font-heading)',
+                    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                    fontWeight: 700,
+                    color: 'white',
+                    margin: 0,
+                    lineHeight: 1.1,
+                }}
+                >
+                {article.title}
+                </h1>
+                
+                {onToggleSave && (
+                    <button
+                        onClick={onToggleSave}
+                        style={{
+                            pointerEvents: 'auto',
+                            background: isSaved ? 'var(--tb-primary)' : 'rgba(255,255,255,0.2)',
+                            backdropFilter: 'blur(4px)',
+                            border: isSaved ? '2px solid var(--tb-primary-light)' : '2px solid rgba(255,255,255,0.4)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            color: 'white',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            boxShadow: isSaved ? '0 4px 12px rgba(88, 204, 2, 0.4)' : 'none'
+                        }}
+                        title={isSaved ? "Saved to Backpack" : "Save to Backpack"}
+                    >
+                        {isSaved ? <Check size={24} strokeWidth={3} /> : <Bookmark size={24} />}
+                    </button>
+                )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {heroImages.length > 1 && (
-        <div
-          style={{
-            display: 'flex',
-            gap: '8px',
-            padding: '10px 14px',
-            overflowX: 'auto',
-            background: 'rgba(255,255,255,0.05)',
-          }}
-        >
-          {heroImages.map((imgUrl, idx) => (
-            <button
-              key={`${imgUrl}-${idx}`}
-              onClick={() => setHeroImage(imgUrl)}
-              style={{
-                border: imgUrl === heroImage ? '2px solid var(--tb-yellow)' : '2px solid transparent',
-                borderRadius: '10px',
-                padding: 0,
-                width: '88px',
-                height: '56px',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                flexShrink: 0,
-                background: 'transparent',
-              }}
-              aria-label={`Select hero image ${idx + 1}`}
-            >
-              <img
-                src={imgUrl}
-                alt={`${article.title} preview ${idx + 1}`}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                loading="lazy"
-              />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Body */}
-      <div className="tb-article-body">
-        <p
+      {/* Intro Section with TTS */}
+      <div className="tb-article-body mb-8">
+         <div
           style={{
             fontSize: '20px',
-            lineHeight: 1.7,
-            color: 'var(--tb-text)',
-            fontWeight: 600,
+            fontWeight: 500,
+            color: 'var(--tb-text-muted)',
+            lineHeight: 1.6,
             marginBottom: '32px',
+            borderLeft: '4px solid var(--tb-primary)',
+            paddingLeft: '20px',
           }}
         >
-          {article.intro}
-        </p>
+          <TextWithTTS content={article.intro} title={article.title} />
+        </div>
 
-        <DidYouKnow fact={article.funFact} />
+         {/* Fun Fact Card */}
+         <DidYouKnow fact={article.funFact} />
+      </div>
 
-        {/* Sections */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '32px' }}>
+      {/* Article Sections */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '32px' }}>
           {article.sections && article.sections.length > 0 ? (
             article.sections.map((section, idx) => (
               <SectionBlock
@@ -217,6 +211,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 section={section}
                 index={idx}
                 articleTitle={article.title}
+                articleImageSeed={imageSeed}
                 accentColor={sectionColors[idx % sectionColors.length]}
               />
             ))
@@ -234,67 +229,64 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
               Short article! Try searching for another topic.
             </div>
           )}
-        </div>
+      </div>
 
-        {/* Related Topics */}
-        <div
+      {article.quiz && article.quiz.length > 0 && onEarnXP && (
+        <div style={{ marginTop: '48px', marginBottom: '48px' }}>
+          <QuizView questions={article.quiz} onComplete={onEarnXP} />
+        </div>
+      )}
+
+      {/* Related Topics */}
+      <div style={{ marginTop: '48px', textAlign: 'center' }}>
+        <h3
           style={{
-            marginTop: '48px',
-            padding: '32px',
-            background: 'var(--tb-primary)',
-            borderRadius: 'var(--tb-radius-xl)',
-            textAlign: 'center',
+            fontSize: '24px',
+            marginBottom: '24px',
+            color: 'var(--tb-text)',
           }}
         >
-          <h3
-            style={{
-              fontFamily: 'var(--tb-font-heading)',
-              fontSize: '24px',
-              fontWeight: 700,
-              color: 'white',
-              marginBottom: '20px',
-            }}
-          >
-            What do you want to explore next?
-          </h3>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              gap: '12px',
-            }}
-          >
-            {article.relatedTopics && article.relatedTopics.length > 0 ? (
-              article.relatedTopics.map((topic, i) => (
-                <button
-                  key={i}
-                  onClick={() => onTopicClick(topic)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    background: 'rgba(255,255,255,0.15)',
-                    color: 'white',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    padding: '12px 20px',
-                    borderRadius: 'var(--tb-radius-md)',
-                    fontFamily: 'var(--tb-font-heading)',
-                    fontWeight: 700,
-                    fontSize: '15px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {topic}
-                  <ArrowRight size={16} />
-                </button>
-              ))
-            ) : (
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
-                No more suggestions for now!
-              </p>
-            )}
-          </div>
+          Keep Exploring!
+        </h3>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '12px',
+          }}
+        >
+          {article.relatedTopics.map((topic) => (
+            <button
+              key={topic}
+              onClick={() => onTopicClick(topic)}
+              style={{
+                padding: '12px 24px',
+                background: 'white',
+                border: '2px solid var(--tb-border)',
+                borderRadius: 'var(--tb-radius-full)',
+                fontFamily: 'var(--tb-font-heading)',
+                fontSize: '16px',
+                fontWeight: 700,
+                color: 'var(--tb-primary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--tb-primary)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--tb-border)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              {topic} <ArrowRight size={16} />
+            </button>
+          ))}
         </div>
       </div>
     </div>
@@ -306,6 +298,7 @@ interface SectionBlockProps {
   section: { subtitle: string; content: string };
   index: number;
   articleTitle: string;
+  articleImageSeed: string;
   accentColor: string;
 }
 
@@ -313,6 +306,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   section,
   index,
   articleTitle,
+  articleImageSeed,
   accentColor,
 }) => {
   const [sectionImages, setSectionImages] = useState<string[]>([]);
@@ -323,7 +317,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
       let isMounted = true;
       const loadImage = async () => {
         try {
-          const seed = `${articleTitle} - ${section.subtitle}`;
+          const seed = `${articleImageSeed} - ${section.subtitle}`;
           const imageUrls = await fetchWikimediaImages(seed, 400, 300, 3);
           if (isMounted) setSectionImages(imageUrls);
         } catch {
@@ -339,7 +333,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
     } else {
       setImageLoading(false);
     }
-  }, [articleTitle, index]);
+  }, [articleImageSeed, index, section.subtitle]);
 
   return (
     <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -360,16 +354,12 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
             {section.subtitle}
           </h2>
         </div>
-        <p
-          style={{
-            fontSize: '16px',
-            lineHeight: 1.7,
-            color: 'var(--tb-text)',
-            fontWeight: 500,
-          }}
-        >
-          {section.content}
-        </p>
+        <div style={{
+          fontSize: '16px',
+          color: 'var(--tb-text)',
+        }}>
+          <TextWithTTS content={section.content} />
+        </div>
       </div>
       {index % 2 === 0 && (
         <div

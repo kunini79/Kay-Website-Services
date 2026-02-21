@@ -8,7 +8,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, company, message } = body;
+    const { name, email, company, phone, role, useCase, message } = body;
 
     // Validate required fields
     if (!name || !email || !company) {
@@ -47,6 +47,9 @@ export async function POST(request: NextRequest) {
       name,
       email,
       company,
+      phone: phone || '',
+      role: role || '',
+      useCase: useCase || '',
       message: message || '',
       status: 'pending',
     });
@@ -54,27 +57,59 @@ export async function POST(request: NextRequest) {
     // Send confirmation email to user
     try {
       await resend.emails.send({
-        from: 'noreply@thinkbox.kaycorp.com',
+        from: 'ThinkBox <noreply@thinkbox.kaycorp.com>',
         to: email,
-        subject: 'ThinkBox Demo Request Received - Approval Pending',
+        subject: "We've received your ThinkBox beta request!",
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #BBFD6A;">ThinkBox Demo Request Received</h1>
-            <p>Hi ${name},</p>
-            <p>Thank you for requesting demo access to ThinkBox! We've received your request and our team is reviewing it.</p>
+          <div style="margin:0;padding:0;background:#F0F0F0;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0F0F0;padding:40px 16px;">
+              <tr><td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-            <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3>Your Request Details:</h3>
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Company:</strong> ${company}</p>
-              <p><strong>Email:</strong> ${email}</p>
-            </div>
+                  <!-- Header -->
+                  <tr><td style="background:#58CC02;border-radius:20px 20px 0 0;padding:32px 40px;text-align:center;">
+                    <div style="display:inline-block;background:#fff;border-radius:14px;padding:10px 22px;margin-bottom:16px;">
+                      <span style="font-size:22px;font-weight:900;color:#58CC02;font-family:Arial,sans-serif;letter-spacing:-0.5px;">Think<span style="color:#3C3C3C;">Box</span></span>
+                    </div>
+                    <h1 style="margin:0;font-size:24px;font-weight:800;color:#fff;font-family:Arial,sans-serif;">Request Received!</h1>
+                    <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;font-family:Arial,sans-serif;">We'll review your details and get back to you shortly.</p>
+                  </td></tr>
 
-            <p>We typically approve demo requests within <strong>24 hours</strong>. Once approved, you'll receive an email with your login credentials and instructions to access ThinkBox.</p>
+                  <!-- Body -->
+                  <tr><td style="background:#fff;padding:36px 40px;">
+                    <p style="font-size:16px;color:#3C3C3C;font-family:Arial,sans-serif;margin:0 0 12px;">Hi <strong>${name}</strong>,</p>
+                    <p style="font-size:15px;color:#555;font-family:Arial,sans-serif;line-height:1.7;margin:0 0 28px;">Thanks for signing up to be a ThinkBox beta tester! We've received your request and our team is reviewing it. We'll send your login credentials within <strong>24 hours</strong>.</p>
 
-            <p>If you have any questions in the meantime, feel free to reach out to us.</p>
+                    <!-- Details card -->
+                    <div style="background:#F7F7F7;border:1px solid #E5E5E5;border-radius:14px;padding:24px;margin-bottom:28px;">
+                      <p style="font-size:12px;font-weight:700;color:#58CC02;text-transform:uppercase;letter-spacing:0.08em;font-family:Arial,sans-serif;margin:0 0 16px;">Your Submission</p>
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:6px 0;width:120px;">Name</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;font-weight:600;padding:6px 0;">${name}</td></tr>
+                        <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:6px 0;">Email</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;font-weight:600;padding:6px 0;">${email}</td></tr>
+                        <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:6px 0;">Organisation</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;font-weight:600;padding:6px 0;">${company}</td></tr>
+                        ${role ? `<tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:6px 0;">Role</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;font-weight:600;padding:6px 0;">${role}</td></tr>` : ''}
+                        ${useCase ? `<tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:6px 0;">Use Case</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;font-weight:600;padding:6px 0;">${useCase}</td></tr>` : ''}
+                      </table>
+                    </div>
 
-            <p>Best regards,<br>ThinkBox Team</p>
+                    <!-- What happens next -->
+                    <div style="background:#F0FDF4;border:1px solid #bbf7d0;border-radius:14px;padding:20px 24px;margin-bottom:28px;">
+                      <p style="font-size:13px;font-weight:700;color:#15803d;font-family:Arial,sans-serif;margin:0 0 10px;">&#x23F3; What happens next?</p>
+                      <p style="font-size:13px;color:#166534;font-family:Arial,sans-serif;line-height:1.7;margin:0;">Our team will review your request and send your login credentials to this email address. Once you receive them, you can sign in and start exploring hundreds of topics — fully offline.</p>
+                    </div>
+
+                    <p style="font-size:14px;color:#888;font-family:Arial,sans-serif;margin:0;">If you have questions, just reply to this email.</p>
+                  </td></tr>
+
+                  <!-- Footer -->
+                  <tr><td style="background:#F7F7F7;border-radius:0 0 20px 20px;border-top:1px solid #E5E5E5;padding:20px 40px;text-align:center;">
+                    <p style="font-size:12px;color:#aaa;font-family:Arial,sans-serif;margin:0;">ThinkBox &mdash; Offline Educational Encyclopedia for Curious Minds</p>
+                    <p style="font-size:11px;color:#ccc;font-family:Arial,sans-serif;margin:6px 0 0;">This is an automated message. Please do not reply directly.</p>
+                  </td></tr>
+
+                </table>
+              </td></tr>
+            </table>
           </div>
         `,
       });
@@ -88,28 +123,54 @@ export async function POST(request: NextRequest) {
     if (adminEmail) {
       try {
         await resend.emails.send({
-          from: 'noreply@thinkbox.kaycorp.com',
+          from: 'ThinkBox Admin <noreply@thinkbox.kaycorp.com>',
           to: adminEmail,
-          subject: `New ThinkBox Demo Request: ${name} from ${company}`,
+          subject: `[ThinkBox] New Beta Request: ${name} from ${company}`,
           html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h1 style="color: #BBFD6A;">New Demo Request</h1>
+            <div style="margin:0;padding:0;background:#F0F0F0;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0F0F0;padding:40px 16px;">
+                <tr><td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-              <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Company:</strong> ${company}</p>
-                <p><strong>Message:</strong> ${message || 'N/A'}</p>
-                <p><strong>Request ID:</strong> ${demoRequest._id}</p>
-                <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-              </div>
+                    <!-- Header -->
+                    <tr><td style="background:#3C3C3C;border-radius:20px 20px 0 0;padding:28px 40px;">
+                      <div style="display:inline-block;background:#58CC02;border-radius:10px;padding:6px 16px;margin-bottom:12px;">
+                        <span style="font-size:13px;font-weight:800;color:#fff;font-family:Arial,sans-serif;letter-spacing:0.05em;text-transform:uppercase;">Admin Alert</span>
+                      </div>
+                      <h1 style="margin:0;font-size:22px;font-weight:800;color:#fff;font-family:Arial,sans-serif;">New Beta Tester Request</h1>
+                      <p style="margin:6px 0 0;color:#aaa;font-size:13px;font-family:Arial,sans-serif;">${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</p>
+                    </td></tr>
 
-              <p>
-                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/demo-requests"
-                   style="background-color: #BBFD6A; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                  Review Request in Admin Dashboard
-                </a>
-              </p>
+                    <!-- Body -->
+                    <tr><td style="background:#fff;padding:36px 40px;">
+                      <div style="background:#F7F7F7;border:1px solid #E5E5E5;border-radius:14px;padding:24px;margin-bottom:24px;">
+                        <p style="font-size:12px;font-weight:700;color:#58CC02;text-transform:uppercase;letter-spacing:0.08em;font-family:Arial,sans-serif;margin:0 0 16px;">Request Details</p>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;width:130px;border-bottom:1px solid #f0f0f0;">Name</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">${name}</td></tr>
+                          <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">Email</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;"><a href="mailto:${email}" style="color:#58CC02;text-decoration:none;">${email}</a></td></tr>
+                          ${phone ? `<tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">Phone</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">${phone}</td></tr>` : ''}
+                          <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">Organisation</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">${company}</td></tr>
+                          ${role ? `<tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">Role</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">${role}</td></tr>` : ''}
+                          ${useCase ? `<tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">Use Case</td><td style="font-size:14px;color:#3C3C3C;font-weight:700;font-family:Arial,sans-serif;padding:7px 0;border-bottom:1px solid #f0f0f0;">${useCase}</td></tr>` : ''}
+                          <tr><td style="font-size:13px;color:#888;font-family:Arial,sans-serif;padding:7px 0;">Message</td><td style="font-size:14px;color:#3C3C3C;font-family:Arial,sans-serif;padding:7px 0;font-style:italic;">${message || '—'}</td></tr>
+                        </table>
+                      </div>
+
+                      <div style="text-align:center;">
+                        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/demo-requests" style="background:#58CC02;color:#fff;padding:14px 36px;text-decoration:none;border-radius:12px;font-weight:800;font-size:15px;display:inline-block;box-shadow:0 4px 0 #46A302;font-family:Arial,sans-serif;">
+                          Review in Admin Dashboard &rarr;
+                        </a>
+                      </div>
+                    </td></tr>
+
+                    <!-- Footer -->
+                    <tr><td style="background:#F7F7F7;border-radius:0 0 20px 20px;border-top:1px solid #E5E5E5;padding:16px 40px;text-align:center;">
+                      <p style="font-size:11px;color:#ccc;font-family:Arial,sans-serif;margin:0;">ThinkBox Admin &mdash; Request ID: ${demoRequest._id}</p>
+                    </td></tr>
+
+                  </table>
+                </td></tr>
+              </table>
             </div>
           `,
         });

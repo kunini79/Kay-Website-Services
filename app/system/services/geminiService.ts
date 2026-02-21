@@ -6,12 +6,168 @@ import { getOfflineTopic, toArticleFromOffline } from './offlineTopics';
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const openRouterApiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '';
 const openRouterModel = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
+const nasaApiKey = process.env.NEXT_PUBLIC_NASA_API_KEY || process.env.NASA_API_KEY || 'DEMO_KEY';
 const ai = new GoogleGenAI({ apiKey });
 
 // Image and content cache to avoid repeated API calls
 const imageCache = new Map<string, string>();
 const imageListCache = new Map<string, string[]>();
 const contentCache = new Map<string, any>();
+
+const SPACE_TOPIC_KEYWORDS = [
+  'space',
+  'astronomy',
+  'nasa',
+  'solar system',
+  'planet',
+  'earth',
+  'moon',
+  'sun',
+  'star',
+  'galaxy',
+  'nebula',
+  'comet',
+  'asteroid',
+  'meteor',
+  'orbit',
+  'satellite',
+  'telescope',
+  'cosmos',
+  'universe',
+  'black hole',
+  'milky way',
+  'jupiter',
+  'saturn',
+  'mars',
+  'venus',
+  'mercury',
+  'uranus',
+  'neptune',
+  'pluto',
+  'exoplanet',
+  'rover',
+  'apollo',
+  'iss',
+  'international space station',
+  'rocket',
+];
+
+const isSpaceAstronomyTopic = (topic: string): boolean => {
+  const normalized = topic.toLowerCase();
+  return SPACE_TOPIC_KEYWORDS.some((keyword) => normalized.includes(keyword));
+};
+
+const SPACE_QUERY_NORMALIZATION: Record<string, string> = {
+  'natural satellite': 'Moon',
+  'satellite': 'Moon',
+  'moons': 'Moon',
+};
+
+const normalizeSpaceQuery = (query: string): string => {
+  const normalized = query.trim().toLowerCase();
+  return SPACE_QUERY_NORMALIZATION[normalized] || query.trim();
+};
+
+const fetchNasaImageCandidates = async (query: string, limit: number): Promise<string[]> => {
+  try {
+    const response = await fetch(
+      `https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`
+    );
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    const items = data?.collection?.items || [];
+    const results: string[] = [];
+    const seen = new Set<string>();
+
+    for (const item of items) {
+      const links = Array.isArray(item?.links) ? item.links : [];
+      const imageHref = links.find((link: any) => link?.href && (link?.render === 'image' || !link?.render))?.href;
+      if (!imageHref || seen.has(imageHref)) continue;
+      seen.add(imageHref);
+      results.push(imageHref);
+      if (results.length >= limit) break;
+    }
+
+    return results;
+  } catch (error) {
+    console.warn('[NASA Images] search error:', error);
+    return [];
+  }
+};
+
+const fetchBestNasaExtract = async (
+  preferredQuery: string,
+  fallbackQuery: string
+): Promise<{ extract: string; resolvedTitle: string } | null> => {
+  const normalizedPreferred = normalizeSpaceQuery(preferredQuery);
+  const normalizedFallback = normalizeSpaceQuery(fallbackQuery);
+  const queries = uniqueNonEmpty([
+    normalizedPreferred,
+    normalizedFallback,
+    preferredQuery,
+    fallbackQuery,
+    `${normalizedPreferred} NASA`,
+    `${normalizedPreferred} astronomy`,
+  ]);
+
+  let apodSnippet = '';
+  try {
+    const apodResponse = await fetch(
+      `https://api.nasa.gov/planetary/apod?api_key=${encodeURIComponent(nasaApiKey)}`
+    );
+    if (apodResponse.ok) {
+      const apodData = await apodResponse.json();
+      if (apodData?.explanation) {
+        apodSnippet = `Astronomy Picture of the Day (${apodData?.date || 'recent'}): ${String(apodData.explanation)
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 900)}`;
+      }
+    }
+  } catch (apodError) {
+    console.warn('[NASA APOD] error:', apodError);
+  }
+
+  const snippets: string[] = [];
+  let resolvedTitle = normalizedPreferred || preferredQuery;
+
+  for (const query of queries) {
+    try {
+      const response = await fetch(
+        `https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`
+      );
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const items = Array.isArray(data?.collection?.items) ? data.collection.items : [];
+      if (items.length > 0) {
+        resolvedTitle = query;
+      }
+
+      for (const item of items.slice(0, 4)) {
+        const metadata = item?.data?.[0];
+        const title = metadata?.title || '';
+        const description = metadata?.description || '';
+        if (!title && !description) continue;
+        const trimmedDescription = String(description).replace(/\s+/g, ' ').trim().slice(0, 500);
+        snippets.push(`${title}: ${trimmedDescription}`.trim());
+      }
+    } catch (error) {
+      console.warn('[NASA Content] search error:', error);
+    }
+  }
+
+  const extract = uniqueNonEmpty([...snippets, apodSnippet]).join('\n\n');
+  if (extract.length >= 120) {
+    return {
+      extract,
+      resolvedTitle,
+    };
+  }
+
+  return null;
+};
 
 // Map friendly topic names to Wikipedia article names for better image results
 const TOPIC_TO_WIKIPEDIA_MAP: Record<string, string> = {
@@ -180,6 +336,37 @@ const resolveImageCandidates = async (
   seed: string,
   limit: number
 ): Promise<string[]> => {
+  if (isSpaceAstronomyTopic(seed)) {
+    const normalizedSeed = normalizeSpaceQuery(seed);
+    const nasaQueries = uniqueNonEmpty([
+      normalizedSeed,
+      `${normalizedSeed} NASA`,
+      `${normalizedSeed} astronomy`,
+      seed,
+    ]);
+
+    const nasaImages: string[] = [];
+    const seenNasa = new Set<string>();
+
+    for (const query of nasaQueries) {
+      const images = await fetchNasaImageCandidates(query, limit);
+      for (const image of images) {
+        if (seenNasa.has(image)) continue;
+        seenNasa.add(image);
+        nasaImages.push(image);
+        if (nasaImages.length >= limit) {
+          return nasaImages;
+        }
+      }
+    }
+
+    if (nasaImages.length > 0) {
+      return nasaImages;
+    }
+
+    return [];
+  }
+
   const { baseTopic, focusArea } = parseTopicQuery(seed);
   const mappedBase = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
 
@@ -420,39 +607,63 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
     }
 
     const { baseTopic, focusArea } = parseTopicQuery(topic);
+    const isSpaceTopic = isSpaceAstronomyTopic(topic) || isSpaceAstronomyTopic(baseTopic);
 
-    // Map friendly title to Wikipedia article name (resolve with base topic for option-queries)
-    const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
-    console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (base: ${baseTopic}, mapped to: ${wikipediaQuery})`);
+    let sourceContent = '';
+    let sourceName = 'Wikipedia';
 
-    // Get Wikipedia content with fallback resolution
-    const wikiHit = await fetchBestWikipediaExtract(wikipediaQuery, baseTopic);
-    if (!wikiHit) {
-      throw new Error(`Could not find detailed information about "${baseTopic}". Try a more specific search term.`);
+    if (isSpaceTopic) {
+      const normalizedTopic = normalizeSpaceQuery(topic);
+      const normalizedBaseTopic = normalizeSpaceQuery(baseTopic);
+      console.log(`[Article Fetch] Trying NASA source for: ${normalizedTopic}`);
+      const nasaHit = await fetchBestNasaExtract(normalizedTopic, normalizedBaseTopic);
+      if (nasaHit) {
+        sourceContent = nasaHit.extract;
+        sourceName = 'NASA';
+        console.log(`[Article Fetch] NASA resolved title: ${nasaHit.resolvedTitle}`);
+      } else {
+        throw new Error(`NASA did not return enough information for "${normalizedBaseTopic}" right now. Please try another space topic or try again shortly.`);
+      }
     }
 
-    console.log(`[Article Fetch] Wikipedia resolved title: ${wikiHit.resolvedTitle}`);
-    const wikiContent = wikiHit.extract;
+    if (!sourceContent && !isSpaceTopic) {
+      // Map friendly title to Wikipedia article name (resolve with base topic for option-queries)
+      const wikipediaQuery = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
+      console.log(`[Article Fetch] Searching Wikipedia for: ${topic} (base: ${baseTopic}, mapped to: ${wikipediaQuery})`);
 
-    // Use Gemini to structure Wikipedia content into ThinkBox format
+      // Get Wikipedia content with fallback resolution
+      const wikiHit = await fetchBestWikipediaExtract(wikipediaQuery, baseTopic);
+      if (!wikiHit) {
+        throw new Error(`Could not find detailed information about "${baseTopic}". Try a more specific search term.`);
+      }
+
+      console.log(`[Article Fetch] Wikipedia resolved title: ${wikiHit.resolvedTitle}`);
+      sourceContent = wikiHit.extract;
+      sourceName = 'Wikipedia';
+    }
+
+    // Use Gemini to structure source content into ThinkBox format
     const model = "gemini-2.5-flash";
     const prompt = `
-      Take this Wikipedia content about "${topic}" and structure it for an 8-12 year old educational app (ThinkBox).
+      Take this ${sourceName} source content about "${topic}" and structure it for an 8-12 year old educational app (ThinkBox).
       ${focusArea ? `Focus the explanation on this subtopic: "${focusArea}" while still keeping a clear overview.` : ''}
 
-      Wikipedia Content:
-      ${wikiContent.substring(0, 2000)}
+      Source Content:
+      ${sourceContent.substring(0, 2000)}
 
       Requirements:
       - Tone: Enthusiastic, clear, encouraging (Encarta style)
       - Structure: 3-4 chunked sections with short paragraphs (keep content concise)
       - For list-style topics (e.g., "Seven Wonders", "planets", "continents"), include the complete canonical list with exact item names
       - For animals: Use headers like "Habitat & Home", "What's on the Menu?", "Family Life & Babies", "Super Senses & Body"
-      - Include one "Did You Know?" fun fact from the Wikipedia content
+      - Include one "Did You Know?" fun fact from the source content
       - Suggest 3 related topics for further learning
+      - Generate a 3-question multiple-choice quiz based on the article content.
+      - Each question must have 4 options and the index of the correct answer (0-3).
+      - Include a short explanation for the correct answer.
       - Category: Choose from [Animals, Science, Sports and Recreation, Arts, Reading and Writing, People, Places, History, Social Studies, Games and Fun]
 
-      Return pure JSON with: title, category, intro (2-3 sentences), funFact, sections (array with subtitle and content), relatedTopics (array)
+      Return pure JSON with: title, category, intro (2-3 sentences), funFact, sections (array with subtitle and content), relatedTopics (array), quiz (array)
     `;
 
     let text = '';
@@ -490,9 +701,25 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
                 relatedTopics: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
+                },
+                quiz: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      question: { type: Type.STRING },
+                      options: {
+                        type: Type.ARRAY,
+                        items: { type: Type.STRING }
+                      },
+                      correctAnswer: { type: Type.NUMBER },
+                      explanation: { type: Type.STRING }
+                    },
+                    required: ['question', 'options', 'correctAnswer', 'explanation']
+                  }
                 }
               },
-              required: ['title', 'category', 'intro', 'funFact', 'sections', 'relatedTopics']
+              required: ['title', 'category', 'intro', 'funFact', 'sections', 'relatedTopics', 'quiz']
             }
           }
         });

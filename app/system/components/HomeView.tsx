@@ -7,6 +7,7 @@ interface HomeViewProps {
   onTopicClick: (topic: string) => void;
   searchFilter: string;
   exploredCategories: Set<string>;
+  onCategoryChange?: (category: Category) => void;
 }
 
 type TopicOption = {
@@ -19,6 +20,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onTopicClick,
   searchFilter,
   exploredCategories,
+  onCategoryChange,
 }) => {
   const orderedCategories: Category[] = [
     Category.ANIMALS,
@@ -288,7 +290,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       { label: 'The Sun', query: 'Sun' },
       { label: 'Inner Planets', query: 'Inner planets' },
       { label: 'Gas Giants', query: 'Gas giant' },
-      { label: 'Moons', query: 'Natural satellite' },
+      { label: 'Moons', query: 'Moon' },
       { label: 'Asteroids', query: 'Asteroid' },
       { label: 'Comets', query: 'Comet' },
     ],
@@ -476,12 +478,126 @@ export const HomeView: React.FC<HomeViewProps> = ({
     ];
   }, [selectedTopic, selectedCategory]);
 
+  const [dailyTopic, setDailyTopic] = useState<any>(null); // Use any to avoid strict type check on static topics structure for now or update type
+
+  useEffect(() => {
+    // Flatten the STATIC_TOPICS to a single array
+    const allTopics: TopicPreview[] = [];
+    Object.values(STATIC_TOPICS).forEach((list: any) => {
+        if(Array.isArray(list)) allTopics.push(...list);
+    });
+
+    if (allTopics.length > 0) {
+        const today = new Date();
+        // Use date to seed a consistent random choice
+        const seed = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
+        const index = seed % allTopics.length;
+        setDailyTopic(allTopics[index]);
+    }
+  }, []);
+
   return (
     <div>
       {/* ── Hero Section ─────────────────────────────── */}
       <section className="tb-hero" aria-labelledby="hero-title">
         <h1 id="hero-title" className="sr-only">ThinkBox</h1>
-        <p className="tb-hero-subtitle">What do you want to explore today?</p>
+        
+        {/* Topic of the Day */}
+        {dailyTopic ? (
+             <div 
+                className="tb-daily-topic"
+                style={{
+                    backgroundColor: 'var(--tb-primary)',
+                    borderRadius: 'var(--tb-radius-xl)',
+                    padding: '40px',
+                    color: 'white',
+                    marginBottom: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    boxShadow: 'var(--tb-shadow-lg)',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                }}
+                onClick={() => onTopicClick(dailyTopic.title)}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+             >
+                <div style={{ position: 'relative', zIndex: 1, maxWidth: '65%' }}>
+                    <div style={{ 
+                        display: 'inline-block',
+                        background: 'rgba(255,255,255,0.2)',
+                        backdropFilter: 'blur(4px)',
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '13px', 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '1px', 
+                        fontWeight: 700, 
+                        marginBottom: '16px',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
+                    }}>
+                        ⭐ Topic of the Day
+                    </div>
+                    <h2 style={{ 
+                        fontSize: 'clamp(2rem, 4vw, 3rem)', 
+                        fontFamily: 'var(--tb-font-heading)', 
+                        fontWeight: 700, 
+                        marginBottom: '12px',
+                        lineHeight: 1.1,
+                        textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                        {dailyTopic.title}
+                    </h2>
+                    <p style={{ 
+                        fontSize: '18px', 
+                        opacity: 0.95, 
+                        fontWeight: 500,
+                        maxWidth: '550px',
+                        lineHeight: 1.6,
+                        marginBottom: '24px'
+                    }}>
+                        {dailyTopic.description}
+                    </p>
+                    <button style={{
+                        background: 'white',
+                        color: 'var(--tb-primary)',
+                        border: 'none',
+                        padding: '12px 28px',
+                        borderRadius: 'var(--tb-radius-full)',
+                        fontWeight: 800,
+                        fontSize: '16px',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        transition: 'transform 0.2s'
+                    }}>
+                        Start Exploring <ArrowRight size={18} strokeWidth={3} />
+                    </button>
+                </div>
+                
+                {/* Decorative Icon Background */}
+                <div style={{
+                    position: 'absolute',
+                    right: '-40px',
+                    bottom: '-40px',
+                    opacity: 0.15,
+                    fontSize: '280px',
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                    transform: 'rotate(-10deg)',
+                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.5))'
+                }}>
+                    {CATEGORY_CONFIG[dailyTopic.category as Category]?.icon || '✨'}
+                </div>
+             </div>
+        ) : (
+            <p className="tb-hero-subtitle">What do you want to explore today?</p>
+        )}
       </section>
 
       {/* ── Encarta-style Navigation ─────────────────── */}

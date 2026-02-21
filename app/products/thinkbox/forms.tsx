@@ -21,52 +21,63 @@ export default function ThinkBoxForm({ defaultTab = 'request' }: ThinkBoxFormPro
   }, [searchParams]);
 
   return (
-    <>
-      {/* Tab Navigation */}
-      <div className="flex gap-4 mb-12 border-b border-gray-700">
+    <div style={{ fontFamily: "Nunito, 'Segoe UI', sans-serif" }}>
+      {/* Tab switcher */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 28, backgroundColor: '#E5E5E5', borderRadius: 14, padding: 4 }}>
         <button
           onClick={() => setActiveTab('request')}
-          className={`pb-4 px-6 font-semibold transition-colors ${
-            activeTab === 'request'
-              ? 'text-[#BBFD6A] border-b-2 border-[#BBFD6A]'
-              : 'text-gray-400 hover:text-gray-300'
-          }`}
+          style={{
+            flex: 1,
+            padding: '10px 16px',
+            borderRadius: 11,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: "Nunito, sans-serif",
+            fontWeight: 700,
+            fontSize: 14,
+            transition: 'all 0.2s',
+            backgroundColor: activeTab === 'request' ? '#58CC02' : 'transparent',
+            color: activeTab === 'request' ? '#fff' : '#777',
+            boxShadow: activeTab === 'request' ? '0 2px 0 #46A302' : 'none',
+          }}
         >
-          Request Demo
+          🚀 Request Demo
         </button>
         <button
           onClick={() => setActiveTab('login')}
-          className={`pb-4 px-6 font-semibold transition-colors ${
-            activeTab === 'login'
-              ? 'text-[#BBFD6A] border-b-2 border-[#BBFD6A]'
-              : 'text-gray-400 hover:text-gray-300'
-          }`}
+          style={{
+            flex: 1,
+            padding: '10px 16px',
+            borderRadius: 11,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: "Nunito, sans-serif",
+            fontWeight: 700,
+            fontSize: 14,
+            transition: 'all 0.2s',
+            backgroundColor: activeTab === 'login' ? '#58CC02' : 'transparent',
+            color: activeTab === 'login' ? '#fff' : '#777',
+            boxShadow: activeTab === 'login' ? '0 2px 0 #46A302' : 'none',
+          }}
         >
-          Sign In
+          🔑 Sign In
         </button>
       </div>
 
-      {/* Tab Content */}
-      <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
-        {activeTab === 'request' ? (
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-6">Get Demo Access</h3>
-            <p className="text-gray-400 mb-8">
-              Fill out the form below to request access to ThinkBox. Our team will review your request
-              and send you login credentials within 24 hours.
-            </p>
-            <DemoRequestForm />
-          </div>
-        ) : (
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-6">Sign In to ThinkBox</h3>
-            <p className="text-gray-400 mb-8">
-              Already have credentials? Log in below to access the ThinkBox system.
-            </p>
-            <LoginForm />
-          </div>
-        )}
-      </div>
-    </>
+      {/* Content */}
+      {activeTab === 'request' ? (
+        <DemoRequestForm />
+      ) : (
+        <div>
+          <h3 style={{ fontFamily: "Fredoka, Nunito, sans-serif", fontSize: 22, fontWeight: 700, color: '#1a1a1a', marginBottom: 6 }}>
+            Welcome back! 👋
+          </h3>
+          <p style={{ fontSize: 14, color: '#777', marginBottom: 24, lineHeight: 1.6 }}>
+            Enter the credentials we sent to your email to access ThinkBox.
+          </p>
+          <LoginForm />
+        </div>
+      )}
+    </div>
   );
 }

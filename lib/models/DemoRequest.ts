@@ -4,6 +4,9 @@ export interface IDemoRequest extends Document {
   name: string;
   email: string;
   company: string;
+  phone?: string;
+  role?: string;
+  useCase?: string;
   message?: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: Date;
@@ -27,6 +30,18 @@ const demoRequestSchema = new Schema(
     company: {
       type: String,
       required: [true, 'Company is required'],
+      trim: true,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    role: {
+      type: String,
+      trim: true,
+    },
+    useCase: {
+      type: String,
       trim: true,
     },
     message: {

@@ -1,9 +1,25 @@
 @import "tailwindcss";
 @import "./dark-mode.css";
+@import "@fontsource/bebas-neue/latin-400.css";
+@import "@fontsource/inter-tight/latin-400.css";
+@import "@fontsource/inter-tight/latin-500.css";
+@import "@fontsource/inter-tight/latin-600.css";
+@import "@fontsource/inter-tight/latin-700.css";
+@import "@fontsource/inter-tight/latin-800.css";
+@import "@fontsource/plus-jakarta-sans/latin-200.css";
+@import "@fontsource/plus-jakarta-sans/latin-300.css";
+@import "@fontsource/plus-jakarta-sans/latin-400.css";
+@import "@fontsource/plus-jakarta-sans/latin-500.css";
+@import "@fontsource/plus-jakarta-sans/latin-600.css";
+@import "@fontsource/plus-jakarta-sans/latin-700.css";
+@import "@fontsource/plus-jakarta-sans/latin-800.css";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-bebas-neue: "Bebas Neue", "Arial Narrow", "Franklin Gothic Medium", Impact, sans-serif;
+  --font-inter-tight: "Inter Tight", Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-plus-jakarta-sans: "Plus Jakarta Sans", Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 [data-theme="dark"] {

@@ -58,7 +58,7 @@ export default function LoginForm() {
       )}
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="email" className="block text-sm font-bold text-[#3C3C3C] mb-2">
           Email Address *
         </label>
         <input
@@ -67,14 +67,14 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="your.email@company.com"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BBFD6A] focus:border-transparent"
+          placeholder="your.email@example.com"
+          className="w-full px-4 py-3 border-2 border-[#E5E5E5] rounded-xl text-[#3C3C3C] placeholder-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#58CC02]/30 focus:border-[#58CC02] transition-all text-sm bg-white"
           disabled={loading}
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="password" className="block text-sm font-bold text-[#3C3C3C] mb-2">
           Password *
         </label>
         <input
@@ -84,7 +84,7 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           placeholder="Your password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BBFD6A] focus:border-transparent"
+          className="w-full px-4 py-3 border-2 border-[#E5E5E5] rounded-xl text-[#3C3C3C] placeholder-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#58CC02]/30 focus:border-[#58CC02] transition-all text-sm bg-white"
           disabled={loading}
         />
       </div>
@@ -92,14 +92,18 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#BBFD6A] hover:bg-[#a9e65e] disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-[#58CC02] hover:bg-[#6add0e] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+        style={{ boxShadow: '0 3px 0 #46A302' }}
       >
         <LogIn size={18} />
-        {loading ? 'Logging in...' : 'Login to ThinkBox'}
+        {loading ? 'Signing in…' : 'Sign In to ThinkBox'}
       </button>
 
-      <p className="text-xs text-gray-600 text-center">
-        Don't have credentials yet? Request a demo above to get started.
+      <p className="text-xs text-[#aaa] text-center font-medium">
+        Don&apos;t have credentials yet?{' '}
+        <button type="button" className="text-[#58CC02] font-bold hover:underline" onClick={() => (document.querySelector('[data-tab="request"]') as HTMLButtonElement)?.click()}>
+          Request demo access
+        </button>{' '}above to get started.
       </p>
     </form>
   );

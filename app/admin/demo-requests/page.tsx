@@ -7,7 +7,10 @@ interface DemoRequest {
   _id: string;
   name: string;
   email: string;
+  phone?: string;
   company: string;
+  role?: string;
+  useCase?: string;
   message?: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
@@ -269,6 +272,29 @@ export default function AdminDemoRequestsPage() {
                     <p className="text-white">{new Date(request.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
+
+                {(request.role || request.useCase || request.phone) && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    {request.phone && (
+                      <div className="p-3 bg-gray-700/30 rounded border border-gray-700">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Phone</p>
+                        <p className="text-gray-200 text-sm">{request.phone}</p>
+                      </div>
+                    )}
+                    {request.role && (
+                      <div className="p-3 bg-gray-700/30 rounded border border-gray-700">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Role</p>
+                        <p className="text-gray-200 text-sm">{request.role}</p>
+                      </div>
+                    )}
+                    {request.useCase && (
+                      <div className="p-3 bg-gray-700/30 rounded border border-gray-700">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Use Case</p>
+                        <p className="text-gray-200 text-sm">{request.useCase}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {request.message && (
                   <div className="mb-4 p-3 bg-gray-700/50 rounded border border-gray-600">
