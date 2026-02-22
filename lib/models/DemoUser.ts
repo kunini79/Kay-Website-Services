@@ -47,6 +47,14 @@ const demoUserSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    // ThinkBox progress fields
+    xp: { type: Number, default: 0 },
+    streak: { type: Number, default: 1 },
+    achievements: { type: Object, default: {} },
+    history: { type: Array, default: [] },
+    backpack: { type: Array, default: [] },
+    quizzesCompleted: { type: Number, default: 0 },
+    perfectQuizzes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
