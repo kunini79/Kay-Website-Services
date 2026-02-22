@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
           const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
           const loginUrl = `${appUrl}/products/thinkbox?tab=login`;
           await resend.emails.send({
-            from: 'ThinkBox <noreply@thinkbox.kaycorp.com>',
+            from: 'ThinkBox <noreply@kaycorp.tech>',
             to: demoRequest.email,
             subject: 'Your ThinkBox Beta Access is Approved!',
             html: `
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
       // Send rejection email
       try {
         await resend.emails.send({
-          from: 'noreply@thinkbox.kaycorp.com',
+          from: 'ThinkBox <noreply@kaycorp.tech>',
           to: demoRequest.email,
           subject: 'ThinkBox Demo Request - Status Update',
           html: `

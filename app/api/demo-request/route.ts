@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     // Send confirmation email to user
     try {
       await resend.emails.send({
-        from: 'ThinkBox <noreply@thinkbox.kaycorp.com>',
+        from: 'ThinkBox <noreply@kaycorp.tech>',
         to: email,
         subject: "We've received your ThinkBox beta request!",
         html: `
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     if (adminEmail) {
       try {
         await resend.emails.send({
-          from: 'ThinkBox Admin <noreply@thinkbox.kaycorp.com>',
+          from: 'ThinkBox Admin <noreply@kaycorp.tech>',
           to: adminEmail,
           subject: `[ThinkBox] New Beta Request: ${name} from ${company}`,
           html: `
