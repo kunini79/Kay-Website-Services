@@ -101,9 +101,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
             const href = link.getAttribute("href");
             if (!href || !href.startsWith("/") || href.startsWith("#")) return;
 
-            // Strip hash and trailing slash for comparison
-            const targetPath = href.split('#')[0].replace(/\/$/, "") || "/";
-            const currentPath = pathname.replace(/\/$/, "") || "/";
+            // Strip hash AND query string, then trailing slash for comparison
+            const targetPath = href.split('#')[0].split('?')[0].replace(/\/$/, "") || "/";
+            const currentPath = pathname.split('?')[0].replace(/\/$/, "") || "/";
 
             // If it's the current page (even with a hash), do nothing
             if (targetPath === currentPath) return;
