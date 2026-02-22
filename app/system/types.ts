@@ -1,4 +1,3 @@
-// ...existing code...
 
   { id: 'mimi', name: 'MiMi', image: '/ThinkBox/avatars/mimi.png', unlockAchievement: 'first_read' },
   { id: 'dogo', name: 'Dogo', image: '/ThinkBox/avatars/dogo.png', unlockAchievement: 'read_10' },
