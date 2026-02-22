@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Search, Dice5, Backpack, Trophy } from 'lucide-react';
+import { Search, Dice5, Backpack, Trophy, User } from 'lucide-react';
 import { UserSettings } from '../types';
 import { SettingsMenu } from './SettingsMenu';
 
@@ -9,6 +9,7 @@ interface HeaderProps {
   onHome: () => void;
   onRandom: () => void;
   onBackpack: () => void;
+  onProfile: () => void;
   searchFilter: string;
   onSearchFilterChange: (value: string) => void;
   streakCount?: number;
@@ -16,6 +17,7 @@ interface HeaderProps {
   userLevel?: number;
   settings: UserSettings;
   onSettingsUpdate: (newSettings: UserSettings) => void;
+  unlockedAchievementsCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,13 +25,15 @@ export const Header: React.FC<HeaderProps> = ({
   onHome,
   onRandom,
   onBackpack,
+  onProfile,
   searchFilter,
   onSearchFilterChange,
-  streakCount = 7,
+  streakCount = 1,
   userXP,
   userLevel,
   settings,
   onSettingsUpdate,
+  unlockedAchievementsCount = 0,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,11 +113,27 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="tb-streak" aria-label={`${streakCount} day streak`}>
             <span role="img" aria-hidden="true">🔥</span>
-            <span>{streakCount} day streak</span>
+            <span>{streakCount} {streakCount === 1 ? 'day' : 'days'} streak</span>
           </div>
 
-          <button className="tb-avatar" aria-label="User profile">
-            T
+          <button
+            onClick={onProfile}
+            className="tb-avatar"
+            aria-label="View profile"
+            title="My Profile"
+            style={{ position: 'relative' }}
+          >
+            <User size={18} />
+            {unlockedAchievementsCount > 0 && (
+              <span style={{
+                position: 'absolute', top: '-4px', right: '-4px',
+                background: '#F59E0B', color: 'white',
+                borderRadius: '50%', width: '16px', height: '16px',
+                fontSize: '9px', fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid white',
+              }}>{unlockedAchievementsCount}</span>
+            )}
           </button>
         </div>
       </div>

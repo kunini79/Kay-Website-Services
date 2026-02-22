@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { ViewState, Article, Category, UserSettings, DEFAULT_SETTINGS, SavedArticle } from './types';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { ViewState, Article, Category, UserSettings, DEFAULT_SETTINGS, SavedArticle, ReadHistoryItem, Achievement, ALL_ACHIEVEMENTS } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { ArticleView } from './components/ArticleView';
 import { BackpackView } from './components/BackpackView';
+import { ProfileView } from './components/ProfileView';
+import { LevelUpToast } from './components/LevelUpToast';
 import { Loader } from './components/Loader';
 import { SystemErrorBoundary } from './components/SystemErrorBoundary';
 import { fetchArticle } from './services/geminiService';
@@ -32,6 +34,25 @@ export default function SystemPage() {
   const [userLevel, setUserLevel] = useState(1);
   const [xpChanged, setXpChanged] = useState(false); // To trigger save
 
+  // -- Streak State --
+  const [streakCount, setStreakCount] = useState(1);
+
+  // -- Reading History --
+  const [readHistory, setReadHistory] = useState<ReadHistoryItem[]>([]);
+
+  // -- Quiz Stats --
+  const [quizzesCompleted, setQuizzesCompleted] = useState(0);
+  const [perfectQuizzes, setPerfectQuizzes] = useState(0);
+
+  // -- Achievements --
+  const [achievements, setAchievements] = useState<Achievement[]>(
+    ALL_ACHIEVEMENTS.map((a) => ({ ...a }))
+  );
+
+  // -- Level-up toast --
+  const [levelUpToast, setLevelUpToast] = useState<number | null>(null);
+  const prevLevelRef = useRef(1);
+
   /* Load Backpack and XP from local storage */
   useEffect(() => {
     try {
@@ -43,7 +64,63 @@ export default function SystemPage() {
         const xp = localStorage.getItem('tb-xp');
         const level = localStorage.getItem('tb-level');
         if (xp) setUserXP(parseInt(xp, 10));
-        if (level) setUserLevel(parseInt(level, 10));
+        if (level) {
+          const lvl = parseInt(level, 10);
+          setUserLevel(lvl);
+          prevLevelRef.current = lvl;
+        }
+
+        // -- History --
+        const hist = localStorage.getItem('tb-history');
+        if (hist) setReadHistory(JSON.parse(hist));
+
+        // -- Quiz stats --
+        const qc = localStorage.getItem('tb-quizzes-completed');
+        const pq = localStorage.getItem('tb-perfect-quizzes');
+        if (qc) setQuizzesCompleted(parseInt(qc, 10));
+        if (pq) setPerfectQuizzes(parseInt(pq, 10));
+
+        // -- Achievements --
+        const ach = localStorage.getItem('tb-achievements');
+        if (ach) {
+          const unlocked: Record<string, number> = JSON.parse(ach);
+          setAchievements(ALL_ACHIEVEMENTS.map((a) => ({
+            ...a,
+            unlockedAt: unlocked[a.id] ?? undefined,
+          })));
+        }
+
+        // -- Streak init --
+        const storedStreak = localStorage.getItem('tb-streak');
+        const storedLastActive = localStorage.getItem('tb-streak-last-active');
+        const now = Date.now();
+
+        if (!storedStreak || !storedLastActive) {
+          // Brand new user — start at 1
+          setStreakCount(1);
+          localStorage.setItem('tb-streak', '1');
+          localStorage.setItem('tb-streak-last-active', now.toString());
+        } else {
+          const lastActive = parseInt(storedLastActive, 10);
+          const diffHours = (now - lastActive) / (1000 * 60 * 60);
+          let streak = parseInt(storedStreak, 10);
+
+          if (diffHours < 24) {
+            // Same active window — keep streak, refresh timestamp
+            localStorage.setItem('tb-streak-last-active', now.toString());
+          } else if (diffHours < 48) {
+            // Returned within the next day — increment streak
+            streak += 1;
+            localStorage.setItem('tb-streak', streak.toString());
+            localStorage.setItem('tb-streak-last-active', now.toString());
+          } else {
+            // Missed a day — streak broken, start fresh at 1
+            streak = 1;
+            localStorage.setItem('tb-streak', '1');
+            localStorage.setItem('tb-streak-last-active', now.toString());
+          }
+          setStreakCount(streak);
+        }
     } catch (e) {
         console.error('Failed to load data', e);
     }
@@ -54,28 +131,127 @@ export default function SystemPage() {
     localStorage.setItem('tb-backpack', JSON.stringify(savedArticles));
   }, [savedArticles]);
 
-  /* Save XP and Level */
+  /* Save XP and Level + trigger level-up toast */
   useEffect(() => {
     if (xpChanged) {
         localStorage.setItem('tb-xp', userXP.toString());
         localStorage.setItem('tb-level', userLevel.toString());
+        if (userLevel > prevLevelRef.current) {
+          setLevelUpToast(userLevel);
+          prevLevelRef.current = userLevel;
+        }
         setXpChanged(false);
     }
   }, [userXP, userLevel, xpChanged]);
 
-  const handleEarnXP = useCallback((amount: number) => {
+  /* Persist reading history */
+  useEffect(() => {
+    if (readHistory.length > 0)
+      localStorage.setItem('tb-history', JSON.stringify(readHistory));
+  }, [readHistory]);
+
+  /* Check + unlock achievements */
+  const checkAchievements = useCallback(
+    (opts: {
+      historyLen: number;
+      streak: number;
+      level: number;
+      backpackLen: number;
+      quizzes: number;
+      perfects: number;
+      categoriesExplored: number;
+      completedDailyChallenge: boolean;
+    }) => {
+      setAchievements((prev) => {
+        const unlocked: Record<string, number> = {};
+        prev.forEach((a) => { if (a.unlockedAt) unlocked[a.id] = a.unlockedAt; });
+        const now = Date.now();
+        const tryUnlock = (id: string, condition: boolean) => {
+          if (condition && !unlocked[id]) unlocked[id] = now;
+        };
+        tryUnlock('first_read',      opts.historyLen >= 1);
+        tryUnlock('read_10',         opts.historyLen >= 10);
+        tryUnlock('read_25',         opts.historyLen >= 25);
+        tryUnlock('read_50',         opts.historyLen >= 50);
+        tryUnlock('streak_3',        opts.streak >= 3);
+        tryUnlock('streak_7',        opts.streak >= 7);
+        tryUnlock('streak_30',       opts.streak >= 30);
+        tryUnlock('all_categories',  opts.categoriesExplored >= 9);
+        tryUnlock('backpack_5',      opts.backpackLen >= 5);
+        tryUnlock('backpack_20',     opts.backpackLen >= 20);
+        tryUnlock('quiz_1',          opts.quizzes >= 1);
+        tryUnlock('quiz_5',          opts.quizzes >= 5);
+        tryUnlock('quiz_perfect',    opts.perfects >= 1);
+        tryUnlock('quiz_perfect_3',  opts.perfects >= 3);
+        tryUnlock('level_5',         opts.level >= 5);
+        tryUnlock('level_10',        opts.level >= 10);
+        tryUnlock('daily_challenge', opts.completedDailyChallenge);
+        localStorage.setItem('tb-achievements', JSON.stringify(unlocked));
+        return ALL_ACHIEVEMENTS.map((a) => ({ ...a, unlockedAt: unlocked[a.id] }));
+      });
+    },
+    []
+  );
+
+  /* Fire achievement checks whenever any tracked stat changes */
+  useEffect(() => {
+    checkAchievements({
+      historyLen:          readHistory.length,
+      categoriesExplored:  exploredCategories.size,
+      streak:              streakCount,
+      level:               userLevel,
+      backpackLen:         savedArticles.length,
+      quizzes:             quizzesCompleted,
+      perfects:            perfectQuizzes,
+      completedDailyChallenge: false,
+    });
+  // checkAchievements identity is stable (useCallback [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkAchievements, readHistory.length, exploredCategories.size, streakCount,
+      userLevel, savedArticles.length, quizzesCompleted, perfectQuizzes]);
+
+  // Touch streak on any activity (topic open, random, search)
+  const touchStreak = useCallback(() => {
+    const now = Date.now();
+    const storedLastActive = localStorage.getItem('tb-streak-last-active');
+    const storedStreak = localStorage.getItem('tb-streak');
+    if (!storedLastActive || !storedStreak) return;
+    const lastActive = parseInt(storedLastActive, 10);
+    const diffHours = (now - lastActive) / (1000 * 60 * 60);
+    if (diffHours >= 24 && diffHours < 48) {
+      // New day of activity — increment
+      const newStreak = parseInt(storedStreak, 10) + 1;
+      setStreakCount(newStreak);
+      localStorage.setItem('tb-streak', newStreak.toString());
+    } else if (diffHours >= 48) {
+      // Broke — reset
+      setStreakCount(1);
+      localStorage.setItem('tb-streak', '1');
+    }
+    localStorage.setItem('tb-streak-last-active', now.toString());
+  }, []);
+
+  const handleEarnXP = useCallback((amount: number, isPerfect?: boolean) => {
     setUserXP(prev => {
         const newXP = prev + amount;
-        // Level up every 100 XP
         const newLevel = Math.floor(newXP / 100) + 1;
-        if (newLevel > userLevel) {
-            setUserLevel(newLevel);
-            // Could add a toast or modal here
-            // alert(`🎉 Level Up! You happen to be Level ${newLevel}!`); 
-        }
+        if (newLevel > userLevel) setUserLevel(newLevel);
         setXpChanged(true);
         return newXP;
     });
+    // Track quiz completion
+    setQuizzesCompleted(prev => {
+      const next = prev + 1;
+      localStorage.setItem('tb-quizzes-completed', next.toString());
+      return next;
+    });
+    if (isPerfect) {
+      setPerfectQuizzes(prev => {
+        const next = prev + 1;
+        localStorage.setItem('tb-perfect-quizzes', next.toString());
+        return next;
+      });
+    }
   }, [userLevel]);
 
   const toggleSaveFilter = useCallback((article: Article) => {
@@ -117,8 +293,16 @@ export default function SystemPage() {
       setErrorMsg(null);
       setSearchFilter('');
       try {
+        touchStreak();
         const article = await fetchArticle(topic);
         setCurrentArticle(article);
+        // Record in history (max 50, no duplicates — push to end)
+        setReadHistory(prev => {
+          const filtered = prev.filter(h => h.title !== article.title);
+          const next = [...filtered, { title: article.title, category: article.category, readAt: Date.now() }].slice(-50);
+          localStorage.setItem('tb-history', JSON.stringify(next));
+          return next;
+        });
         setExploredCategories((prev) => {
           const next = new Set(prev);
           next.add(article.category);
@@ -131,7 +315,7 @@ export default function SystemPage() {
         setViewState(ViewState.ERROR);
       }
     },
-    []
+    [touchStreak]
   );
 
   const goHome = useCallback(() => {
@@ -160,6 +344,11 @@ export default function SystemPage() {
 
   const onBackpackClick = useCallback(() => {
       setViewState(ViewState.BACKPACK);
+      setCurrentArticle(null);
+  }, []);
+
+  const onProfileClick = useCallback(() => {
+      setViewState(ViewState.PROFILE);
       setCurrentArticle(null);
   }, []);
 
@@ -212,18 +401,24 @@ export default function SystemPage() {
       <div className={`tb-bg-layer ${bgClass}`} />
 
       {/* Navbar */}
+      {levelUpToast && (
+        <LevelUpToast level={levelUpToast} onDone={() => setLevelUpToast(null)} />
+      )}
+
       <Header
         onSearch={handleTopicSelect}
         onHome={goHome}
         onRandom={handleRandomTopic}
         onBackpack={onBackpackClick}
+        onProfile={onProfileClick}
         searchFilter={searchFilter}
         onSearchFilterChange={setSearchFilter}
-        streakCount={7}
+        streakCount={streakCount}
         userXP={userXP}
         userLevel={userLevel}
         settings={settings}
         onSettingsUpdate={setSettings}
+        unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
       />
 
       <SystemErrorBoundary>
@@ -266,6 +461,7 @@ export default function SystemPage() {
             searchFilter={searchFilter}
             exploredCategories={exploredCategories}
             onCategoryChange={handleHomeCategoryChange}
+            readHistory={readHistory}
           />
         )}
 
@@ -351,6 +547,21 @@ export default function SystemPage() {
               isSaved={!!savedArticles.find(a => a.title === currentArticle.title)}
               onToggleSave={() => toggleSaveFilter(currentArticle)}
               onEarnXP={handleEarnXP}
+          />
+        )}
+
+        {viewState === ViewState.PROFILE && (
+          <ProfileView
+            userName={(() => { try { const u = localStorage.getItem('tb-username'); return u || 'Explorer'; } catch { return 'Explorer'; } })()}
+            userXP={userXP}
+            userLevel={userLevel}
+            streakCount={streakCount}
+            savedArticles={savedArticles}
+            readHistory={readHistory}
+            achievements={achievements}
+            quizzesCompleted={quizzesCompleted}
+            perfectQuizzes={perfectQuizzes}
+            onBack={goHome}
           />
         )}
 

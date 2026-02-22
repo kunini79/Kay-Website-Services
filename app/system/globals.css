@@ -1248,6 +1248,12 @@ input:checked + .tb-switch-slider:before {
   animation: tb-float 2s ease-in-out infinite;
 }
 
+/* Pulse — used by LevelUpToast trophy icon */
+@keyframes tb-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.15); opacity: 0.8; }
+}
+
 /* Dimmed Cards */
 .tb-card--dimmed {
   opacity: 0.3;

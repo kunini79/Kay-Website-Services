@@ -13,7 +13,7 @@ interface ArticleViewProps {
   onTopicClick: (topic: string) => void;
   isSaved?: boolean;
   onToggleSave?: () => void;
-  onEarnXP?: (amount: number) => void;
+  onEarnXP?: (amount: number, isPerfect?: boolean) => void;
 }
 
 export const ArticleView: React.FC<ArticleViewProps> = ({

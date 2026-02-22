@@ -5,7 +5,7 @@ import { Button } from './Button';
 
 interface QuizViewProps {
   questions: QuizQuestion[];
-  onComplete: (xpEarned: number) => void;
+  onComplete: (xpEarned: number, isPerfect?: boolean) => void;
 }
 
 export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => {
@@ -84,10 +84,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
       
       let finalXP = score * XP_PER_QUESTION + (score === questions.length ? XP_BONUS_ALL_CORRECT : 0);
       
-      // If the last answer was correct, it's already in `score`.
-      // wait, `score` update from `handleOptionClick` might not be immediate if written poorly, but here it's fine as we wait for user interaction.
-      
-      onComplete(finalXP);
+      onComplete(finalXP, score === questions.length);
       setXpAwarded(true);
     }
   };

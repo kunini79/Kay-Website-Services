@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CATEGORY_CONFIG, STATIC_TOPICS } from '../constants';
-import { Category, TopicPreview } from '../types';
-import { ArrowRight } from 'lucide-react';
+import { Category, ReadHistoryItem, TopicPreview } from '../types';
+import { ArrowRight, Clock } from 'lucide-react';
 
 interface HomeViewProps {
   onTopicClick: (topic: string) => void;
   searchFilter: string;
   exploredCategories: Set<string>;
   onCategoryChange?: (category: Category) => void;
+  readHistory?: ReadHistoryItem[];
 }
 
 type TopicOption = {
@@ -21,6 +22,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   searchFilter,
   exploredCategories,
   onCategoryChange,
+  readHistory = [],
 }) => {
   const orderedCategories: Category[] = [
     Category.ANIMALS,
@@ -502,6 +504,43 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <section className="tb-hero" aria-labelledby="hero-title">
         <h1 id="hero-title" className="sr-only">ThinkBox</h1>
         
+        {/* Recently Read strip */}
+        {readHistory.length > 0 && (
+          <div style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <Clock size={16} color="var(--tb-text-muted)" />
+              <span style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '15px', fontWeight: 700, color: 'var(--tb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recently Read</span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '6px' }}>
+              {[...readHistory].reverse().slice(0, 8).map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => onTopicClick(item.title)}
+                  style={{
+                    flexShrink: 0,
+                    background: 'rgba(255,255,255,0.85)',
+                    backdropFilter: 'blur(8px)',
+                    border: '2px solid rgba(255,255,255,0.6)',
+                    borderRadius: '14px',
+                    padding: '10px 16px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                    maxWidth: '180px',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+                >
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--tb-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '3px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                    {CATEGORY_CONFIG[item.category as Category]?.icon || '📌'} {item.category}
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--tb-text)', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.title}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Topic of the Day */}
         {dailyTopic ? (
              <div 

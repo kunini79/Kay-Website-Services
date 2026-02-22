@@ -36,6 +36,12 @@ export default function LoginForm() {
         throw new Error(data.message || 'Login failed');
       }
 
+      // Persist the user's name for ThinkBox profile display
+      const data = await response.json();
+      if (data?.user?.name) {
+        localStorage.setItem('tb-username', data.user.name);
+      }
+
       // Login successful, redirect to ThinkBox system or custom redirect
       router.push(redirectUrl);
     } catch (err) {
