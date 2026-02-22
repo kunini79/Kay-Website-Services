@@ -120,10 +120,38 @@ async function main() {
   await mongoose.connect(MONGODB_URI);
   console.log('Connected.\n');
 
-  const approvedRequests = await DemoRequest.find({ status: 'approved' }).lean();
-  console.log(`Found ${approvedRequests.length} approved demo request(s).\n`);
+  // Support --id <requestId> and --approve
+  const args = process.argv.slice(2);
+  let requestId = null;
+  let approveFlag = false;
+  for (const arg of args) {
+    if (arg.startsWith('--id')) {
+      requestId = arg.split('=')[1] || args[args.indexOf(arg) + 1];
+    }
+    if (arg === '--approve') approveFlag = true;
+  }
 
-  if (approvedRequests.length === 0) {
+  let requests = [];
+  if (requestId) {
+    let req = await DemoRequest.findById(requestId);
+    if (!req) {
+      console.log('No DemoRequest found for ID:', requestId);
+      await mongoose.disconnect();
+      return;
+    }
+    if (approveFlag && req.status !== 'approved') {
+      req.status = 'approved';
+      req.approvedAt = new Date();
+      await req.save();
+      console.log(`Approved DemoRequest for ${req.name} <${req.email}>`);
+    }
+    requests = [req.toObject()];
+  } else {
+    requests = await DemoRequest.find({ status: 'approved' }).lean();
+  }
+  console.log(`Found ${requests.length} demo request(s) to process.\n`);
+
+  if (requests.length === 0) {
     console.log('Nothing to do.');
     await mongoose.disconnect();
     return;
@@ -135,7 +163,7 @@ async function main() {
   let succeeded = 0;
   let failed    = 0;
 
-  for (const req of approvedRequests) {
+  for (const req of requests) {
     const { name, email, company } = req;
     console.log(`── Processing: ${name} <${email}>`);
 
@@ -185,7 +213,7 @@ async function main() {
     await new Promise((r) => setTimeout(r, 600));
   }
 
-  console.log(`\n── Summary: ${succeeded} sent, ${failed} failed out of ${approvedRequests.length} total.`);
+  console.log(`\n── Summary: ${succeeded} sent, ${failed} failed out of ${requests.length} total.`);
   await mongoose.disconnect();
 }
 

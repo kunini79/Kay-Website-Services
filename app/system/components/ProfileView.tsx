@@ -59,6 +59,33 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const unlockedAchievements = achievements.filter((a) => a.unlockedAt);
   const lockedAchievements   = achievements.filter((a) => !a.unlockedAt);
 
+  // Avatar selection
+  const [avatar, setAvatar] = React.useState(() => {
+    try {
+      return localStorage.getItem('tb-avatar') || 'mimi';
+    } catch {
+      return 'mimi';
+    }
+  });
+
+  // Find unlocked avatars
+  const unlockedAvatarIds = React.useMemo(() => {
+    const unlocked: string[] = ['mimi']; // MiMi always unlocked
+    achievements.forEach(a => {
+      if (a.unlockedAt && a.unlocksAvatar) unlocked.push(a.unlocksAvatar);
+    });
+    return unlocked;
+  }, [achievements]);
+
+  function handleAvatarSelect(id: string) {
+    setAvatar(id);
+    try { localStorage.setItem('tb-avatar', id); } catch {}
+  }
+
+  // Avatar meta
+  const { AVATARS } = require('../types');
+  const avatarMeta = AVATARS.find(a => a.id === avatar) || AVATARS[0];
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
       {/* Back */}
@@ -73,14 +100,51 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <div style={{ background: 'linear-gradient(135deg, #58CC02 0%, #46A302 100%)', borderRadius: '24px', padding: '40px', color: 'white', marginBottom: '28px', boxShadow: '0 8px 32px rgba(88,204,2,0.3)', position: 'relative', overflow: 'hidden' }}>
         {/* Avatar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', zIndex: 1 }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', fontWeight: 800, border: '3px solid rgba(255,255,255,0.5)', flexShrink: 0 }}>
-            {userName.charAt(0).toUpperCase()}
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', fontWeight: 800, border: '3px solid rgba(255,255,255,0.5)', flexShrink: 0, overflow: 'hidden' }}>
+            <img src={avatarMeta.image} alt={avatarMeta.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
           </div>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 700, opacity: 0.85, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>ThinkBox Explorer</div>
             <div style={{ fontFamily: 'var(--tb-font-heading)', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', fontWeight: 800, lineHeight: 1.1 }}>{userName}</div>
           </div>
         </div>
+      {/* Avatar Picker */}
+      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', marginBottom: '28px', boxShadow: 'var(--tb-shadow-sm)' }}>
+        <h2 style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '18px', fontWeight: 800, color: 'var(--tb-text)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          🖼️ Custom Avatar
+        </h2>
+        <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
+          {AVATARS.map(a => {
+            const unlocked = unlockedAvatarIds.includes(a.id);
+            return (
+              <button
+                key={a.id}
+                onClick={() => unlocked && handleAvatarSelect(a.id)}
+                style={{
+                  border: avatar === a.id ? '3px solid #58CC02' : '2px solid var(--tb-border)',
+                  background: unlocked ? '#fff' : '#F7F7F7',
+                  borderRadius: '16px',
+                  padding: '8px',
+                  boxShadow: 'var(--tb-shadow-sm)',
+                  opacity: unlocked ? 1 : 0.5,
+                  cursor: unlocked ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
+                  width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginRight: '8px',
+                }}
+                aria-label={a.name + (unlocked ? '' : ' (locked)')}
+              >
+                <img src={a.image} alt={a.name} style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '12px', filter: unlocked ? 'none' : 'grayscale(1)' }} />
+                {!unlocked && (
+                  <span style={{ position: 'absolute', bottom: 4, right: 4, fontSize: '11px', color: '#aaa', fontWeight: 700 }}>🔒</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ fontSize: '13px', color: 'var(--tb-text-muted)', marginTop: '10px' }}>
+          Unlock more avatars by earning achievements!
+        </div>
+      </div>
 
         {/* XP bar */}
         <div style={{ position: 'relative', zIndex: 1, marginTop: '28px' }}>

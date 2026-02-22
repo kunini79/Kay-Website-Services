@@ -54,6 +54,22 @@ export interface Achievement {
   description: string;
   icon: string;
   unlockedAt?: number; // timestamp when unlocked, undefined = locked
+  unlocksAvatar?: AvatarId;
+  unlocksTheme?: string;
+export type AvatarId = 'mimi' | 'dogo' | 'badosh';
+
+export interface AvatarMeta {
+  id: AvatarId;
+  name: string;
+  image: string; // path to image
+  unlockAchievement?: string; // achievement id
+}
+
+export const AVATARS: AvatarMeta[] = [
+  { id: 'mimi', name: 'MiMi', image: '/ThinkBox/avatars/mimi.png', unlockAchievement: 'first_read' },
+  { id: 'dogo', name: 'Dogo', image: '/ThinkBox/avatars/dogo.png', unlockAchievement: 'read_10' },
+  { id: 'badosh', name: 'Badosh', image: '/ThinkBox/avatars/badosh.png', unlockAchievement: 'legend' },
+];
 }
 
 export const ALL_ACHIEVEMENTS: Omit<Achievement, 'unlockedAt'>[] = [
@@ -97,6 +113,8 @@ export interface CategoryConfig {
 export interface UserSettings {
   textSize: 'normal' | 'large' | 'xl';
   dyslexicFont: boolean;
+  avatar?: AvatarId;
+  theme?: string;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {

@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       perfectQuizzes: user.perfectQuizzes || 0,
     });
   } catch (err) {
-    return NextResponse.json({ message: 'Error', error: err.message }, { status: 500 });
+    return NextResponse.json({ message: 'Error', error: typeof err === 'object' && err !== null ? (err as any).message : String(err) }, { status: 500 });
   }
 }
 
@@ -43,6 +43,6 @@ export async function POST(request: NextRequest) {
     await user.save();
     return NextResponse.json({ message: 'Progress updated' });
   } catch (err) {
-    return NextResponse.json({ message: 'Error', error: err.message }, { status: 500 });
+    return NextResponse.json({ message: 'Error', error: typeof err === 'object' && err !== null ? (err as any).message : String(err) }, { status: 500 });
   }
 }

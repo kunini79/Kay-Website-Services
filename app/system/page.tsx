@@ -402,15 +402,14 @@ export default function SystemPage() {
         <LevelUpToast level={levelUpToast} onDone={() => setLevelUpToast(null)} />
       )}
 
-      <Header
-        <div className="tb-system-root">
-          <SystemErrorBoundary>
+      <div className="tb-system-root">
+        <SystemErrorBoundary>
           <Header
-            onSearch={handleTopicSearch}
+            onSearch={handleTopicSelect}
             onHome={goHome}
             onRandom={handleRandomTopic}
-            onBackpack={goBackpack}
-            onProfile={goProfile}
+            onBackpack={onBackpackClick}
+            onProfile={onProfileClick}
             searchFilter={searchFilter}
             onSearchFilterChange={setSearchFilter}
             streakCount={streakCount}
@@ -519,89 +518,6 @@ export default function SystemPage() {
           </main>
           </SystemErrorBoundary>
         </div>
-                padding: '20px',
-                borderRadius: '50%',
-                marginBottom: '24px',
-              }}
-            >
-              <AlertCircle size={40} color="#EF4444" />
-            </div>
-            <h3
-              style={{
-                fontFamily: 'var(--tb-font-heading)',
-                fontSize: '24px',
-                fontWeight: 700,
-                color: '#EF4444',
-                marginBottom: '8px',
-              }}
-            >
-              Oops!
-            </h3>
-            <p
-              style={{
-                color: 'var(--tb-text-muted)',
-                fontSize: '15px',
-                fontWeight: 600,
-                marginBottom: '24px',
-                lineHeight: 1.6,
-              }}
-            >
-              {errorMsg}
-            </p>
-            <button
-              onClick={goHome}
-              style={{
-                padding: '12px 32px',
-                background: 'var(--tb-primary)',
-                color: 'white',
-                border: 'none',
-                borderRadius: 'var(--tb-radius-full)',
-                fontFamily: 'var(--tb-font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-
-        {viewState === ViewState.ARTICLE && currentArticle && (
-          <ArticleView 
-              article={currentArticle} 
-              onTopicClick={handleTopicSelect}
-              isSaved={!!savedArticles.find(a => a.title === currentArticle.title)}
-              onToggleSave={() => toggleSaveFilter(currentArticle)}
-              onEarnXP={handleEarnXP}
-          />
-        )}
-
-        {viewState === ViewState.PROFILE && (
-          <ProfileView
-            userName={(() => { try { const u = localStorage.getItem('tb-username'); return u || 'Explorer'; } catch { return 'Explorer'; } })()}
-            userXP={userXP}
-            userLevel={userLevel}
-            streakCount={streakCount}
-            savedArticles={savedArticles}
-            readHistory={readHistory}
-            achievements={achievements}
-            quizzesCompleted={quizzesCompleted}
-            perfectQuizzes={perfectQuizzes}
-            onBack={goHome}
-          />
-        )}
-
-        {viewState === ViewState.BACKPACK && (
-            <BackpackView 
-                savedArticles={savedArticles}
-                onTopicClick={handleTopicSelect}
-                onRemove={removeFromBackpackByName}
-                onBack={goHome}
-            />
-        )}
-      </main>
-      </SystemErrorBoundary>
     </div>
   );
 }
