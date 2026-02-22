@@ -85,9 +85,8 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        {/* Right section: Settings + Backpack + Streak + Avatar */}
+        {/* Right section: Settings + Backpack + Streak + Avatar + Feedback */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          
           <button
             onClick={onBackpack}
             className="tb-btn-icon"
@@ -99,6 +98,17 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <SettingsMenu settings={settings} onUpdate={onSettingsUpdate} />
+
+          {/* Feedback Button */}
+          <button
+            className="tb-btn-icon tb-btn-secondary"
+            title="Send Feedback or Suggestion"
+            aria-label="Feedback"
+            style={{ position: 'relative' }}
+            onClick={() => window.dispatchEvent(new CustomEvent('tb-feedback-open'))}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#58CC02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </button>
 
           {/* XP Display */}
           <div 

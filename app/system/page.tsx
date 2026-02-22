@@ -53,6 +53,19 @@ export default function SystemPage() {
   const [levelUpToast, setLevelUpToast] = useState<number | null>(null);
   const prevLevelRef = useRef(1);
 
+  // Feedback modal state
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setFeedbackOpen(true);
+    window.addEventListener('tb-feedback-open', handler);
+    return () => window.removeEventListener('tb-feedback-open', handler);
+  }, []);
+
+  function closeFeedback() {
+    setFeedbackOpen(false);
+  }
+
   /* Load Backpack and XP from local storage */
   useEffect(() => {
     const userId = localStorage.getItem('tb-user-id');
@@ -390,92 +403,122 @@ export default function SystemPage() {
       )}
 
       <Header
-        onSearch={handleTopicSelect}
-        onHome={goHome}
-        onRandom={handleRandomTopic}
-        onBackpack={onBackpackClick}
-        onProfile={onProfileClick}
-        searchFilter={searchFilter}
-        onSearchFilterChange={setSearchFilter}
-        streakCount={streakCount}
-        userXP={userXP}
-        userLevel={userLevel}
-        settings={settings}
-        onSettingsUpdate={setSettings}
-        unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
-      />
-
-      <SystemErrorBoundary>
-        {/* Progress bar */}
-      <div
-        style={{
-          padding: '8px 24px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}
-      >
-        <span
-          style={{
-            fontFamily: 'var(--tb-font-body)',
-            fontSize: '12px',
-            fontWeight: 700,
-            color: isDarkBg ? 'rgba(255, 255, 255, 0.9)' : 'var(--tb-text-muted)',
-            whiteSpace: 'nowrap',
-            transition: 'color 1s ease-in-out',
-          }}
-        >
-          You&apos;ve explored {exploredCount} of 9 topics today
-        </span>
-        <div className="tb-progress-track" style={{ flex: 1, background: isDarkBg ? 'rgba(255, 255, 255, 0.2)' : 'var(--tb-border)' }}>
-          <div
-            className="tb-progress-fill"
-            style={{ width: `${(exploredCount / 9) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Main content */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '80px' }}>
-        {viewState === ViewState.HOME && (
-          <HomeView
-            onTopicClick={handleTopicSelect}
+        <div className="tb-system-root">
+          <SystemErrorBoundary>
+          <Header
+            onSearch={handleTopicSearch}
+            onHome={goHome}
+            onRandom={handleRandomTopic}
+            onBackpack={goBackpack}
+            onProfile={goProfile}
             searchFilter={searchFilter}
-            exploredCategories={exploredCategories}
-            onCategoryChange={handleHomeCategoryChange}
-            readHistory={readHistory}
+            onSearchFilterChange={setSearchFilter}
+            streakCount={streakCount}
+            userXP={userXP}
+            userLevel={userLevel}
+            settings={settings}
+            onSettingsUpdate={setSettings}
+            unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
           />
-        )}
+          <main className="tb-system-main">
+            {/* Feedback Modal */}
+            {feedbackOpen && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                background: 'rgba(0,0,0,0.18)',
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <div style={{ maxWidth: 420, width: '100%', background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px #0002', padding: 0, position: 'relative' }}>
+                  <button
+                    onClick={closeFeedback}
+                    style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', fontSize: 22, color: '#777', cursor: 'pointer', zIndex: 2 }}
+                    aria-label="Close feedback form"
+                  >×</button>
+                  <div style={{ padding: '24px 0 0 0' }}>
+                    {/* FeedbackForm component */}
+                    <React.Suspense fallback={<div style={{ padding: 32, textAlign: 'center' }}>Loading…</div>}>
+                      {require('./components/FeedbackForm').FeedbackForm({ onClose: closeFeedback })}
+                    </React.Suspense>
+                  </div>
+                </div>
+              </div>
+            )}
 
-        {viewState === ViewState.LOADING && (
-          <div style={{ marginTop: '80px' }}>
-            <Loader message="Opening the magic book..." />
-          </div>
-        )}
+            {errorMsg && (
+              <div className="tb-error-view">
+                <AlertCircle size={32} className="text-red-500 mb-2" />
+                <p
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    marginBottom: '24px',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {errorMsg}
+                </p>
+                <button
+                  onClick={goHome}
+                  style={{
+                    padding: '12px 32px',
+                    background: 'var(--tb-primary)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--tb-radius-full)',
+                    fontFamily: 'var(--tb-font-heading)',
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
 
-        {viewState === ViewState.ERROR && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: '80px',
-              textAlign: 'center',
-              maxWidth: '480px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              background: 'var(--tb-surface)',
-              borderRadius: 'var(--tb-radius-xl)',
-              padding: '48px 32px',
-              boxShadow: 'var(--tb-shadow-md)',
-            }}
-          >
-            <div
-              style={{
-                background: '#FEF2F2',
+            {viewState === ViewState.ARTICLE && currentArticle && (
+              <ArticleView 
+                  article={currentArticle} 
+                  onTopicClick={handleTopicSelect}
+                  isSaved={!!savedArticles.find(a => a.title === currentArticle.title)}
+                  onToggleSave={() => toggleSaveFilter(currentArticle)}
+                  onEarnXP={handleEarnXP}
+              />
+            )}
+
+            {viewState === ViewState.PROFILE && (
+              <ProfileView
+                userName={(() => { try { const u = localStorage.getItem('tb-username'); return u || 'Explorer'; } catch { return 'Explorer'; } })()}
+                userXP={userXP}
+                userLevel={userLevel}
+                streakCount={streakCount}
+                savedArticles={savedArticles}
+                readHistory={readHistory}
+                achievements={achievements}
+                quizzesCompleted={quizzesCompleted}
+                perfectQuizzes={perfectQuizzes}
+                onBack={goHome}
+              />
+            )}
+
+            {viewState === ViewState.BACKPACK && (
+                <BackpackView 
+                    savedArticles={savedArticles}
+                    onTopicClick={handleTopicSelect}
+                    onRemove={removeFromBackpackByName}
+                    onBack={goHome}
+                />
+            )}
+          </main>
+          </SystemErrorBoundary>
+        </div>
                 padding: '20px',
                 borderRadius: '50%',
                 marginBottom: '24px',
