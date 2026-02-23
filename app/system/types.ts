@@ -1,10 +1,112 @@
 
+export interface ArticleSection {
+  subtitle: string;
+  content: string;
+}
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
+export interface Article {
+  title: string;
+  intro: string;
+  funFact: string;
+  sections: ArticleSection[];
+  relatedTopics: string[];
+  category: string;
+  imageSeed?: string;
+  quiz?: QuizQuestion[];
+}
+
+export interface TopicPreview {
+  title: string;
+  category: string;
+  description: string;
+}
+
+export interface SavedArticle {
+  title: string;
+  category: string;
+  dateAdded: number;
+}
+
+export enum ViewState {
+  HOME = 'HOME',
+  ARTICLE = 'ARTICLE',
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  BACKPACK = 'BACKPACK',
+  PROFILE = 'PROFILE',
+}
+
+export interface ReadHistoryItem {
+  title: string;
+  category: string;
+  readAt: number; // timestamp
+}
+
+export type AvatarId = 'mimi' | 'dogo' | 'badosh';
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  unlockedAt?: number; // timestamp when unlocked, undefined = locked
+  unlocksAvatar?: AvatarId;
+  unlocksTheme?: string;
+}
+
+export interface AvatarMeta {
+  id: AvatarId;
+  name: string;
+  image: string; // path to image
+  unlockAchievement?: string; // achievement id
+}
+
+export interface CategoryConfig {
+  icon: string;
+  description: string;
+  cssClass: string;
+}
+
+export interface UserSettings {
+  textSize: 'normal' | 'large' | 'xl';
+  dyslexicFont: boolean;
+  avatar?: AvatarId;
+  theme?: string;
+}
+
+export const DEFAULT_SETTINGS: UserSettings = {
+  textSize: 'normal',
+  dyslexicFont: false,
+};
+export const ALL_ACHIEVEMENTS = achievements;
+
+export type Avatar = {
+  id: string;
+  name: string;
+  image: string;
+  unlockAchievement: string;
+};
+
+export const avatars: Avatar[] = [
   { id: 'mimi', name: 'MiMi', image: '/ThinkBox/avatars/mimi.png', unlockAchievement: 'first_read' },
   { id: 'dogo', name: 'Dogo', image: '/ThinkBox/avatars/dogo.png', unlockAchievement: 'read_10' },
   { id: 'badosh', name: 'Badosh', image: '/ThinkBox/avatars/badosh.png', unlockAchievement: 'legend' },
 ];
-}
+export type Achievement = {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+};
 
+export const achievements: Achievement[] = [
   { id: 'first_read',      icon: '🌱', title: 'First Steps',       description: 'Read your very first article' },
   { id: 'read_10',         icon: '📚', title: 'Bookworm',          description: 'Read 10 articles' },
   { id: 'read_25',         icon: '🧠', title: 'Knowledge Seeker',  description: 'Read 25 articles' },
@@ -36,17 +138,8 @@ export enum Category {
   READING = 'Reading & Stories'
 }
 
-  icon: string;
-  description: string;
-  cssClass: string;
-}
+// Remove stray lines and braces
 
-  textSize: 'normal' | 'large' | 'xl';
-  dyslexicFont: boolean;
-  avatar?: AvatarId;
-  theme?: string;
-}
+// Remove stray lines and braces
 
-  textSize: 'normal',
-  dyslexicFont: false,
-};
+// Remove stray lines and braces
