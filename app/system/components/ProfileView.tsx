@@ -83,8 +83,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   }
 
   // Avatar meta
-  const { AVATARS } = require('../types');
-  const avatarMeta = AVATARS.find(a => a.id === avatar) || AVATARS[0];
+  const { avatars } = require('../types');
+  const avatarMeta = avatars.find((a: { id: string }) => a.id === avatar) || avatars[0];
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
@@ -114,7 +114,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           🖼️ Custom Avatar
         </h2>
         <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
-          {AVATARS.map(a => {
+          {avatars.map((a: { id: string; name: string; image: string; unlockAchievement: string }) => {
             const unlocked = unlockedAvatarIds.includes(a.id);
             return (
               <button
