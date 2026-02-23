@@ -10,6 +10,8 @@ export interface IDemoUser extends Document {
   approvedAt: Date;
   lastLoginAt?: Date;
   isActive: boolean;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -55,6 +57,10 @@ const demoUserSchema = new Schema(
     backpack: { type: Array, default: [] },
     quizzesCompleted: { type: Number, default: 0 },
     perfectQuizzes: { type: Number, default: 0 },
+    
+    // Password Reset
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   { timestamps: true }
 );
