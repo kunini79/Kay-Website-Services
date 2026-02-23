@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { ArrowLeft, Trophy, Flame, BookOpen, Star, Target, Award } from 'lucide-react';
 import { Achievement, ALL_ACHIEVEMENTS, Category, ReadHistoryItem, SavedArticle } from '../types';
 import { CATEGORY_CONFIG } from '../constants';
+import ChangePasswordForm from '@/components/ChangePasswordForm';
 
 interface ProfileViewProps {
   userName: string;
@@ -210,7 +211,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       )}
 
       {/* Achievements */}
-      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', boxShadow: 'var(--tb-shadow-sm)' }}>
+      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', boxShadow: 'var(--tb-shadow-sm)', marginBottom: '28px' }}>
         <h2 style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '20px', fontWeight: 800, color: 'var(--tb-text)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           🏅 Achievements <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--tb-text-muted)' }}>({unlockedAchievements.length}/{achievements.length})</span>
         </h2>
@@ -243,6 +244,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Security Settings */}
+      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', marginBottom: '28px', boxShadow: 'var(--tb-shadow-sm)' }}>
+          <h2 style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '20px', fontWeight: 800, color: 'var(--tb-text)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              🔑 Security Settings
+          </h2>
+          <ChangePasswordForm />
       </div>
 
       {/* Recent reading history */}

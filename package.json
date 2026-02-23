@@ -24,6 +24,7 @@
     "@types/three": "^0.182.0",
     "@vercel/analytics": "^1.6.1",
     "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.29.2",
