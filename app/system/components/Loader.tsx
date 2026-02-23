@@ -7,12 +7,18 @@ export const Loader: React.FC<{ message?: string }> = ({
   return (
     <div
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(247, 247, 247, 0.8)',
+        backdropFilter: 'blur(4px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '300px',
-        width: '100%',
+        zIndex: 9999,
         gap: '24px',
       }}
     >

@@ -25,6 +25,9 @@ export default function SystemPage() {
   );
   const [homeCategory, setHomeCategory] = useState<Category>(Category.ANIMALS);
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
+
+  // -- Loading State --
+  const [isLoading, setIsLoading] = useState(true);
   
   // -- Backpack state --
   const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
@@ -35,7 +38,13 @@ export default function SystemPage() {
   const [xpChanged, setXpChanged] = useState(false); // To trigger save
 
   // -- Streak State --
-  const [streakCount, setStreakCount] = useState(1);
+  const [streakCount, setStreakCount] = useState(() => {
+    try {
+      return parseInt(localStorage.getItem('tb-streak') || '1', 10);
+    } catch {
+      return 1;
+    }
+  });
 
   // -- Reading History --
   const [readHistory, setReadHistory] = useState<ReadHistoryItem[]>([]);
@@ -69,39 +78,58 @@ export default function SystemPage() {
   /* Load Backpack and XP from local storage */
   useEffect(() => {
     const userId = localStorage.getItem('tb-user-id');
-    if (!userId) return;
-    import('./cloudSync').then(({ fetchCloudProgress }) => {
-      fetchCloudProgress(userId)
-        .then(cloud => {
-          // Merge cloud and localStorage
-          const local = {
-            xp: localStorage.getItem('tb-xp'),
-            streak: localStorage.getItem('tb-streak'),
-            achievements: localStorage.getItem('tb-achievements'),
-            history: localStorage.getItem('tb-history'),
-            backpack: localStorage.getItem('tb-backpack'),
-            quizzesCompleted: localStorage.getItem('tb-quizzes-completed'),
-            perfectQuizzes: localStorage.getItem('tb-perfect-quizzes'),
-          };
-          // Prefer cloud if exists, else local
-          setUserXP(cloud.xp ?? parseInt(local.xp || '0', 10));
-          setStreakCount(cloud.streak ?? parseInt(local.streak || '1', 10));
-          setQuizzesCompleted(cloud.quizzesCompleted ?? parseInt(local.quizzesCompleted || '0', 10));
-          setPerfectQuizzes(cloud.perfectQuizzes ?? parseInt(local.perfectQuizzes || '0', 10));
-          setSavedArticles(cloud.backpack ?? (local.backpack ? JSON.parse(local.backpack) : []));
-          setReadHistory(cloud.history ?? (local.history ? JSON.parse(local.history) : []));
-          setAchievements(
-            ALL_ACHIEVEMENTS.map((a) => ({
-              ...a,
-              unlockedAt: (cloud.achievements && cloud.achievements[a.id]) ??
-                (local.achievements ? JSON.parse(local.achievements)[a.id] : undefined),
-            }))
-          );
-        })
-        .catch((e) => {
-          console.error('Cloud progress fetch failed', e);
-        });
-    });
+    if (!userId) {
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        const { fetchCloudProgress } = await import('./cloudSync');
+        const cloud = await fetchCloudProgress(userId);
+
+        if (!isMounted) return;
+
+        // Merge cloud and localStorage
+        const local = {
+          xp: localStorage.getItem('tb-xp'),
+          streak: localStorage.getItem('tb-streak'),
+          achievements: localStorage.getItem('tb-achievements'),
+          history: localStorage.getItem('tb-history'),
+          backpack: localStorage.getItem('tb-backpack'),
+          quizzesCompleted: localStorage.getItem('tb-quizzes-completed'),
+          perfectQuizzes: localStorage.getItem('tb-perfect-quizzes'),
+        };
+        // Prefer cloud if exists, else local
+        setUserXP(cloud.xp ?? parseInt(local.xp || '0', 10));
+        setStreakCount(cloud.streak ?? parseInt(local.streak || '1', 10));
+        setQuizzesCompleted(cloud.quizzesCompleted ?? parseInt(local.quizzesCompleted || '0', 10));
+        setPerfectQuizzes(cloud.perfectQuizzes ?? parseInt(local.perfectQuizzes || '0', 10));
+        setSavedArticles(cloud.backpack ?? (local.backpack ? JSON.parse(local.backpack) : []));
+        setReadHistory(cloud.history ?? (local.history ? JSON.parse(local.history) : []));
+        setAchievements(
+          ALL_ACHIEVEMENTS.map((a) => ({
+            ...a,
+            unlockedAt: (cloud.achievements && cloud.achievements[a.id]) ??
+              (local.achievements ? JSON.parse(local.achievements)[a.id] : undefined),
+          }))
+        );
+      } catch (e) {
+        console.error('Cloud progress fetch failed', e);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   /* Save Backpack to local storage */
@@ -190,8 +218,11 @@ export default function SystemPage() {
 
   /* Sync progress to cloud whenever any tracked state changes */
   useEffect(() => {
+    if (isLoading) return; // Don't save while loading
+
     const userId = localStorage.getItem('tb-user-id');
     if (!userId) return;
+
     import('./cloudSync').then(({ saveCloudProgress }) => {
       saveCloudProgress(userId, {
         xp: userXP,
@@ -205,16 +236,25 @@ export default function SystemPage() {
         console.error('Cloud progress save failed', e);
       });
     });
-  }, [userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
+  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
 
   // Touch streak on any activity (topic open, random, search)
   const touchStreak = useCallback(() => {
     const now = Date.now();
     const storedLastActive = localStorage.getItem('tb-streak-last-active');
-    const storedStreak = localStorage.getItem('tb-streak');
-    if (!storedLastActive || !storedStreak) return;
+    let storedStreak = localStorage.getItem('tb-streak');
+
+    // First time action: initialize streak
+    if (!storedLastActive || !storedStreak) {
+      localStorage.setItem('tb-streak', '1');
+      localStorage.setItem('tb-streak-last-active', now.toString());
+      setStreakCount(1);
+      return;
+    }
+
     const lastActive = parseInt(storedLastActive, 10);
     const diffHours = (now - lastActive) / (1000 * 60 * 60);
+
     if (diffHours >= 24 && diffHours < 48) {
       // New day of activity — increment
       const newStreak = parseInt(storedStreak, 10) + 1;
@@ -225,6 +265,7 @@ export default function SystemPage() {
       setStreakCount(1);
       localStorage.setItem('tb-streak', '1');
     }
+    // Always update last active time
     localStorage.setItem('tb-streak-last-active', now.toString());
   }, []);
 
