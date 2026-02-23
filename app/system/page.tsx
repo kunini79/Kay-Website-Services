@@ -482,6 +482,16 @@ export default function SystemPage() {
               </div>
             )}
 
+            {viewState === ViewState.HOME && (
+              <HomeView
+                onTopicClick={handleTopicSelect}
+                searchFilter={searchFilter}
+                exploredCategories={exploredCategories}
+                onCategoryChange={handleHomeCategoryChange}
+                readHistory={readHistory}
+              />
+            )}
+
             {viewState === ViewState.ARTICLE && currentArticle && (
               <ArticleView 
                   article={currentArticle} 
