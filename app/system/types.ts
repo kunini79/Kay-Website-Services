@@ -1,4 +1,3 @@
-
 export interface ArticleSection {
   subtitle: string;
   content: string;
@@ -25,7 +24,7 @@ export interface Article {
 export interface TopicPreview {
   title: string;
   category: string;
-  description: string;
+  description:string;
 }
 
 export interface SavedArticle {
@@ -51,8 +50,6 @@ export interface ReadHistoryItem {
 
 export type AvatarId = 'mimi' | 'dogo' | 'badosh';
 
-// interface Achievement is defined below as a type, so remove this duplicate
-
 export interface AvatarMeta {
   id: AvatarId;
   name: string;
@@ -77,9 +74,6 @@ export const DEFAULT_SETTINGS: UserSettings = {
   textSize: 'normal',
   dyslexicFont: false,
 };
-
-
-export const ALL_ACHIEVEMENTS = achievements;
 
 export type Avatar = {
   id: string;
@@ -123,6 +117,8 @@ export const achievements: Achievement[] = [
   { id: 'daily_challenge', icon: '☀️', title: 'Daily Hero',        description: 'Complete the Topic of the Day' },
 ];
 
+export const ALL_ACHIEVEMENTS = achievements;
+
 export enum Category {
   ANIMALS = 'Animals & Nature',
   SCIENCE = 'Science & Space',
@@ -134,9 +130,3 @@ export enum Category {
   TECH = 'Technology',
   READING = 'Reading & Stories'
 }
-
-// Remove stray lines and braces
-
-// Remove stray lines and braces
-
-// Remove stray lines and braces
