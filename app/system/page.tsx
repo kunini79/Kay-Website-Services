@@ -482,6 +482,8 @@ export default function SystemPage() {
               </div>
             )}
 
+            {viewState === ViewState.LOADING && <Loader />}
+
             {viewState === ViewState.HOME && (
               <HomeView
                 onTopicClick={handleTopicSelect}
