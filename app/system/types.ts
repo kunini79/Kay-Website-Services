@@ -51,15 +51,7 @@ export interface ReadHistoryItem {
 
 export type AvatarId = 'mimi' | 'dogo' | 'badosh';
 
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  unlockedAt?: number; // timestamp when unlocked, undefined = locked
-  unlocksAvatar?: AvatarId;
-  unlocksTheme?: string;
-}
+// interface Achievement is defined below as a type, so remove this duplicate
 
 export interface AvatarMeta {
   id: AvatarId;
@@ -104,6 +96,9 @@ export type Achievement = {
   icon: string;
   title: string;
   description: string;
+  unlockedAt?: number;
+  unlocksAvatar?: AvatarId;
+  unlocksTheme?: string;
 };
 
 export const achievements: Achievement[] = [
