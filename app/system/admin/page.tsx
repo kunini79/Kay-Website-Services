@@ -19,28 +19,67 @@ interface DemoRequest {
   createdAt: string;
 }
 
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [requests, setRequests] = useState<DemoRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
 
-  useEffect(() => {
+  // Store token in memory for this session
+  const [token, setToken] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+    // For demo: only check password, but you can add email check if needed
+    if (!email || !password) {
+      setLoginError("Email and password required");
+      return;
+    }
+    // Try to fetch with admin password
+    try {
+      const res = await fetch("/api/admin/demo-requests", {
+        headers: { Authorization: `Bearer ${password}` },
+      });
+      if (res.ok) {
+        setIsAuthenticated(true);
+        setToken(password);
+        fetchData(password);
+      } else {
+        setLoginError("Invalid credentials");
+      }
+    } catch {
+      setLoginError("Login failed");
+    }
+  };
+
+  const fetchData = (adminToken: string) => {
+    setLoading(true);
     fetch("/api/activity")
       .then((r) => r.json())
       .then((data) => setLogs(data.logs || []));
-    fetch("/api/admin/demo-requests")
+    fetch("/api/admin/demo-requests", {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    })
       .then((r) => r.json())
       .then((data) => setRequests(data.requests || []))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
   const approveRequest = async (id: string) => {
     setApproving(id);
     try {
       const res = await fetch(`/api/admin/demo-requests/approve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ demoRequestId: id, action: "approve" }),
       });
       if (!res.ok) {
@@ -54,6 +93,36 @@ export default function AdminActivityPage() {
     }
     setApproving(null);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ maxWidth: 400, margin: "80px auto", padding: 24, border: "1px solid #eee", borderRadius: 12, background: "#fff" }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 18 }}>Admin Login</h2>
+        <form onSubmit={handleLogin}>
+          <div style={{ marginBottom: 12 }}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={{ width: "100%", padding: 8, fontSize: 16 }}
+            />
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              style={{ width: "100%", padding: 8, fontSize: 16 }}
+            />
+          </div>
+          {loginError && <div style={{ color: "#c00", marginBottom: 10 }}>{loginError}</div>}
+          <button type="submit" style={{ width: "100%", padding: 10, fontSize: 16, fontWeight: 700, background: "#58CC02", color: "#fff", border: "none", borderRadius: 8 }}>Login</button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: 24 }}>

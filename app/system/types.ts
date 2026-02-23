@@ -77,6 +77,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   textSize: 'normal',
   dyslexicFont: false,
 };
+// ...existing code...
 export const ALL_ACHIEVEMENTS = achievements;
 
 export type Avatar = {
