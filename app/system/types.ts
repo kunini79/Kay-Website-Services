@@ -78,6 +78,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   dyslexicFont: false,
 };
 
+
 export const ALL_ACHIEVEMENTS = achievements;
 
 export type Avatar = {
