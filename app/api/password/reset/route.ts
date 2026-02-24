@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DemoUser } from '@/lib/models/DemoUser';
-import { dbConnect } from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
     const { token, password } = await req.json();
 
     if (!token || !password) {

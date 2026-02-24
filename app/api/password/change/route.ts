@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DemoUser } from '@/lib/models/DemoUser';
-import { dbConnect } from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 import bcryptjs from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
 
     const auth = await verifyAuth();
     if (!auth) {

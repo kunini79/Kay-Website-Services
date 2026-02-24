@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DemoUser } from '@/lib/models/DemoUser';
-import { dbConnect } from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { Resend } from 'resend';
 import crypto from 'crypto';
 
@@ -25,7 +25,7 @@ function buildResetEmail(token: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
     const { email } = await req.json();
 
     if (!email) {

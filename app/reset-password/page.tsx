@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
           )}
 
           <div>
-            <label htmlFor="password" a className="block text-sm font-bold text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
               New Password
             </label>
             <input
