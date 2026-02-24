@@ -84,10 +84,6 @@ export default function LoginForm() {
           <label htmlFor="password" className="block text-sm font-bold text-[#3C3C3C]">
             Password *
           </label>
-          <a href="/forgot-password"
-             className="text-xs font-bold text-[#58CC02] hover:underline">
-            Forgot Password?
-          </a>
         </div>
         <input
           type="password"
@@ -101,15 +97,24 @@ export default function LoginForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-[#58CC02] hover:bg-[#6add0e] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
-        style={{ boxShadow: '0 3px 0 #46A302' }}
-      >
-        <LogIn size={18} />
-        {loading ? 'Signing in…' : 'Sign In to ThinkBox'}
-      </button>
+      <div className="flex flex-col gap-4">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[#58CC02] hover:bg-[#6add0e] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+          style={{ boxShadow: '0 3px 0 #46A302' }}
+        >
+          <LogIn size={18} />
+          {loading ? 'Signing in…' : 'Sign In to ThinkBox'}
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push('/forgot-password')}
+          className="w-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+        >
+          Forgot Password?
+        </button>
+      </div>
 
       <p className="text-xs text-[#aaa] text-center font-medium">
         Don&apos;t have credentials yet?{' '}
