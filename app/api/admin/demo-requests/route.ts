@@ -1,22 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { DemoRequest } from '@/lib/models/DemoRequest';
-
-// Basic admin authentication
-function verifyAdminAuth(request: NextRequest): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return false;
-
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader) return false;
-
-  const password = authHeader.replace('Bearer ', '');
-  return password === adminPassword;
-}
+import { verifyAdminSession } from '@/lib/auth';
+import { rateLimit, getClientIp } from '@/utils/rateLimit';
 
 export async function GET(request: NextRequest) {
-  // Verify admin authentication
-  if (!verifyAdminAuth(request)) {
+  // Rate limit: 30 requests per 15 minutes per IP
+  const clientIp = getClientIp(request);
+  const rateLimitResult = rateLimit(`admin-requests:${clientIp}`, 30, 900_000);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { message: 'Too many requests. Please try again later.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+      }
+    );
+  }
+
+  // Verify signed admin session cookie
+  if (!(await verifyAdminSession())) {
     return NextResponse.json(
       { message: 'Unauthorized' },
       { status: 401 }

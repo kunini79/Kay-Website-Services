@@ -2,10 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { DemoRequest } from '@/lib/models/DemoRequest';
 import { Resend } from 'resend';
+import { rateLimit, getClientIp } from '@/utils/rateLimit';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 demo requests per hour per IP
+  const clientIp = getClientIp(request);
+  const rateLimitResult = rateLimit(`demo-request:${clientIp}`, 3, 3_600_000);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { message: 'Too many requests. Please try again later.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+      }
+    );
+  }
+
   try {
     const body = await request.json();
     const { name, email, company, phone, role, useCase, message } = body;

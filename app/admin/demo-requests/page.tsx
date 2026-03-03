@@ -35,18 +35,20 @@ export default function AdminDemoRequestsPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/admin/demo-requests', {
-        headers: {
-          Authorization: `Bearer ${password}`,
-        },
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
       });
 
       if (!response.ok) {
-        throw new Error('Invalid password');
+        const data = await response.json();
+        throw new Error(data.message || 'Invalid password');
       }
 
       setIsAuthenticated(true);
-      fetchRequests(password);
+      setPassword(''); // Clear password from memory
+      fetchRequests();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
@@ -54,16 +56,16 @@ export default function AdminDemoRequestsPage() {
     }
   };
 
-  const fetchRequests = async (adminPassword: string) => {
+  const fetchRequests = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/demo-requests?status=${filter}`, {
-        headers: {
-          Authorization: `Bearer ${adminPassword}`,
-        },
-      });
+      const response = await fetch(`/api/admin/demo-requests?status=${filter}`);
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          throw new Error('Session expired. Please log in again.');
+        }
         throw new Error('Failed to fetch requests');
       }
 
@@ -85,7 +87,6 @@ export default function AdminDemoRequestsPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${password}`,
         },
         body: JSON.stringify({
           demoRequestId: requestId,
@@ -98,7 +99,7 @@ export default function AdminDemoRequestsPage() {
       }
 
       // Refresh the list
-      fetchRequests(password);
+      fetchRequests();
       setSelectedRequestId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to approve request');
@@ -116,7 +117,6 @@ export default function AdminDemoRequestsPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${password}`,
         },
         body: JSON.stringify({
           demoRequestId: requestId,
@@ -130,7 +130,7 @@ export default function AdminDemoRequestsPage() {
       }
 
       // Refresh the list
-      fetchRequests(password);
+      fetchRequests();
       setSelectedRequestId(null);
       setRejectionReason('');
     } catch (err) {
@@ -192,7 +192,10 @@ export default function AdminDemoRequestsPage() {
               <p className="text-gray-400">Review and manage ThinkBox demo access requests</p>
             </div>
             <button
-              onClick={() => setIsAuthenticated(false)}
+              onClick={async () => {
+                await fetch('/api/admin/logout', { method: 'POST' });
+                setIsAuthenticated(false);
+              }}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
             >
               Logout
@@ -213,7 +216,7 @@ export default function AdminDemoRequestsPage() {
               key={tab}
               onClick={() => {
                 setFilter(tab as any);
-                fetchRequests(password);
+                fetchRequests();
               }}
               className={`pb-4 px-6 font-semibold transition-colors capitalize ${
                 filter === tab

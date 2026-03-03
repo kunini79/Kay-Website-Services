@@ -2,30 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { DemoRequest } from '@/lib/models/DemoRequest';
 import { DemoUser } from '@/lib/models/DemoUser';
+import { verifyAdminSession } from '@/lib/auth';
 import { Resend } from 'resend';
+import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import crypto from 'crypto';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Basic admin authentication
-function verifyAdminAuth(request: NextRequest): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return false;
-
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader) return false;
-
-  const password = authHeader.replace('Bearer ', '');
-  return password === adminPassword;
-}
-
-function generatePassword(length: number = 12): string {
-  return crypto.randomBytes(length).toString('hex').slice(0, length);
-}
-
 export async function POST(request: NextRequest) {
-  // Verify admin authentication
-  if (!verifyAdminAuth(request)) {
+  // Rate limit: 20 approve/reject actions per 15 minutes per IP
+  const clientIp = getClientIp(request);
+  const rateLimitResult = rateLimit(`admin-approve:${clientIp}`, 20, 900_000);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { message: 'Too many requests. Please try again later.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+      }
+    );
+  }
+
+  // Verify signed admin session cookie
+  if (!(await verifyAdminSession())) {
     return NextResponse.json(
       { message: 'Unauthorized' },
       { status: 401 }
@@ -58,22 +58,21 @@ export async function POST(request: NextRequest) {
       // Check if user already exists
       let demoUser = await DemoUser.findOne({ email: demoRequest.email });
 
-      // Track the plain-text password so we can include it in the approval email.
-      // After DemoUser.create() the model's pre-save hook bcrypt-hashes the
-      // password, so demoUser.password would be the hash — not what we want.
-      let plainPassword: string | null = null;
-
       if (!demoUser) {
-        // Generate password
-        plainPassword = generatePassword();
+        // Generate a temporary random password (never shared) and a one-time setup token
+        const tempPassword = crypto.randomBytes(32).toString('hex');
+        const setupToken = crypto.randomBytes(32).toString('hex');
+        const setupTokenExpiry = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72 hours
 
-        // Create demo user
+        // Create demo user with unusable temp password; user will set their own via setup link
         demoUser = await DemoUser.create({
           email: demoRequest.email,
-          password: plainPassword,
+          password: tempPassword,
           name: demoRequest.name,
           company: demoRequest.company,
           approvedAt: new Date(),
+          setupToken,
+          setupTokenExpiry,
         });
       }
 
@@ -82,54 +81,46 @@ export async function POST(request: NextRequest) {
       demoRequest.approvedAt = new Date();
       await demoRequest.save();
 
-      // Send email with credentials (only if we created a new user and have the plain-text password)
-      if (plainPassword) {
-        try {
-          const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-          const loginUrl = `${appUrl}/products/thinkbox?tab=login`;
-          await resend.emails.send({
-            from: 'ThinkBox <noreply@kaycorp.tech>',
-            to: demoRequest.email,
-            subject: 'Your ThinkBox Beta Access is Approved!',
-            html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e5e5e5;">
-                <h1 style="color: #58CC02; font-size: 28px; margin-bottom: 8px;">You're in! Welcome to ThinkBox 🎉</h1>
-                <p style="font-size: 16px; color: #333;">Hi ${demoRequest.name},</p>
-                <p style="font-size: 15px; color: #555;">Your beta tester request has been approved. Below are your login credentials — keep them safe.</p>
+      // Send email with one-time setup link (never expose password or hash)
+      try {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const setupLink = demoUser.setupToken
+          ? `${appUrl}/thinkbox?setup=${demoUser.setupToken}`
+          : `${appUrl}/thinkbox`;
 
-                <div style="background: #F7F7F7; border: 1px solid #E5E5E5; padding: 20px; border-radius: 10px; margin: 24px 0;">
-                  <p style="margin: 0 0 10px; font-size: 14px;"><strong>Email:</strong></p>
-                  <code style="display: block; background: #fff; border: 1px solid #ddd; padding: 10px 14px; border-radius: 6px; font-size: 15px; color: #333;">${demoRequest.email}</code>
+        await resend.emails.send({
+          from: 'ThinkBox <noreply@kaycorp.tech>',
+          to: demoRequest.email,
+          subject: 'Your ThinkBox Beta Access is Approved!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e5e5e5;">
+              <h1 style="color: #58CC02; font-size: 28px; margin-bottom: 8px;">You're in! Welcome to ThinkBox 🎉</h1>
+              <p style="font-size: 16px; color: #333;">Hi ${demoRequest.name},</p>
+              <p style="font-size: 15px; color: #555;">Your beta tester request has been approved. Click the button below to choose your password and activate your account.</p>
 
-                  <p style="margin: 16px 0 10px; font-size: 14px;"><strong>Password:</strong></p>
-                  <code style="display: block; background: #fff; border: 1px solid #ddd; padding: 10px 14px; border-radius: 6px; font-size: 15px; color: #333;">${plainPassword}</code>
-
-                  <p style="color: #888; font-size: 12px; margin: 14px 0 0;">Save these details somewhere secure.</p>
-                </div>
-
-                <div style="text-align: center; margin: 28px 0;">
-                  <a href="${loginUrl}" style="background-color: #58CC02; color: #fff; padding: 14px 36px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 0 #46A302;">
-                    Sign In to ThinkBox
-                  </a>
-                </div>
-
-                <h3 style="font-size: 16px; color: #333;">How to get started:</h3>
-                <ol style="color: #555; font-size: 14px; line-height: 1.8;">
-                  <li>Click the button above or go to <a href="${loginUrl}" style="color: #58CC02;">${loginUrl}</a></li>
-                  <li>Enter your email and the password above</li>
-                  <li>Start exploring hundreds of topics across 9 categories — fully offline</li>
-                </ol>
-
-                <p style="font-size: 15px; color: #333; margin-top: 24px;">Happy exploring!<br><strong>The ThinkBox Team</strong></p>
-
-                <hr style="border: none; border-top: 1px solid #eee; margin: 28px 0;">
-                <p style="color: #aaa; font-size: 11px;">This is an automated message. Please do not reply directly to this email.</p>
+              <div style="background: #F7F7F7; border: 1px solid #E5E5E5; padding: 20px; border-radius: 10px; margin: 24px 0;">
+                <p style="font-size: 14px; color: #333;"><strong>Email:</strong> ${demoRequest.email}</p>
+                <p style="font-size: 13px; color: #888; margin-top: 8px;">This setup link expires in <strong>72 hours</strong>.</p>
               </div>
-            `,
-          });
-        } catch (emailError) {
-          console.error('Failed to send approval email:', emailError);
-        }
+
+              <div style="text-align: center; margin: 28px 0;">
+                <a href="${setupLink}" style="background-color: #58CC02; color: #fff; padding: 14px 36px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 0 #46A302;">
+                  Set Your Password &amp; Get Started
+                </a>
+              </div>
+
+              <p style="color: #666; font-size: 13px;">If the button doesn't work, copy and paste this link into your browser:</p>
+              <p style="word-break: break-all; font-size: 13px;"><a href="${setupLink}" style="color: #58CC02;">${setupLink}</a></p>
+
+              <p style="font-size: 15px; color: #333; margin-top: 24px;">Happy exploring!<br><strong>The ThinkBox Team</strong></p>
+
+              <hr style="border: none; border-top: 1px solid #eee; margin: 28px 0;">
+              <p style="color: #aaa; font-size: 11px;">This is an automated message. Please do not reply directly to this email.</p>
+            </div>
+          `,
+        });
+      } catch (emailError) {
+        console.error('Failed to send approval email:', emailError);
       }
 
       return NextResponse.json(

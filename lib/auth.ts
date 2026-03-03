@@ -1,21 +1,34 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+/**
+ * Returns the JWT signing secret. Throws if the environment variable is not set,
+ * ensuring the app never falls back to a hard-coded default.
+ */
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error(
+      'JWT_SECRET environment variable is required. The server cannot operate without it.'
+    );
+  }
+  return secret;
+}
 
 export interface DecodedToken {
   userId: string;
   email: string;
   name: string;
+  role?: 'user' | 'admin';
   iat: number;
   exp: number;
 }
 
 export async function verifyToken(token: string): Promise<DecodedToken | null> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
+    const decoded = jwt.verify(token, getJwtSecret()) as DecodedToken;
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -25,7 +38,7 @@ export async function getTokenFromCookies(): Promise<string | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get('thinkbox_token')?.value;
     return token || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -42,8 +55,30 @@ export function createToken(
   name: string
 ): string {
   return jwt.sign(
-    { userId, email, name },
-    JWT_SECRET,
-    { expiresIn: '7d' } as any
+    { userId, email, name, role: 'user' },
+    getJwtSecret(),
+    { expiresIn: '7d' }
   );
+}
+
+// ── Admin session helpers ──────────────────────────────────────────────
+
+export function createAdminToken(): string {
+  return jwt.sign({ role: 'admin' }, getJwtSecret(), { expiresIn: '4h' });
+}
+
+/**
+ * Verify the signed admin session cookie.
+ * Returns true only when the cookie carries a valid JWT with role === 'admin'.
+ */
+export async function verifyAdminSession(): Promise<boolean> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('admin_token')?.value;
+    if (!token) return false;
+    const decoded = jwt.verify(token, getJwtSecret()) as DecodedToken;
+    return decoded.role === 'admin';
+  } catch {
+    return false;
+  }
 }

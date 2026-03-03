@@ -1,0 +1,20 @@
+import { NextResponse } from 'next/server';
+
+export async function POST() {
+  const response = NextResponse.json(
+    { message: 'Admin logged out' },
+    { status: 200 }
+  );
+
+  response.cookies.set({
+    name: 'admin_token',
+    value: '',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    expires: new Date(0),
+    path: '/',
+  });
+
+  return response;
+}

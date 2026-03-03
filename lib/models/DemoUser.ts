@@ -49,6 +49,12 @@ const demoUserSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    setupToken: {
+      type: String,
+    },
+    setupTokenExpiry: {
+      type: Date,
+    },
     // ThinkBox progress fields
     xp: { type: Number, default: 0 },
     streak: { type: Number, default: 1 },
