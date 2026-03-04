@@ -48,7 +48,7 @@ export interface ReadHistoryItem {
   readAt: number; // timestamp
 }
 
-export type AvatarId = 'mimi' | 'dogo' | 'badosh';
+export type AvatarId = 'dbaba' | 'mimi' | 'dogo' | 'steph' | 'badosh';
 
 export interface AvatarMeta {
   id: AvatarId;
@@ -73,19 +73,22 @@ export interface UserSettings {
 export const DEFAULT_SETTINGS: UserSettings = {
   textSize: 'normal',
   dyslexicFont: false,
+  avatar: 'dbaba',
 };
 
 export type Avatar = {
   id: string;
   name: string;
   image: string;
-  unlockAchievement: string;
+  unlockAchievement?: string;
 };
 
 export const avatars: Avatar[] = [
-  { id: 'mimi', name: 'MiMi', image: '/ThinkBox/avatars/mimi.png', unlockAchievement: 'first_read' },
-  { id: 'dogo', name: 'Dogo', image: '/ThinkBox/avatars/dogo.png', unlockAchievement: 'read_10' },
-  { id: 'badosh', name: 'Badosh', image: '/ThinkBox/avatars/badosh.png', unlockAchievement: 'legend' },
+  { id: 'dbaba', name: 'D-Baba', image: '/ThinkBox/ThinkBox Characters/D-Baba.jpg' },
+  { id: 'mimi', name: 'Mimi', image: '/ThinkBox/ThinkBox Characters/Mimi.jpg', unlockAchievement: 'streak_20' },
+  { id: 'dogo', name: 'Dogo', image: '/ThinkBox/ThinkBox Characters/Dogo.jpg', unlockAchievement: 'streak_20' },
+  { id: 'steph', name: 'Steph', image: '/ThinkBox/ThinkBox Characters/Steph.jpg', unlockAchievement: 'streak_20' },
+  { id: 'badosh', name: 'Badosh', image: '/ThinkBox/ThinkBox Characters/Badosh.jpg', unlockAchievement: 'streak_20' },
 ];
 export type Achievement = {
   id: string;
@@ -104,6 +107,7 @@ export const achievements: Achievement[] = [
   { id: 'read_50',         icon: '🎓', title: 'Scholar',           description: 'Read 50 articles' },
   { id: 'streak_3',        icon: '🔥', title: 'On Fire',           description: 'Keep a 3-day streak' },
   { id: 'streak_7',        icon: '💪', title: 'Dedicated',         description: 'Keep a 7-day streak' },
+  { id: 'streak_20',       icon: '🎯', title: 'Character Unlocked',description: 'Keep a 20-day streak' },
   { id: 'streak_30',       icon: '👑', title: 'Legend',            description: 'Keep a 30-day streak' },
   { id: 'all_categories',  icon: '🗺️', title: 'Explorer',          description: 'Read in all 9 categories' },
   { id: 'backpack_5',      icon: '🎒', title: 'Collector',         description: 'Save 5 articles to your Backpack' },
