@@ -275,15 +275,18 @@ const getCuratedArticleOverride = (topic: string): Article | null => {
   return null;
 };
 
-// Fetch Wikipedia API data
+// Fetch Wikipedia API data with redirect/disambiguation resolution
 const fetchWikipediaData = async (query: string) => {
   try {
+    // Use redirects=1 so Wikipedia auto-resolves redirects to the canonical article
     const response = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=extracts|pageimages&explaintext=true&exintro=true&piprop=original|thumbnail&pithumbsize=1200&format=json&origin=*`
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=extracts|pageimages&explaintext=true&exintro=true&piprop=original|thumbnail&pithumbsize=1200&redirects=1&format=json&origin=*`
     );
     const data = await response.json();
     const pages = data.query.pages;
     const pageId = Object.keys(pages)[0];
+    // pageId === '-1' means no article found
+    if (pageId === '-1') return null;
     return pages[pageId];
   } catch (error) {
     console.error('Wikipedia API error:', error);
@@ -316,11 +319,31 @@ const hasUsableWikiExtract = (extract: string) => {
   return Boolean(
     extract &&
     extract.length >= 200 &&
-    !extract.toLowerCase().includes('may refer to:')
+    !extract.toLowerCase().includes('may refer to:') &&
+    !extract.toLowerCase().includes('can refer to:') &&
+    !extract.toLowerCase().includes('most commonly refers to:')
   );
 };
 
+/**
+ * Resolve a search query to the canonical Wikipedia article title.
+ * Uses opensearch first (fast), then falls back to full-text search.
+ */
 const fetchWikipediaSearchTitle = async (query: string): Promise<string | null> => {
+  try {
+    // opensearch gives autocomplete-style results that handle common misspellings
+    const osResponse = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=3&namespace=0&format=json&origin=*`
+    );
+    if (osResponse.ok) {
+      const osData = await osResponse.json();
+      const titles: string[] = osData?.[1] || [];
+      if (titles.length > 0) return titles[0];
+    }
+  } catch {
+    // fall through to srsearch
+  }
+
   try {
     const response = await fetch(
       `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=1&format=json&origin=*`
@@ -333,6 +356,31 @@ const fetchWikipediaSearchTitle = async (query: string): Promise<string | null> 
   }
 };
 
+/**
+ * For a given Wikipedia article title, resolve through redirects to the
+ * canonical article title (e.g. "USA" → "United States").
+ */
+const resolveWikipediaRedirect = async (title: string): Promise<string> => {
+  try {
+    const response = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&redirects=1&format=json&origin=*`
+    );
+    const data = await response.json();
+    const redirects = data?.query?.redirects;
+    if (Array.isArray(redirects) && redirects.length > 0) {
+      return redirects[redirects.length - 1].to || title;
+    }
+    // Check normalized
+    const normalized = data?.query?.normalized;
+    if (Array.isArray(normalized) && normalized.length > 0) {
+      return normalized[normalized.length - 1].to || title;
+    }
+    return title;
+  } catch {
+    return title;
+  }
+};
+
 const extractBestImageFromPage = (wikiData: any): string | null => {
   if (wikiData?.original?.source) return wikiData.original.source;
   if (wikiData?.thumbnail?.source) return wikiData.thumbnail.source;
@@ -342,10 +390,90 @@ const extractBestImageFromPage = (wikiData: any): string | null => {
   return null;
 };
 
+// ── Wikidata image helpers (ranked fallback #1) ─────────────────────────
+
+/**
+ * Fetch Wikidata entity by Wikipedia article title and return image filenames
+ * from the "image" (P18) and "logo image" (P154) properties.
+ */
+const fetchWikidataImages = async (articleTitle: string): Promise<string[]> => {
+  try {
+    // Step 1: resolve Wikipedia title → Wikidata entity ID
+    const sitelinksRes = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(articleTitle)}&prop=pageprops&ppprop=wikibase_item&redirects=1&format=json&origin=*`
+    );
+    if (!sitelinksRes.ok) return [];
+    const sitelinksData = await sitelinksRes.json();
+    const pages = sitelinksData?.query?.pages || {};
+    const pageId = Object.keys(pages)[0];
+    const entityId = pages?.[pageId]?.pageprops?.wikibase_item;
+    if (!entityId) return [];
+
+    // Step 2: fetch entity claims for P18 (image) + P154 (logo)
+    const claimsRes = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${entityId}&property=P18&format=json&origin=*`
+    );
+    if (!claimsRes.ok) return [];
+    const claimsData = await claimsRes.json();
+    const imageClaims = claimsData?.claims?.P18 || [];
+
+    const urls: string[] = [];
+    for (const claim of imageClaims) {
+      const filename = claim?.mainsnak?.datavalue?.value;
+      if (filename) {
+        urls.push(
+          `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=1200`
+        );
+      }
+    }
+    return urls;
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * Fetch images from Wikimedia Commons categories related to the article.
+ * This gives us a broader pool of images than the single lead page image.
+ */
+const fetchWikimediaCommonsImages = async (
+  articleTitle: string,
+  limit: number
+): Promise<string[]> => {
+  try {
+    const response = await fetch(
+      `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(articleTitle)}&gsrnamespace=6&gsrlimit=${limit}&prop=imageinfo&iiprop=url&iiurlwidth=1200&format=json&origin=*`
+    );
+    if (!response.ok) return [];
+    const data = await response.json();
+    const pages = data?.query?.pages || {};
+    const urls: string[] = [];
+    for (const page of Object.values(pages) as any[]) {
+      const url = page?.imageinfo?.[0]?.thumburl || page?.imageinfo?.[0]?.url;
+      if (url && !url.includes('.svg')) {
+        urls.push(url);
+      }
+    }
+    return urls;
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * Resolve multiple image candidates through a ranked fallback chain:
+ *   1. Wikipedia page image(s) — direct title + mapped title + search-resolved title
+ *   2. Wikidata P18 images for the canonical article
+ *   3. Wikimedia Commons category search
+ *   4. Offline/cached topic thumbnail
+ *
+ * For space/astronomy topics, NASA images are tried first as before.
+ */
 const resolveImageCandidates = async (
   seed: string,
   limit: number
 ): Promise<string[]> => {
+  // ── NASA path for space topics ──
   if (isSpaceAstronomyTopic(seed)) {
     const normalizedSeed = normalizeSpaceQuery(seed);
     const nasaQueries = uniqueNonEmpty([
@@ -364,22 +492,18 @@ const resolveImageCandidates = async (
         if (seenNasa.has(image)) continue;
         seenNasa.add(image);
         nasaImages.push(image);
-        if (nasaImages.length >= limit) {
-          return nasaImages;
-        }
+        if (nasaImages.length >= limit) return nasaImages;
       }
     }
 
-    if (nasaImages.length > 0) {
-      return nasaImages;
-    }
-
-    return [];
+    if (nasaImages.length > 0) return nasaImages;
+    // fall through to Wikipedia/Wikidata if NASA has nothing
   }
 
   const { baseTopic, focusArea } = parseTopicQuery(seed);
   const mappedBase = TOPIC_TO_WIKIPEDIA_MAP[baseTopic] || baseTopic;
 
+  // Build ordered list of candidate titles to try
   const directCandidates = uniqueNonEmpty([
     mappedBase,
     baseTopic,
@@ -393,24 +517,77 @@ const resolveImageCandidates = async (
   const seen = new Set<string>();
 
   const addIfUnique = (value: string | null) => {
-    if (!value) return;
-    if (seen.has(value)) return;
+    if (!value) return false;
+    if (seen.has(value)) return false;
     seen.add(value);
     images.push(value);
+    return true;
   };
 
+  // ── Layer 1: Wikipedia page images (direct titles) ──
+  let resolvedCanonicalTitle: string | null = null;
   for (const candidate of directCandidates) {
     const wikiData = await fetchWikipediaData(candidate);
-    addIfUnique(extractBestImageFromPage(wikiData));
-    if (images.length >= limit) return images;
+    if (wikiData) {
+      if (!resolvedCanonicalTitle && wikiData.title) {
+        resolvedCanonicalTitle = wikiData.title;
+      }
+      addIfUnique(extractBestImageFromPage(wikiData));
+      if (images.length >= limit) return images;
+    }
   }
 
+  // ── Layer 1b: search-resolved titles ──
   for (const candidate of directCandidates) {
     const searchTitle = await fetchWikipediaSearchTitle(candidate);
     if (!searchTitle) continue;
+    if (!resolvedCanonicalTitle) resolvedCanonicalTitle = searchTitle;
     const wikiData = await fetchWikipediaData(searchTitle);
-    addIfUnique(extractBestImageFromPage(wikiData));
-    if (images.length >= limit) return images;
+    if (wikiData) {
+      addIfUnique(extractBestImageFromPage(wikiData));
+      if (images.length >= limit) return images;
+    }
+  }
+
+  // ── Layer 2: Wikidata P18 images ──
+  const wikidataTitle = resolvedCanonicalTitle || mappedBase;
+  try {
+    const wdImages = await fetchWikidataImages(wikidataTitle);
+    for (const url of wdImages) {
+      addIfUnique(url);
+      if (images.length >= limit) return images;
+    }
+  } catch {
+    // non-critical
+  }
+
+  // ── Layer 3: Wikimedia Commons search ──
+  try {
+    const remaining = limit - images.length;
+    if (remaining > 0) {
+      const commonsImages = await fetchWikimediaCommonsImages(
+        wikidataTitle,
+        remaining + 2 // fetch a few extra in case of dupes
+      );
+      for (const url of commonsImages) {
+        addIfUnique(url);
+        if (images.length >= limit) return images;
+      }
+    }
+  } catch {
+    // non-critical
+  }
+
+  // ── Layer 4: offline topic thumbnail ──
+  if (images.length === 0) {
+    try {
+      const offlineTopic = await getOfflineTopic(seed);
+      if (offlineTopic?.thumbnail) {
+        addIfUnique(offlineTopic.thumbnail);
+      }
+    } catch {
+      // non-critical
+    }
   }
 
   return images;
@@ -421,13 +598,32 @@ const fetchBestWikipediaExtract = async (preferredQuery: string, fallbackQuery: 
 
   const tryQuery = async (query: string) => {
     const normalized = query.trim();
-    if (!normalized || tried.has(normalized)) return null;
-    tried.add(normalized);
+    if (!normalized || tried.has(normalized.toLowerCase())) return null;
+    tried.add(normalized.toLowerCase());
 
     const page = await fetchWikipediaData(normalized);
     const extract = page?.extract || '';
+
+    // Detect disambiguation pages — try the first linked article
+    if (
+      extract &&
+      (extract.toLowerCase().includes('may refer to:') ||
+        extract.toLowerCase().includes('can refer to:') ||
+        extract.toLowerCase().includes('most commonly refers to:'))
+    ) {
+      console.log(`[Wikipedia] Disambiguation detected for "${normalized}", resolving…`);
+      // Try "<title> (topic)" pattern which is the typical disambiguation target
+      const disambigTitle = await fetchWikipediaSearchTitle(normalized);
+      if (disambigTitle && disambigTitle.toLowerCase() !== normalized.toLowerCase()) {
+        return tryQuery(disambigTitle);
+      }
+      return null;
+    }
+
     if (hasUsableWikiExtract(extract)) {
-      return { extract, resolvedTitle: normalized };
+      // Resolve through redirects to get the canonical title
+      const canonicalTitle = await resolveWikipediaRedirect(normalized);
+      return { extract, resolvedTitle: canonicalTitle || normalized };
     }
     return null;
   };
@@ -438,6 +634,7 @@ const fetchBestWikipediaExtract = async (preferredQuery: string, fallbackQuery: 
   const fallbackHit = await tryQuery(fallbackQuery);
   if (fallbackHit) return fallbackHit;
 
+  // Try opensearch + srsearch resolution for both queries
   const preferredSearchTitle = await fetchWikipediaSearchTitle(preferredQuery);
   if (preferredSearchTitle) {
     const preferredSearchHit = await tryQuery(preferredSearchTitle);

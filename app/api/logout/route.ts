@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  const log = createRequestLogger('POST /api/logout', request);
   try {
     const response = NextResponse.json(
       { message: 'Logout successful' },
@@ -18,12 +20,16 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
 
-    return response;
+    log.info('user logged out');
+    return withRequestId(response, log.requestId);
   } catch (error) {
-    console.error('Logout error:', error);
-    return NextResponse.json(
-      { message: 'Logout failed' },
-      { status: 500 }
+    log.error('logout failed', error);
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Logout failed' },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

@@ -3,19 +3,26 @@ import { connectDB } from '@/lib/db';
 import { DemoUser } from '@/lib/models/DemoUser';
 import { createToken } from '@/lib/auth';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
-  // Rate limit: 10 attempts per 15 minutes per IP
+  const log = createRequestLogger('POST /api/login', request);
   const clientIp = getClientIp(request);
+
+  // Rate limit: 10 attempts per 15 minutes per IP
   const rateLimitResult = rateLimit(`login:${clientIp}`, 10, 900_000);
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { message: 'Too many login attempts. Please try again later.' },
-      {
-        status: 429,
-        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
-      }
+    log.warn('rate limited', { clientIp, retryAfter: rateLimitResult.retryAfter });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Too many login attempts. Please try again later.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+        }
+      ),
+      log.requestId
     );
   }
 
@@ -98,14 +105,17 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
 
-    return response;
+    return withRequestId(response, log.requestId);
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json(
-      {
-        message: error instanceof Error ? error.message : 'Login failed',
-      },
-      { status: 500 }
+    log.error('login failed', error);
+    return withRequestId(
+      NextResponse.json(
+        {
+          message: error instanceof Error ? error.message : 'Login failed',
+        },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

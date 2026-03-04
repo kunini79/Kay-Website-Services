@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Pusher from 'pusher';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 /**
  * Build a Pusher client on demand, validating that all required
@@ -26,19 +27,24 @@ function getPusherClient(): Pusher {
 }
 
 export async function POST(req: NextRequest) {
+  const log = createRequestLogger('POST /api/pusher', req);
   try {
     const { sessionId, event, data } = await req.json();
     const pusher = getPusherClient();
     await pusher.trigger(`session-${sessionId}`, event, data);
-    return NextResponse.json({ success: true });
+    log.info('pusher event triggered', { sessionId, event });
+    return withRequestId(NextResponse.json({ success: true }), log.requestId);
   } catch (error) {
-    console.error('Pusher error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Pusher trigger failed',
-      },
-      { status: 500 }
+    log.error('pusher trigger failed', error);
+    return withRequestId(
+      NextResponse.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Pusher trigger failed',
+        },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

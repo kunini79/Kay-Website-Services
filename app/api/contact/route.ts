@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  const log = createRequestLogger('POST /api/contact', request);
   try {
     // Rate limiting: 5 requests per hour per IP
     const clientIp = getClientIp(request);
     const rateLimitResult = rateLimit(clientIp, 5, 3600000);
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { 
-          status: 429,
-          headers: {
-            'Retry-After': String(rateLimitResult.retryAfter),
+      log.warn('rate limited', { clientIp, retryAfter: rateLimitResult.retryAfter });
+      return withRequestId(
+        NextResponse.json(
+          { error: 'Too many requests. Please try again later.' },
+          { 
+            status: 429,
+            headers: {
+              'Retry-After': String(rateLimitResult.retryAfter),
+            }
           }
-        }
+        ),
+        log.requestId
       );
     }
 
@@ -80,22 +86,32 @@ export async function POST(request: NextRequest) {
     });
 
     if (data.error) {
-      console.error('Resend error:', data.error);
-      return NextResponse.json(
-        { error: data.error.message || 'Failed to send email' },
-        { status: 502 }
+      log.error('resend API error', data.error);
+      return withRequestId(
+        NextResponse.json(
+          { error: data.error.message || 'Failed to send email' },
+          { status: 502 }
+        ),
+        log.requestId
       );
     }
 
-    return NextResponse.json(
-      { message: 'Email sent successfully', id: data?.data?.id ?? null },
-      { status: 200 }
+    log.info('contact email sent', { emailId: data?.data?.id });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Email sent successfully', id: data?.data?.id ?? null },
+        { status: 200 }
+      ),
+      log.requestId
     );
   } catch (error) {
-    console.error('Error sending email:', error);
-    return NextResponse.json(
-      { error: 'Failed to send email' },
-      { status: 500 }
+    log.error('contact form failed', error);
+    return withRequestId(
+      NextResponse.json(
+        { error: 'Failed to send email' },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

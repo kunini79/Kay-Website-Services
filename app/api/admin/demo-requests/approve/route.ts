@@ -5,30 +5,41 @@ import { DemoUser } from '@/lib/models/DemoUser';
 import { verifyAdminSession } from '@/lib/auth';
 import { Resend } from 'resend';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 import crypto from 'crypto';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
-  // Rate limit: 20 approve/reject actions per 15 minutes per IP
+  const log = createRequestLogger('POST /api/admin/demo-requests/approve', request);
   const clientIp = getClientIp(request);
+
+  // Rate limit: 20 approve/reject actions per 15 minutes per IP
   const rateLimitResult = rateLimit(`admin-approve:${clientIp}`, 20, 900_000);
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { message: 'Too many requests. Please try again later.' },
-      {
-        status: 429,
-        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
-      }
+    log.warn('rate limited', { clientIp });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+        }
+      ),
+      log.requestId
     );
   }
 
   // Verify signed admin session cookie
   if (!(await verifyAdminSession())) {
-    return NextResponse.json(
-      { message: 'Unauthorized' },
-      { status: 401 }
+    log.warn('unauthorized approve attempt', { clientIp });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401 }
+      ),
+      log.requestId
     );
   }
 
@@ -120,20 +131,24 @@ export async function POST(request: NextRequest) {
           `,
         });
       } catch (emailError) {
-        console.error('Failed to send approval email:', emailError);
+        log.error('failed to send approval email', emailError, { demoRequestId });
       }
 
-      return NextResponse.json(
-        {
-          message: 'Demo request approved and user created',
-          demoRequest,
-          user: {
-            email: demoUser.email,
-            name: demoUser.name,
-            company: demoUser.company,
+      log.info('demo request approved', { demoRequestId, email: demoUser.email });
+      return withRequestId(
+        NextResponse.json(
+          {
+            message: 'Demo request approved and user created',
+            demoRequest,
+            user: {
+              email: demoUser.email,
+              name: demoUser.name,
+              company: demoUser.company,
+            },
           },
-        },
-        { status: 200 }
+          { status: 200 }
+        ),
+        log.requestId
       );
     } else if (action === 'reject') {
       const { reason } = body;
@@ -191,30 +206,40 @@ export async function POST(request: NextRequest) {
           `,
         });
       } catch (emailError) {
-        console.error('Failed to send rejection email:', emailError);
+        log.error('failed to send rejection email', emailError, { demoRequestId });
       }
 
-      return NextResponse.json(
-        {
-          message: 'Demo request rejected',
-          demoRequest,
-        },
-        { status: 200 }
+      log.info('demo request rejected', { demoRequestId });
+      return withRequestId(
+        NextResponse.json(
+          {
+            message: 'Demo request rejected',
+            demoRequest,
+          },
+          { status: 200 }
+        ),
+        log.requestId
       );
     } else {
-      return NextResponse.json(
-        { message: 'Invalid action. Use "approve" or "reject"' },
-        { status: 400 }
+      return withRequestId(
+        NextResponse.json(
+          { message: 'Invalid action. Use "approve" or "reject"' },
+          { status: 400 }
+        ),
+        log.requestId
       );
     }
   } catch (error) {
-    console.error('Error processing demo request:', error);
-    return NextResponse.json(
-      {
-        message:
-          error instanceof Error ? error.message : 'Failed to process demo request',
-      },
-      { status: 500 }
+    log.error('demo request processing failed', error);
+    return withRequestId(
+      NextResponse.json(
+        {
+          message:
+            error instanceof Error ? error.message : 'Failed to process demo request',
+        },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

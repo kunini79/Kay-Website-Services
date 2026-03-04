@@ -3,21 +3,28 @@ import { connectDB } from '@/lib/db';
 import { DemoRequest } from '@/lib/models/DemoRequest';
 import { Resend } from 'resend';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
-  // Rate limit: 3 demo requests per hour per IP
+  const log = createRequestLogger('POST /api/demo-request', request);
   const clientIp = getClientIp(request);
+
+  // Rate limit: 3 demo requests per hour per IP
   const rateLimitResult = rateLimit(`demo-request:${clientIp}`, 3, 3_600_000);
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { message: 'Too many requests. Please try again later.' },
-      {
-        status: 429,
-        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
-      }
+    log.warn('rate limited', { clientIp, retryAfter: rateLimitResult.retryAfter });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+        }
+      ),
+      log.requestId
     );
   }
 
@@ -194,21 +201,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(
-      {
-        message: 'Demo request submitted successfully. Check your email for updates.',
-        demoRequestId: demoRequest._id,
-      },
-      { status: 201 }
+    log.info('demo request created', { demoRequestId: demoRequest._id, email });
+    return withRequestId(
+      NextResponse.json(
+        {
+          message: 'Demo request submitted successfully. Check your email for updates.',
+          demoRequestId: demoRequest._id,
+        },
+        { status: 201 }
+      ),
+      log.requestId
     );
   } catch (error) {
-    console.error('Demo request error:', error);
-    return NextResponse.json(
-      {
-        message:
-          error instanceof Error ? error.message : 'Failed to submit demo request',
-      },
-      { status: 500 }
+    log.error('demo request failed', error);
+    return withRequestId(
+      NextResponse.json(
+        {
+          message:
+            error instanceof Error ? error.message : 'Failed to submit demo request',
+        },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }

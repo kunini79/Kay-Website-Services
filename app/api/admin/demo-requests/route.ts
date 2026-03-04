@@ -3,27 +3,38 @@ import { connectDB } from '@/lib/db';
 import { DemoRequest } from '@/lib/models/DemoRequest';
 import { verifyAdminSession } from '@/lib/auth';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
+import { createRequestLogger, withRequestId } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
-  // Rate limit: 30 requests per 15 minutes per IP
+  const log = createRequestLogger('GET /api/admin/demo-requests', request);
   const clientIp = getClientIp(request);
+
+  // Rate limit: 30 requests per 15 minutes per IP
   const rateLimitResult = rateLimit(`admin-requests:${clientIp}`, 30, 900_000);
 
   if (!rateLimitResult.success) {
-    return NextResponse.json(
-      { message: 'Too many requests. Please try again later.' },
-      {
-        status: 429,
-        headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
-      }
+    log.warn('rate limited', { clientIp });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimitResult.retryAfter) },
+        }
+      ),
+      log.requestId
     );
   }
 
   // Verify signed admin session cookie
   if (!(await verifyAdminSession())) {
-    return NextResponse.json(
-      { message: 'Unauthorized' },
-      { status: 401 }
+    log.warn('unauthorized admin access attempt', { clientIp });
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401 }
+      ),
+      log.requestId
     );
   }
 
@@ -40,19 +51,26 @@ export async function GET(request: NextRequest) {
       .sort({ createdAt: -1 })
       .lean();
 
-    return NextResponse.json(
-      {
-        message: 'Demo requests retrieved',
-        count: demoRequests.length,
-        requests: demoRequests,
-      },
-      { status: 200 }
+    log.info('demo requests retrieved', { count: demoRequests.length, status });
+    return withRequestId(
+      NextResponse.json(
+        {
+          message: 'Demo requests retrieved',
+          count: demoRequests.length,
+          requests: demoRequests,
+        },
+        { status: 200 }
+      ),
+      log.requestId
     );
   } catch (error) {
-    console.error('Error fetching demo requests:', error);
-    return NextResponse.json(
-      { message: 'Failed to fetch demo requests' },
-      { status: 500 }
+    log.error('failed to fetch demo requests', error);
+    return withRequestId(
+      NextResponse.json(
+        { message: 'Failed to fetch demo requests' },
+        { status: 500 }
+      ),
+      log.requestId
     );
   }
 }
