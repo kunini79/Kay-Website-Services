@@ -38,13 +38,7 @@ export default function SystemPage() {
   const [xpChanged, setXpChanged] = useState(false); // To trigger save
 
   // -- Streak State --
-  const [streakCount, setStreakCount] = useState(() => {
-    try {
-      return parseInt(localStorage.getItem('tb-streak') || '1', 10);
-    } catch {
-      return 1;
-    }
-  });
+  const [streakCount, setStreakCount] = useState(1);
 
   // -- Reading History --
   const [readHistory, setReadHistory] = useState<ReadHistoryItem[]>([]);
@@ -75,7 +69,7 @@ export default function SystemPage() {
     setFeedbackOpen(false);
   }
 
-  /* Load Backpack and XP from local storage */
+  /* Load ALL progress from cloud on mount (preferred source) + restore to localStorage */
   useEffect(() => {
     const userId = localStorage.getItem('tb-user-id');
     if (!userId) {
@@ -92,7 +86,50 @@ export default function SystemPage() {
 
         if (!isMounted) return;
 
-        // Merge cloud and localStorage
+        // Check if localStorage is empty (post-deployment cache clear)
+        const localIsEmpty = !localStorage.getItem('tb-xp') && !localStorage.getItem('tb-streak');
+        
+        // If localStorage is empty or cloud has newer data, use cloud as source of truth
+        const xpValue = cloud.xp ?? parseInt(localStorage.getItem('tb-xp') || '0', 10);
+        const streakValue = cloud.streak ?? parseInt(localStorage.getItem('tb-streak') || '1', 10);
+        const quizzesValue = cloud.quizzesCompleted ?? parseInt(localStorage.getItem('tb-quizzes-completed') || '0', 10);
+        const perfectsValue = cloud.perfectQuizzes ?? parseInt(localStorage.getItem('tb-perfect-quizzes') || '0', 10);
+        const backpackValue = cloud.backpack ?? (localStorage.getItem('tb-backpack') ? JSON.parse(localStorage.getItem('tb-backpack')!) : []);
+        const historyValue = cloud.history ?? (localStorage.getItem('tb-history') ? JSON.parse(localStorage.getItem('tb-history')!) : []);
+
+        // Update state with cloud data (preferred)
+        setUserXP(xpValue);
+        setStreakCount(streakValue);
+        setQuizzesCompleted(quizzesValue);
+        setPerfectQuizzes(perfectsValue);
+        setSavedArticles(backpackValue);
+        setReadHistory(historyValue);
+        setAchievements(
+          ALL_ACHIEVEMENTS.map((a) => ({
+            ...a,
+            unlockedAt: (cloud.achievements && cloud.achievements[a.id]) ??
+              (localStorage.getItem('tb-achievements') ? JSON.parse(localStorage.getItem('tb-achievements')!)[a.id] : undefined),
+          }))
+        );
+
+        // RESTORE cloud data back to localStorage as backup
+        localStorage.setItem('tb-xp', xpValue.toString());
+        localStorage.setItem('tb-streak', streakValue.toString());
+        localStorage.setItem('tb-quizzes-completed', quizzesValue.toString());
+        localStorage.setItem('tb-perfect-quizzes', perfectsValue.toString());
+        localStorage.setItem('tb-backpack', JSON.stringify(backpackValue));
+        localStorage.setItem('tb-history', JSON.stringify(historyValue));
+        const achievementsMap = Object.fromEntries(
+          ALL_ACHIEVEMENTS.filter(a => cloud.achievements && cloud.achievements[a.id])
+            .map(a => [a.id, cloud.achievements[a.id]])
+        );
+        if (Object.keys(achievementsMap).length > 0) {
+          localStorage.setItem('tb-achievements', JSON.stringify(achievementsMap));
+        }
+
+      } catch (e) {
+        console.error('Cloud progress fetch failed, using localStorage fallback:', e);
+        // Fallback: use localStorage if cloud fetch fails
         const local = {
           xp: localStorage.getItem('tb-xp'),
           streak: localStorage.getItem('tb-streak'),
@@ -102,22 +139,18 @@ export default function SystemPage() {
           quizzesCompleted: localStorage.getItem('tb-quizzes-completed'),
           perfectQuizzes: localStorage.getItem('tb-perfect-quizzes'),
         };
-        // Prefer cloud if exists, else local
-        setUserXP(cloud.xp ?? parseInt(local.xp || '0', 10));
-        setStreakCount(cloud.streak ?? parseInt(local.streak || '1', 10));
-        setQuizzesCompleted(cloud.quizzesCompleted ?? parseInt(local.quizzesCompleted || '0', 10));
-        setPerfectQuizzes(cloud.perfectQuizzes ?? parseInt(local.perfectQuizzes || '0', 10));
-        setSavedArticles(cloud.backpack ?? (local.backpack ? JSON.parse(local.backpack) : []));
-        setReadHistory(cloud.history ?? (local.history ? JSON.parse(local.history) : []));
+        setUserXP(parseInt(local.xp || '0', 10));
+        setStreakCount(parseInt(local.streak || '1', 10));
+        setQuizzesCompleted(parseInt(local.quizzesCompleted || '0', 10));
+        setPerfectQuizzes(parseInt(local.perfectQuizzes || '0', 10));
+        setSavedArticles(local.backpack ? JSON.parse(local.backpack) : []);
+        setReadHistory(local.history ? JSON.parse(local.history) : []);
         setAchievements(
           ALL_ACHIEVEMENTS.map((a) => ({
             ...a,
-            unlockedAt: (cloud.achievements && cloud.achievements[a.id]) ??
-              (local.achievements ? JSON.parse(local.achievements)[a.id] : undefined),
+            unlockedAt: local.achievements ? JSON.parse(local.achievements)[a.id] : undefined,
           }))
         );
-      } catch (e) {
-        console.error('Cloud progress fetch failed', e);
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -236,6 +269,33 @@ export default function SystemPage() {
         console.error('Cloud progress save failed', e);
       });
     });
+  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
+
+  /* Periodic cloud sync (fallback to ensure data persists) */
+  useEffect(() => {
+    if (isLoading) return;
+    
+    const userId = localStorage.getItem('tb-user-id');
+    if (!userId) return;
+
+    // Sync to cloud every 30 seconds as insurance
+    const intervalId = setInterval(() => {
+      import('./cloudSync').then(({ saveCloudProgress }) => {
+        saveCloudProgress(userId, {
+          xp: userXP,
+          streak: streakCount,
+          achievements: Object.fromEntries(achievements.filter(a => a.unlockedAt).map(a => [a.id, a.unlockedAt])),
+          history: readHistory,
+          backpack: savedArticles,
+          quizzesCompleted,
+          perfectQuizzes,
+        }).catch(e => {
+          console.warn('Periodic cloud sync failed (will retry)', e);
+        });
+      });
+    }, 30000); // Every 30 seconds
+
+    return () => clearInterval(intervalId);
   }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
 
   // Touch streak on any activity (topic open, random, search)
