@@ -26,7 +26,7 @@ export default function DashboardPage() {
         });
 
         if (!response.ok) {
-          router.push('/thinkbox?tab=login');
+          router.push('/products/thinkbox?tab=login');
           return;
         }
 
@@ -39,7 +39,7 @@ export default function DashboardPage() {
         });
       } catch (error) {
         console.error('Failed to fetch user info:', error);
-        router.push('/thinkbox?tab=login');
+        router.push('/products/thinkbox?tab=login');
       } finally {
         setLoading(false);
       }
@@ -55,7 +55,7 @@ export default function DashboardPage() {
         method: 'POST',
         credentials: 'include',
       });
-      router.push('/thinkbox');
+      router.push('/products/thinkbox');
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
@@ -79,7 +79,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center px-4">
         <div className="text-center">
           <p className="text-red-400 mb-4">Unable to load your profile</p>
-          <Link href="/thinkbox?tab=login" className="text-[#BBFD6A] hover:underline">
+          <Link href="/products/thinkbox?tab=login" className="text-[#BBFD6A] hover:underline">
             Go back to ThinkBox
           </Link>
         </div>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/thinkbox"
+              href="/products/thinkbox"
               className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               About ThinkBox

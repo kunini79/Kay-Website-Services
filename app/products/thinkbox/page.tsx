@@ -73,7 +73,7 @@ export default function ThinkBoxProductPage() {
       }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           {/* Logo */}
-          <Link href="/thinkbox" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+          <Link href="/products/thinkbox" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
             <Image
               src="/ThinkBox/Think Box Logo.png"
               alt="ThinkBox"

@@ -5,10 +5,24 @@ import { DemoUser } from '@/lib/models/DemoUser';
 import { verifyAdminSession } from '@/lib/auth';
 import { Resend } from 'resend';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
-import { createRequestLogger, withRequestId } from '@/lib/logger';
+import { createRequestLogger, withRequestId, ValidationError } from '@/lib/logger';
 import crypto from 'crypto';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+/**
+ * Sanitize HTML special chars to prevent injection in email templates.
+ * Escapes <, >, &, ", ' to safe HTML entities.
+ */
+function sanitizeHtml(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
 
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST /api/admin/demo-requests/approve', request);
@@ -96,8 +110,12 @@ export async function POST(request: NextRequest) {
       try {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
         const setupLink = demoUser.setupToken
-          ? `${appUrl}/thinkbox?setup=${demoUser.setupToken}`
-          : `${appUrl}/thinkbox`;
+          ? `${appUrl}/products/thinkbox?setup=${demoUser.setupToken}`
+          : `${appUrl}/products/thinkbox`;
+
+        // Sanitize user-controlled fields for HTML email
+        const safeName = sanitizeHtml(demoRequest.name);
+        const safeEmail = sanitizeHtml(demoRequest.email);
 
         await resend.emails.send({
           from: 'ThinkBox <noreply@kaycorp.tech>',
@@ -106,11 +124,11 @@ export async function POST(request: NextRequest) {
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e5e5e5;">
               <h1 style="color: #58CC02; font-size: 28px; margin-bottom: 8px;">You're in! Welcome to ThinkBox 🎉</h1>
-              <p style="font-size: 16px; color: #333;">Hi ${demoRequest.name},</p>
+              <p style="font-size: 16px; color: #333;">Hi ${safeName},</p>
               <p style="font-size: 15px; color: #555;">Your beta tester request has been approved. Click the button below to choose your password and activate your account.</p>
 
               <div style="background: #F7F7F7; border: 1px solid #E5E5E5; padding: 20px; border-radius: 10px; margin: 24px 0;">
-                <p style="font-size: 14px; color: #333;"><strong>Email:</strong> ${demoRequest.email}</p>
+                <p style="font-size: 14px; color: #333;"><strong>Email:</strong> ${safeEmail}</p>
                 <p style="font-size: 13px; color: #888; margin-top: 8px;">This setup link expires in <strong>72 hours</strong>.</p>
               </div>
 
@@ -153,12 +171,24 @@ export async function POST(request: NextRequest) {
     } else if (action === 'reject') {
       const { reason } = body;
 
+      // Validate rejection reason if provided
+      if (reason && typeof reason !== 'string') {
+        throw new ValidationError('Rejection reason must be a string');
+      }
+      if (reason && reason.length > 1000) {
+        throw new ValidationError('Rejection reason must be 1000 characters or less');
+      }
+
       demoRequest.status = 'rejected';
       demoRequest.rejectionReason = reason || 'No reason provided';
       await demoRequest.save();
 
       // Send rejection email
       try {
+        // Sanitize user-controlled fields for HTML email
+        const safeName = sanitizeHtml(demoRequest.name);
+        const safeReason = reason ? sanitizeHtml(reason.trim()) : null;
+
         await resend.emails.send({
           from: 'ThinkBox <noreply@kaycorp.tech>',
           to: demoRequest.email,
@@ -179,13 +209,13 @@ export async function POST(request: NextRequest) {
 
                     <!-- Body -->
                     <tr><td style="background:#fff;padding:36px 40px;">
-                      <p style="font-size:16px;color:#3C3C3C;font-family:Arial,sans-serif;margin:0 0 12px;">Hi <strong>${demoRequest.name}</strong>,</p>
+                      <p style="font-size:16px;color:#3C3C3C;font-family:Arial,sans-serif;margin:0 0 12px;">Hi <strong>${safeName}</strong>,</p>
                       <p style="font-size:15px;color:#555;font-family:Arial,sans-serif;line-height:1.7;margin:0 0 24px;">Thank you for your interest in ThinkBox. After reviewing your request, we're unable to grant beta access at this time.</p>
 
-                      ${reason ? `
+                      ${safeReason ? `
                       <div style="background:#FFF7ED;border:1px solid #fed7aa;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
                         <p style="font-size:12px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:0.06em;font-family:Arial,sans-serif;margin:0 0 8px;">Reason</p>
-                        <p style="font-size:14px;color:#7c2d12;font-family:Arial,sans-serif;line-height:1.6;margin:0;">${reason}</p>
+                        <p style="font-size:14px;color:#7c2d12;font-family:Arial,sans-serif;line-height:1.6;margin:0;">${safeReason}</p>
                       </div>` : ''}
 
                       <p style="font-size:14px;color:#888;font-family:Arial,sans-serif;line-height:1.7;margin:0;">If you believe this was a mistake or have any questions, feel free to reply to this email and we'll take another look.</p>
