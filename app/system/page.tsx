@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ViewState, Article, Category, UserSettings, DEFAULT_SETTINGS, SavedArticle, ReadHistoryItem, Achievement, ALL_ACHIEVEMENTS } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
+import { SubcategoryView } from './components/SubcategoryView';
 import { ArticleView } from './components/ArticleView';
 import { BackpackView } from './components/BackpackView';
 import { ProfileView } from './components/ProfileView';
@@ -11,7 +12,7 @@ import { LevelUpToast } from './components/LevelUpToast';
 import { Loader } from './components/Loader';
 import { SystemErrorBoundary } from './components/SystemErrorBoundary';
 import { fetchArticle } from './services/geminiService';
-import { STATIC_TOPICS } from './constants';
+import { STATIC_TOPICS, SUBCATEGORIES_DATA } from './constants';
 import { AlertCircle } from 'lucide-react';
 import './globals.css';
 
@@ -25,6 +26,7 @@ export default function SystemPage() {
   );
   const [homeCategory, setHomeCategory] = useState<Category>(Category.ANIMALS);
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   // -- Loading State --
   const [isLoading, setIsLoading] = useState(true);
@@ -592,6 +594,24 @@ export default function SystemPage() {
                 exploredCategories={exploredCategories}
                 onCategoryChange={handleHomeCategoryChange}
                 readHistory={readHistory}
+                onCategoryClick={(category: Category) => {
+                  setSelectedCategory(category);
+                  setViewState(ViewState.SUBCATEGORIES);
+                }}
+              />
+            )}
+
+            {viewState === ViewState.SUBCATEGORIES && selectedCategory && (
+              <SubcategoryView
+                category={selectedCategory}
+                subcategories={SUBCATEGORIES_DATA[selectedCategory] || []}
+                onTopicClick={(topic: string) => {
+                  handleTopicSelect(topic);
+                }}
+                onBack={() => {
+                  setSelectedCategory(null);
+                  setViewState(ViewState.HOME);
+                }}
               />
             )}
 

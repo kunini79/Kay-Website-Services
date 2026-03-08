@@ -24,7 +24,16 @@ export interface Article {
 export interface TopicPreview {
   title: string;
   category: string;
-  description:string;
+  description: string;
+}
+
+export interface Subcategory {
+  id: string;
+  title: string;
+  icon: string;
+  description: string;
+  category: string;
+  topics: TopicPreview[];
 }
 
 export interface SavedArticle {
@@ -35,6 +44,7 @@ export interface SavedArticle {
 
 export enum ViewState {
   HOME = 'HOME',
+  SUBCATEGORIES = 'SUBCATEGORIES',
   ARTICLE = 'ARTICLE',
   LOADING = 'LOADING',
   ERROR = 'ERROR',

@@ -157,3 +157,323 @@ export const STATIC_TOPICS: Partial<Record<Category, TopicPreview[]>> = {
     { title: 'Great Books', category: Category.READING, description: "Stories you shouldn't miss." },
   ],
 };
+
+// Subcategories for hierarchical browsing (like Encarta)
+export const SUBCATEGORIES_DATA: Record<string, Array<{ id: string; title: string; icon: string; description: string; topics: string[] }>> = {
+  [Category.ANIMALS]: [
+    { id: 'mammals', title: 'Mammals', icon: '🦁', description: 'Furry creatures', topics: [
+      'Aardvark', 'Apes', 'Armadillo', 'Antelopes', 'Badger', 'Bats', 'Bears', 'Beaver',
+      'Big Cats', 'Bison', 'Cats', 'Cat Family', 'Cheetahs', 'Cows', 'Deer',
+      'Dog Family', 'Dogs', 'Dolphins', 'Elephants', 'Ferret', 'Giraffes', 'Goats', 'Hedgehog',
+      'Hippopotamus', 'Horses', 'Kangaroos', 'Lemurs', 'Lions', 'Marsupials', 'Meerkat',
+      'Mice', 'Monkeys', 'Moose', 'Orangutans', 'Otters', 'Pandas', 'Pigs',
+      'Platypus', 'Polar Bears', 'Porcupine', 'Rabbits', 'Raccoons', 'Rhinoceros',
+      'Seals', 'Sheep', 'Sloths', 'Squirrels', 'Tigers', 'Walrus', 'Whales',
+      'Wolves', 'Wombats', 'Zebras',
+    ]},
+    { id: 'birds', title: 'Birds', icon: '🦅', description: 'Feathered friends', topics: [
+      'Albatross', 'Blue Jay', 'Cardinals', 'Chicken', 'Crane', 'Crow', 'Dodo',
+      'Ducks', 'Eagles', 'Falcon', 'Flamingos', 'Geese', 'Hawks', 'Hummingbirds',
+      'Kingfisher', 'Kiwi Bird', 'Macaw', 'Nightingale', 'Ostrich', 'Owls', 'Parrots',
+      'Peacock', 'Pelican', 'Penguins', 'Pigeons', 'Puffin', 'Robin',
+      'Sparrow', 'Stork', 'Swans', 'Toucan', 'Turkey', 'Vulture', 'Woodpecker',
+      'Bird Migration', 'How Birds Fly', 'Bird Nests', 'Flightless Birds',
+    ]},
+    { id: 'reptiles', title: 'Reptiles & Amphibians', icon: '🐍', description: 'Scaly creatures and hopping frogs', topics: [
+      'Alligators', 'Anaconda', 'Chameleons', 'Cobras', 'Crocodiles', 'Frogs',
+      'Geckos', 'Iguanas', 'Komodo Dragon', 'Lizards', 'Newts', 'Python',
+      'Rattlesnake', 'Salamanders', 'Sea Turtles', 'Snakes', 'Toads', 'Tortoises',
+      'Tree Frogs', 'Turtles', 'Metamorphosis', 'Venomous Snakes',
+    ]},
+    { id: 'sea', title: 'Sea Animals', icon: '🐠', description: 'Life under the water', topics: [
+      'Angelfish', 'Barracuda', 'Blue Whale', 'Clownfish', 'Coral Reefs', 'Crabs',
+      'Dolphins', 'Eels', 'Great White Shark', 'Hammerhead Shark', 'Jellyfish',
+      'Lobster', 'Manta Ray', 'Narwhal', 'Octopus', 'Orca', 'Oysters',
+      'Pufferfish', 'Sea Horse', 'Sea Lion', 'Sea Otter', 'Sea Turtle',
+      'Squid', 'Starfish', 'Stingray', 'Swordfish', 'Whale Shark',
+      'Deep Sea Creatures', 'Freshwater Fish', 'River Animals',
+    ]},
+    { id: 'insects', title: 'Insects, Worms & Spiders', icon: '🦋', description: 'Tiny creatures', topics: [
+      'Ants', 'Bees', 'Beetles', 'Butterflies', 'Centipedes', 'Cicadas',
+      'Cockroach', 'Dragonflies', 'Earthworms', 'Fireflies', 'Fleas', 'Flies',
+      'Grasshoppers', 'Ladybugs', 'Leeches', 'Locusts', 'Mosquitoes', 'Moths',
+      'Praying Mantis', 'Scorpions', 'Slugs', 'Snails', 'Spiders',
+      'Stick Insects', 'Tarantula', 'Termites', 'Ticks', 'Wasps',
+      'How Insects Communicate', 'Insect Life Cycle', 'Pollination',
+    ]},
+    { id: 'how', title: 'How Animals Live', icon: '🌿', description: 'Animal behaviors and habitats', topics: [
+      'Animal Camouflage', 'Animal Communication', 'Animal Habitats', 'Animal Homes',
+      'Animal Intelligence', 'Animal Migration', 'Baby Animals', 'Endangered Species',
+      'Food Chains', 'Hibernation', 'How Animals Sleep', 'Night Animals',
+      'Pack Animals', 'Predator and Prey', 'Super Fast Animals', 'Animal Senses',
+      'How Animals Adapt', 'Animal Defense', 'Symbiosis', 'Pets Around the World',
+    ]},
+    { id: 'kinds', title: 'Kinds of Animals', icon: '🐾', description: 'Animal classification', topics: [
+      'Vertebrates', 'Invertebrates', 'Warm-Blooded Animals', 'Cold-Blooded Animals',
+      'Herbivores', 'Carnivores', 'Omnivores', 'Nocturnal Animals',
+      'Farm Animals', 'Wild Animals', 'Domestic Pets', 'Safari Animals',
+      'Rainforest Animals', 'Desert Animals', 'Arctic Animals', 'The Big Five',
+    ]},
+  ],
+  [Category.SCIENCE]: [
+    { id: 'space', title: 'Space & Astronomy', icon: '🚀', description: 'The universe and beyond', topics: [
+      'The Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune',
+      'Pluto', 'The Moon', 'Asteroids', 'Comets', 'The Solar System', 'Stars',
+      'The Milky Way', 'Black Holes', 'Constellations', 'Nebula', 'Galaxies',
+      'The Big Bang', 'Space Exploration', 'NASA', 'International Space Station',
+      'Astronauts', 'Satellites', 'Telescopes', 'Solar Eclipse', 'Light Years',
+    ]},
+    { id: 'body', title: 'The Human Body', icon: '🫀', description: 'How your body works', topics: [
+      'The Brain', 'The Heart', 'The Lungs', 'The Skeleton', 'Muscles',
+      'The Digestive System', 'The Nervous System', 'Blood', 'Skin',
+      'Eyes and Vision', 'Ears and Hearing', 'Teeth', 'Hair', 'DNA',
+      'Immune System', 'How We Grow', 'Nutrition', 'Exercise and Fitness',
+      'Sleep', 'The Five Senses',
+    ]},
+    { id: 'earth', title: 'Earth & Environment', icon: '🌍', description: 'Our planet', topics: [
+      'Volcanoes', 'Earthquakes', 'Rocks & Minerals', 'Fossils', 'Soil',
+      'Mountains', 'Rivers', 'Oceans', 'Glaciers', 'Caves',
+      'Weather', 'Clouds', 'Hurricanes', 'Tornadoes', 'Tsunamis', 'Lightning',
+      'Seasons', 'Climate Change', 'Recycling', 'Deforestation',
+      'Water Cycle', 'Carbon Cycle', 'Plate Tectonics', 'Erosion',
+    ]},
+    { id: 'physics', title: 'Physics & Energy', icon: '⚡', description: 'Forces and energy', topics: [
+      'Electricity', 'Magnetism', 'Gravity', 'Light', 'Sound',
+      'Heat', 'Radiation', 'Force and Motion', 'Friction', 'Pressure',
+      'Simple Machines', 'Pulleys and Levers', 'Energy', 'Nuclear Energy',
+      'Solar Energy', 'Wind Energy', 'States of Matter', 'Atoms', 'Molecules',
+    ]},
+    { id: 'chemistry', title: 'Chemistry', icon: '🧪', description: 'Elements and reactions', topics: [
+      'The Periodic Table', 'Elements', 'Chemical Reactions', 'Acids and Bases',
+      'Metals', 'Water', 'Oxygen', 'Carbon', 'Hydrogen',
+      'Mixtures', 'Solutions', 'Crystals', 'Combustion', 'Oxidation',
+    ]},
+    { id: 'plants', title: 'Plants & Nature', icon: '🌿', description: 'The plant kingdom', topics: [
+      'Trees', 'Flowers', 'Cacti', 'Ferns', 'Grass', 'Mushrooms',
+      'Photosynthesis', 'Seeds', 'Roots', 'Leaves', 'Pollen',
+      'Rainforest Plants', 'Desert Plants', 'Aquatic Plants', 'Carnivorous Plants',
+      'Agriculture', 'Crops', 'Fruits', 'Vegetables',
+    ]},
+    { id: 'experiments', title: 'Science Experiments', icon: '🔬', description: 'Try these at home', topics: [
+      'Baking Soda Volcano', 'Invisible Ink', 'Rainbow Water', 'Static Electricity',
+      'Growing Crystals', 'Egg in a Bottle', 'Paper Airplane Science', 'Slime Making',
+      'Balloon Rocket', 'Lemon Battery', 'Color Mixing', 'Density Tower',
+    ]},
+  ],
+  [Category.HISTORY]: [
+    { id: 'ancient', title: 'Ancient Civilizations', icon: '🏛️', description: 'Earliest civilizations', topics: [
+      'Ancient Egypt', 'Pharaohs', 'Pyramids of Giza', 'Sphinx', 'Hieroglyphics', 'Cleopatra',
+      'Ancient Rome', 'Roman Empire', 'Julius Caesar', 'Gladiators', 'Colosseum',
+      'Ancient Greece', 'Greek Gods', 'Athens', 'Sparta', 'Olympics Origins',
+      'Mesopotamia', 'Babylon', 'Sumerians', 'Persian Empire', 'Indus Valley',
+      'Ancient China', 'Great Wall of China', 'Terracotta Army',
+    ]},
+    { id: 'africa', title: 'African Kingdoms', icon: '👑', description: 'Great empires of Africa', topics: [
+      'Kingdom of Kush', 'Ancient Nubia', 'Kingdom of Aksum', 'Ghana Empire',
+      'Mali Empire', 'Mansa Musa', 'Songhai Empire', 'Great Zimbabwe',
+      'Kingdom of Benin', 'Zulu Kingdom', 'Ethiopian Empire', 'Asante Empire',
+      'Kanem-Bornu Empire', 'Oyo Empire', 'Nok Culture', 'Timbuktu',
+    ]},
+    { id: 'nigeria', title: 'Nigerian History', icon: '🇳🇬', description: 'Heritage and independence', topics: [
+      'Nok Culture', 'Kingdom of Benin', 'Hausa City-States', 'Oyo Empire',
+      'Igbo-Ukwu', 'Sokoto Caliphate', 'Royal Niger Company', 'Colonial Nigeria',
+      'Nigerian Independence', 'First Republic', 'Nigerian Civil War',
+      'Modern Nigeria', 'Nigerian Constitution', 'National Heroes',
+    ]},
+    { id: 'explorers', title: 'Explorers & Discovery', icon: '🧭', description: 'Adventurers', topics: [
+      'Christopher Columbus', 'Marco Polo', 'Zheng He', 'Ferdinand Magellan',
+      'Vasco da Gama', 'Lewis and Clark', 'Roald Amundsen', 'James Cook',
+      'Ibn Battuta', 'David Livingstone', 'Mungo Park', 'Neil Armstrong',
+      'Age of Exploration', 'Silk Road', 'Spice Trade',
+    ]},
+    { id: 'medieval', title: 'Medieval Times', icon: '⚔️', description: 'Knights and kingdoms', topics: [
+      'Knights', 'Castles', 'Medieval Europe', 'The Crusades', 'Viking Age',
+      'Feudal System', 'Black Death', 'Joan of Arc', 'King Arthur',
+      'Samurai', 'Mongol Empire', 'Genghis Khan', 'Ottoman Empire',
+      'Byzantine Empire', 'Medieval Africa', 'Medieval China',
+    ]},
+    { id: 'modern', title: 'Modern History', icon: '🌍', description: 'Recent centuries', topics: [
+      'Industrial Revolution', 'French Revolution', 'American Revolution',
+      'World War I', 'World War II', 'The Cold War', 'Berlin Wall',
+      'Civil Rights Movement', 'Apartheid', 'United Nations',
+      'Moon Landing', 'Fall of the Soviet Union', 'Decolonization of Africa',
+    ]},
+    { id: 'inventions', title: 'Great Inventions', icon: '💡', description: 'Game changers', topics: [
+      'The Wheel', 'Printing Press', 'Steam Engine', 'Telephone', 'Light Bulb',
+      'Airplane', 'Television', 'Penicillin', 'The Internet', 'Compass',
+      'Gunpowder', 'Camera', 'Automobile', 'Radio', 'Microscope',
+    ]},
+  ],
+  [Category.PEOPLE]: [
+    { id: 'african', title: 'African Heroes', icon: '⭐', description: 'Legends of Africa', topics: [
+      'Nelson Mandela', 'Kwame Nkrumah', 'Haile Selassie', 'Patrice Lumumba',
+      'Wangari Maathai', 'Desmond Tutu', 'Thomas Sankara', 'Chinua Achebe',
+      'Fela Kuti', 'Miriam Makeba', 'Kofi Annan', 'Ellen Johnson Sirleaf',
+      'Queen Amina', 'Shaka Zulu', 'Mansa Musa', 'Yaa Asantewaa',
+    ]},
+    { id: 'scientists', title: 'Famous Scientists', icon: '🔬', description: 'Great minds', topics: [
+      'Isaac Newton', 'Albert Einstein', 'Marie Curie', 'Nikola Tesla',
+      'Galileo Galilei', 'Charles Darwin', 'Louis Pasteur', 'Thomas Edison',
+      'Alexander Graham Bell', 'Stephen Hawking', 'Jane Goodall', 'Ada Lovelace',
+      'Philip Emeagwali', 'Neil deGrasse Tyson', 'Rachel Carson',
+    ]},
+    { id: 'leaders', title: 'World Leaders', icon: '🏛️', description: 'Presidents and rulers', topics: [
+      'Abraham Lincoln', 'Winston Churchill', 'Mahatma Gandhi', 'Martin Luther King Jr.',
+      'Queen Elizabeth II', 'Julius Caesar', 'Alexander the Great', 'Napoleon',
+      'George Washington', 'Barack Obama', 'Benazir Bhutto', 'Fidel Castro',
+    ]},
+    { id: 'artists', title: 'Artists & Musicians', icon: '🎨', description: 'Creative geniuses', topics: [
+      'Leonardo da Vinci', 'Michelangelo', 'Pablo Picasso', 'Frida Kahlo',
+      'Vincent van Gogh', 'Claude Monet', 'Wolfgang Mozart', 'Ludwig van Beethoven',
+      'Bob Marley', 'Michael Jackson', 'Beyoncé', 'Burna Boy',
+    ]},
+    { id: 'women', title: 'Famous Women', icon: '👩', description: 'Women who changed the world', topics: [
+      'Cleopatra', 'Joan of Arc', 'Marie Curie', 'Amelia Earhart',
+      'Rosa Parks', 'Malala Yousafzai', 'Florence Nightingale', 'Frida Kahlo',
+      'Wangari Maathai', 'Oprah Winfrey', 'Serena Williams', 'Ada Lovelace',
+    ]},
+  ],
+  [Category.WORLD]: [
+    { id: 'africa', title: 'Africa', icon: '🌍', description: 'The African continent', topics: [
+      'Nigeria', 'South Africa', 'Kenya', 'Ghana', 'Ethiopia', 'Egypt',
+      'Sahara Desert', 'Victoria Falls', 'Mount Kilimanjaro', 'Serengeti',
+      'Nile River', 'Congo Rainforest', 'Madagascar', 'Zanzibar',
+      'Cape Town', 'Lagos', 'Nairobi', 'Accra', 'Addis Ababa',
+    ]},
+    { id: 'asia', title: 'Asia', icon: '🏔️', description: 'The largest continent', topics: [
+      'China', 'Japan', 'India', 'South Korea', 'Thailand', 'Indonesia',
+      'Great Wall of China', 'Mount Everest', 'Taj Mahal', 'Tokyo',
+      'Ganges River', 'Himalayas', 'Gobi Desert', 'Angkor Wat',
+    ]},
+    { id: 'europe', title: 'Europe', icon: '🏰', description: 'European countries', topics: [
+      'France', 'Germany', 'Italy', 'Spain', 'United Kingdom', 'Greece',
+      'Eiffel Tower', 'Big Ben', 'Colosseum Rome', 'Parthenon',
+      'Alps', 'Rhine River', 'London', 'Paris', 'Berlin',
+    ]},
+    { id: 'americas', title: 'Americas', icon: '🗽', description: 'North and South America', topics: [
+      'United States', 'Canada', 'Mexico', 'Brazil', 'Argentina', 'Peru',
+      'Statue of Liberty', 'Grand Canyon', 'Amazon Rainforest', 'Niagara Falls',
+      'Machu Picchu', 'Rocky Mountains', 'Mississippi River', 'Andes',
+    ]},
+    { id: 'oceans', title: 'Oceans & Poles', icon: '🏝️', description: 'Water and ice', topics: [
+      'Pacific Ocean', 'Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean',
+      'Antarctica', 'North Pole', 'Coral Reefs', 'Mariana Trench',
+      'Caribbean Islands', 'Australia', 'New Zealand', 'Galápagos Islands',
+    ]},
+    { id: 'cultures', title: 'World Cultures', icon: '🎎', description: 'Traditions and customs', topics: [
+      'African Culture', 'Asian Culture', 'European Culture', 'Latin American Culture',
+      'World Religions', 'World Languages', 'Festivals Around the World', 'Traditional Clothing',
+      'World Cuisine', 'Music Traditions', 'Wedding Customs', 'Holiday Celebrations',
+    ]},
+  ],
+  [Category.ARTS]: [
+    { id: 'visual', title: 'Visual Arts', icon: '🖌️', description: 'Painting and sculpture', topics: [
+      'Drawing Basics', 'Painting', 'Watercolors', 'Oil Painting', 'Sketching',
+      'Sculpture', 'Pottery', 'Printmaking', 'Collage', 'Mosaics',
+      'Art Movements', 'Renaissance Art', 'Modern Art', 'African Art',
+      'Pop Art', 'Street Art', 'Photography',
+    ]},
+    { id: 'music', title: 'Music', icon: '🎵', description: 'Instruments and genres', topics: [
+      'Piano', 'Guitar', 'Drums', 'Violin', 'Flute', 'Trumpet',
+      'Classical Music', 'Jazz', 'Hip Hop', 'Afrobeats', 'Rock Music',
+      'Orchestra', 'Singing', 'Music Theory', 'African Music',
+      'Musical Notation', 'Sound Waves', 'Recording Music',
+    ]},
+    { id: 'dance', title: 'Dance', icon: '💃', description: 'Dance forms', topics: [
+      'Ballet', 'Hip Hop Dance', 'African Dance', 'Salsa', 'Tango',
+      'Breakdancing', 'Tap Dance', 'Contemporary Dance', 'Ballroom Dancing',
+      'Cultural Dances', 'Dance History', 'Famous Dancers',
+    ]},
+    { id: 'theatre', title: 'Theatre & Film', icon: '🎭', description: 'Stage and screen', topics: [
+      'Acting', 'Shakespeare', 'Musicals', 'Puppet Theatre', 'Comedy',
+      'Film Making', 'Animation', 'Special Effects', 'Storytelling',
+      'Famous Films', 'Movie History', 'Nollywood',
+    ]},
+    { id: 'crafts', title: 'Crafts & Design', icon: '✂️', description: 'Making and creating', topics: [
+      'Origami', 'Weaving', 'Knitting', 'Beading', 'Woodworking',
+      'Tie-Dye', 'Fashion Design', 'Graphic Design', 'Architecture',
+      'Traditional African Crafts', 'Textile Art', 'Jewelry Making',
+    ]},
+  ],
+  [Category.SPORTS]: [
+    { id: 'football', title: 'Football & Soccer', icon: '⚽', description: 'The world game', topics: [
+      'Football Rules', 'FIFA World Cup', 'African Cup of Nations', 'Premier League',
+      'Famous Footballers', 'Football Positions', 'Football History',
+      'Women in Football', 'Champions League', 'Football Tactics',
+    ]},
+    { id: 'team', title: 'Team Sports', icon: '🏀', description: 'Games played together', topics: [
+      'Basketball', 'Cricket', 'Rugby', 'Volleyball', 'Baseball',
+      'Ice Hockey', 'Handball', 'Water Polo', 'Lacrosse', 'Netball',
+    ]},
+    { id: 'individual', title: 'Individual Sports', icon: '🏃', description: 'Solo competitions', topics: [
+      'Tennis', 'Swimming', 'Track and Field', 'Gymnastics', 'Boxing',
+      'Golf', 'Cycling', 'Martial Arts', 'Fencing', 'Archery',
+      'Skateboarding', 'Surfing', 'Table Tennis', 'Badminton',
+    ]},
+    { id: 'olympics', title: 'Olympics & Records', icon: '🥇', description: 'Greatest competitions', topics: [
+      'Olympic Games', 'Summer Olympics', 'Winter Olympics', 'Paralympic Games',
+      'World Records', 'Famous Olympians', 'Olympic History',
+      'Usain Bolt', 'Simone Biles', 'Michael Phelps', 'Jesse Owens',
+    ]},
+    { id: 'games', title: 'Games & Recreation', icon: '🎮', description: 'Fun and play', topics: [
+      'Chess', 'Board Games', 'Card Games', 'Video Games', 'Ayo (Mancala)',
+      'Puzzles', 'Outdoor Games', 'Playground Games', 'Traditional African Games',
+    ]},
+  ],
+  [Category.TECH]: [
+    { id: 'computers', title: 'Computers', icon: '💻', description: 'How computers work', topics: [
+      'How Computers Work', 'CPU', 'RAM', 'Hard Drives', 'Operating Systems',
+      'Windows', 'MacOS', 'Linux', 'Computer History', 'Binary Code',
+      'Computer Networks', 'Cloud Computing', 'Supercomputers',
+    ]},
+    { id: 'coding', title: 'Coding & Programming', icon: '👨‍💻', description: 'Learn to code', topics: [
+      'What is Programming', 'Python', 'JavaScript', 'Scratch', 'HTML & CSS',
+      'Algorithms', 'Debugging', 'Apps', 'Game Development', 'Web Development',
+      'Coding for Kids', 'Artificial Intelligence',
+    ]},
+    { id: 'internet', title: 'Internet & Digital', icon: '📡', description: 'The online world', topics: [
+      'How the Internet Works', 'World Wide Web', 'Email', 'Social Media',
+      'Search Engines', 'Cybersecurity', 'Digital Safety', 'Wi-Fi',
+      'Blogs', 'Podcasts', 'Streaming', 'E-Commerce',
+    ]},
+    { id: 'inventions', title: 'Tech Inventions', icon: '💡', description: 'Amazing technologies', topics: [
+      'Robots', 'Drones', 'Electric Cars', 'Space Rockets', '3D Printing',
+      'Solar Panels', 'Smartphones', 'GPS', 'Bluetooth', 'Television',
+      'Radio', 'Medical Technology', 'Green Technology',
+    ]},
+    { id: 'future', title: 'Future Tech', icon: '🚀', description: 'What comes next', topics: [
+      'Virtual Reality', 'Augmented Reality', 'Quantum Computing', 'Nanotechnology',
+      'Self-Driving Cars', 'Space Tourism', 'Smart Cities', 'Wearable Tech',
+      'Brain-Computer Interface', 'Mars Colonization', 'Fusion Energy',
+    ]},
+  ],
+  [Category.READING]: [
+    { id: 'stories', title: 'Stories & Tales', icon: '📖', description: 'Amazing stories', topics: [
+      'Folktales', 'African Folktales', 'Anansi Stories', 'Tortoise Tales',
+      'Fairy Tales', 'Fables', 'Ghost Stories', 'Adventure Stories',
+      'Myths & Legends', 'Greek Mythology', 'Norse Mythology', 'African Mythology',
+      'Creation Stories', 'Trickster Tales', 'Moral Stories',
+    ]},
+    { id: 'writing', title: 'Writing & Language', icon: '✍️', description: 'Words and expression', topics: [
+      'Poetry', 'Haiku', 'Rhymes', 'Spoken Word', 'Creative Writing',
+      'Story Starters', 'Character Building', 'Dialogue', 'Grammar',
+      'Vocabulary', 'World Languages', 'African Languages', 'Sign Language',
+      'Braille', 'History of Writing',
+    ]},
+    { id: 'proverbs', title: 'Proverbs & Wisdom', icon: '🧙', description: 'Wise words', topics: [
+      'African Proverbs', 'Yoruba Proverbs', 'Igbo Proverbs', 'Akan Proverbs',
+      'Swahili Proverbs', 'World Proverbs', 'Chinese Proverbs',
+      'Wisdom About Community', 'Proverbs About Patience', 'Proverbs About Courage',
+    ]},
+    { id: 'authors', title: 'Great Authors', icon: '📚', description: 'Famous writers', topics: [
+      'Chinua Achebe', 'Wole Soyinka', 'Chimamanda Ngozi Adichie', 'Ngugi wa Thiongo',
+      'William Shakespeare', 'Mark Twain', 'Roald Dahl', 'J.K. Rowling',
+      'Hans Christian Andersen', 'C.S. Lewis', 'Maya Angelou', 'Toni Morrison',
+    ]},
+    { id: 'genres', title: 'Story Genres', icon: '🎬', description: 'Types of stories', topics: [
+      'Adventure', 'Mystery', 'Fantasy', 'Science Fiction', 'Historical Fiction',
+      'Comedy', 'Horror', 'Romance', 'Biography', 'Autobiography',
+      'Non-Fiction', 'Graphic Novels', 'Comics',
+    ]},
+  ],
+};

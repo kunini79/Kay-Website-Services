@@ -9,6 +9,7 @@ interface HomeViewProps {
   exploredCategories: Set<string>;
   onCategoryChange?: (category: Category) => void;
   readHistory?: ReadHistoryItem[];
+  onCategoryClick?: (category: Category) => void;
 }
 
 type TopicOption = {
@@ -23,6 +24,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   exploredCategories,
   onCategoryChange,
   readHistory = [],
+  onCategoryClick,
 }) => {
   const orderedCategories: Category[] = [
     Category.ANIMALS,
@@ -661,7 +663,36 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </aside>
 
           <div className="tb-encarta-panel" aria-label={`${selectedCategory} submenu`}>
-            <h2 className="tb-encarta-panel-title">{categoryDisplayNames[selectedCategory]}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <h2 className="tb-encarta-panel-title">{categoryDisplayNames[selectedCategory]}</h2>
+              {onCategoryClick && (
+                <button
+                  onClick={() => onCategoryClick(selectedCategory)}
+                  title="Browse subcategories"
+                  style={{
+                    background: '#58CC02',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = '#46A302';
+                    (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = '#58CC02';
+                    (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+                  }}
+                >
+                  📂 Categories
+                </button>
+              )}
+            </div>
             <p className="tb-encarta-panel-subtitle">{CATEGORY_CONFIG[selectedCategory].description}</p>
 
             {selectedTopic && (
