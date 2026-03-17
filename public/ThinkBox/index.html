@@ -886,6 +886,44 @@
       color: rgba(255, 255, 255, 0.96);
     }
 
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1.35rem;
+    }
+
+    .cta-actions .button {
+      min-width: 210px;
+    }
+
+    .cta-points {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.1rem;
+    }
+
+    .cta-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .cta-point::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      margin-top: 0.25rem;
+      border-radius: 999px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #ffe36e 0%, #ffd249 100%);
+      box-shadow: 0 3px 0 #e7b823;
+    }
+
     .waitlist-form {
       background: rgba(255, 255, 255, 0.18);
       border: 1px solid rgba(255, 255, 255, 0.24);
@@ -1150,6 +1188,11 @@
         margin-top: 0.75rem;
       }
 
+      .cta-actions .button {
+        width: 100%;
+        min-width: 0;
+      }
+
       .feature-media {
         min-height: 210px;
       }
@@ -1186,7 +1229,7 @@
           <a href="#faq">FAQ</a>
         </nav>
 
-        <a class="button button-primary" href="#waitlist">Join Waitlist</a>
+        <a class="button button-primary" href="/products/thinkbox#demo-form">Get Access</a>
       </div>
     </header>
 
@@ -1238,8 +1281,8 @@
                 </div>
 
                 <div class="hero-actions">
-                  <a class="button button-primary" href="#waitlist">Start the adventure</a>
-                  <a class="button button-secondary" href="#worlds">See the lesson map</a>
+                  <a class="button button-primary" href="/products/thinkbox#demo-form">Start the adventure</a>
+                  <a class="button button-secondary" href="/products/thinkbox?tab=login#demo-form">Already have login details?</a>
                 </div>
 
                 <div class="hero-stats" aria-label="ThinkBox highlights">
@@ -1495,27 +1538,41 @@
             <div class="cta-content">
               <div>
                 <span class="eyebrow" style="color:#f8ffcf;">Ready to launch</span>
-                <h2>Be first to try ThinkBox when it opens its doors.</h2>
+                <h2>Ready to explore ThinkBox for real?</h2>
                 <p>
-                  Join the waitlist for launch updates, early access news, and a first look at how
-                  ThinkBox is turning curiosity into a daily learning habit for kids.
+                  ThinkBox already has a unified access page for demo requests and returning users.
+                  Use the buttons below to request beta access or sign in with the credentials you
+                  have already received.
                 </p>
+                <div class="cta-actions">
+                  <a class="button button-secondary" href="/products/thinkbox#demo-form">Request beta access</a>
+                  <a class="button" href="/products/thinkbox?tab=login#demo-form">Sign in to ThinkBox</a>
+                </div>
+                <div class="cta-points">
+                  <div class="cta-point">Request review is typically completed within 24 hours.</div>
+                  <div class="cta-point">Returning users can jump straight into the login tab.</div>
+                  <div class="cta-point">The product flow already handles both sign-up and sign-in.</div>
+                </div>
               </div>
-
-              <form class="waitlist-form" id="waitlist-form">
-                <label for="email">Get launch updates</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  autocomplete="email"
-                  required
-                >
-                <button class="button" type="submit">Join the waitlist</button>
-                <span class="form-note">Kid-safe learning updates, launch invites, and first-look access.</span>
-                <span class="form-status" id="form-status" aria-live="polite"></span>
-              </form>
+              <div class="waitlist-form" aria-label="ThinkBox access summary">
+                <label>What happens next</label>
+                <div class="hero-checks" style="grid-template-columns: 1fr;">
+                  <div class="hero-check" style="background: rgba(255,255,255,0.92);">
+                    <span class="hero-check-dot"></span>
+                    <div>
+                      <strong>New here?</strong>
+                      <span>Open the request form, submit your details, and wait for approval.</span>
+                    </div>
+                  </div>
+                  <div class="hero-check" style="background: rgba(255,255,255,0.92);">
+                    <span class="hero-check-dot"></span>
+                    <div>
+                      <strong>Already approved?</strong>
+                      <span>Use the login tab on the ThinkBox access page and head into the system.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1523,6 +1580,20 @@
             <span class="eyebrow">FAQ</span>
             <h2>Quick answers for families, teachers, and early supporters.</h2>
             <div class="faq-list">
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>How do I get access to ThinkBox?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    Use the access page at <strong>/products/thinkbox</strong> to request beta access.
+                    Once approved, the team sends your login details and you can sign in from the same page.
+                  </p>
+                </div>
+              </details>
+
               <details class="faq-item">
                 <summary hidden></summary>
                 <button type="button">
@@ -1534,6 +1605,20 @@
                     ThinkBox is being shaped for curious kids who enjoy guided discovery, especially in
                     the early-to-middle learning years where short sessions and strong visual structure
                     make a big difference.
+                  </p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>Do I need separate pages for sign up and sign in?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    No. ThinkBox uses one unified access page. New users request access there, and existing
+                    users switch to the login tab to sign in with their credentials.
                   </p>
                 </div>
               </details>
@@ -1565,6 +1650,34 @@
                   </p>
                 </div>
               </details>
+
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>How long does approval usually take?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    The current ThinkBox flow says requests are usually reviewed within 24 hours, after
+                    which approved users receive their login credentials by email.
+                  </p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>What can kids explore inside ThinkBox?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    ThinkBox is positioned around broad discovery topics like science, nature, history,
+                    space, culture, and other curiosity-led subject worlds designed for repeat exploration.
+                  </p>
+                </div>
+              </details>
             </div>
           </div>
         </div>
@@ -1581,7 +1694,7 @@
           <div class="footer-links" aria-label="Footer">
             <a href="#how">How it works</a>
             <a href="#worlds">Explore worlds</a>
-            <a href="#waitlist">Join waitlist</a>
+            <a href="/products/thinkbox#demo-form">Get access</a>
           </div>
           <div>&copy; <span id="year"></span> ThinkBox. All rights reserved.</div>
         </div>
@@ -1629,19 +1742,21 @@
     const form = document.getElementById("waitlist-form");
     const status = document.getElementById("form-status");
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const button = form.querySelector("button");
-      button.disabled = true;
-      button.textContent = "Saving your spot...";
-      status.textContent = "You're on the list. Expect launch updates soon.";
-      form.reset();
+    if (form && status) {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const button = form.querySelector("button");
+        button.disabled = true;
+        button.textContent = "Saving your spot...";
+        status.textContent = "You're on the list. Expect launch updates soon.";
+        form.reset();
 
-      window.setTimeout(() => {
-        button.disabled = false;
-        button.textContent = "Join the waitlist";
-      }, 1400);
-    });
+        window.setTimeout(() => {
+          button.disabled = false;
+          button.textContent = "Join the waitlist";
+        }, 1400);
+      });
+    }
 
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
