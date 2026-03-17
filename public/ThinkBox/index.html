@@ -1,1753 +1,1362 @@
-<!DOCTYPE html><html id="html" lang="en"><head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ThinkBox | A Smarter Way for Kids to Explore Knowledge</title><meta property="og:title" content="ThinkBox | A Smarter Way for Kids to Explore Knowledge"><meta property="og:description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><meta name="description" content="Explore science, history, nature, and more with ThinkBox. Offline, safe, and made for curious minds. Join the educational revolution!"><link rel="canonical" href="#">                <link rel="alternate" hreflang="x-default" href="#">
-            <link rel="alternate" hreflang="en-US" href="#">
-            <link rel="alternate" hreflang="en-GB" href="#">
-            <link rel="alternate" hreflang="es-MX" href="#">
-            <link rel="alternate" hreflang="en-AU" href="#">
-            <link rel="alternate" hreflang="it-IT" href="#">
-            <link rel="alternate" hreflang="es-ES" href="#">
-            <link rel="alternate" hreflang="en-CA" href="#">
-        <!-- Google Tag Manager -->
-        <script async="" src="/ThinkBox/www.googletagmanager.com/gtm_id%3DGTM-5XDDK388.js"></script><script>
-            window.dataLayer = window.dataLayer || [];
-            dataLayer.push({ 'country':'en' });
-        </script>
-        <script>
-            (function (w, d, s, l, i) {
-              w[l] = w[l] || [];
-              w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
-              var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-              j.async = true;
-              j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-              f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-5XDDK388');
-        </script>
-        <!-- End Google Tag Manager -->
-    <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/bootstrap.min.css">
-    <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/ThinkBox/www.crayola.com/css/dist/style.min.css">
-
-    <style>
-        .primary-nav .navbar-nav {
-            display: flex;
-            flex-wrap: nowrap;
-            font-size: 4rem;
-        }
-        .primary-nav .navbar-nav .nav-link span {
-            font-size: 1.2rem;
-        }
-    </style>
-
-    <!--BE IXF: JavaScript begin-->
-    <script src="/ThinkBox/cdn.bc0a.com/autopilot/f00000000046685/autopilot_sdk.js"></script>
-    <!--BE IXF: JavaScript end-->
-
-    <script type="text/javascript">var monetateT = new Date().getTime();</script>
-    <script type="text/javascript" src="/ThinkBox/se.monetate.net/js/2/a-dc4b4650/p/crayola.com/entry.js"></script>
-    <script type="text/javascript">
-        window.monetateQ = window.monetateQ || [];
-        window.monetateQ.push(['trackData']);
-    </script>
-
-
-
-
-<script type="text/javascript">!function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{
-src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
-crossOrigin: "anonymous", 
-cfg: { // Application Insights Configuration
-    connectionString: 'InstrumentationKey=d7299644-fe98-4ca3-bebf-4e0c057bb4dc'
-}});</script><script src="/ThinkBox/js.monitor.azure.com/scripts/b/ai.2.min.js" crossorigin="anonymous"></script></head>
-<body data-template="views.main.layout" id="top">
-    <a href="#main" class="skip-to-main">Skip to Main Content</a>
-    <script src="/ThinkBox/cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/bootstrap.bundle.js"></script>
-    <script id="likebtn_wjs" src="/ThinkBox/w.likebtn.com/js/w/widget.js"></script>
-
-    <header id="header">
-
-
-    <div id="geoPopup" class="popup" role="dialog" aria-labelledby="popup1-title" aria-hidden="false" style="visibility:hidden;">
-        <div class="popup-content" tabindex="-1">
-            <p id="popup1-title">You're currently visiting the United States site. Would you like to visit your local site?</p>
-            <div class="btn-row">
-                <a id="lnkGeoLocal" href="" class="btn large-primary" aria-label="Navigate to your local site" target="_self"></a>
-                <a id="geoclose" class="btn large-secondary geo-close" aria-label="Close popup" role="button">United States</a>
-            </div>
-        </div>
-    </div>
-    <script src="/ThinkBox/www.crayola.com/js/geolocation_v%3DPdfV0CaAdLfDFjVIQNwuSmwoOaTvI5AY91oDfvKFnYM.js"></script>
-
-
-<div id="aux-header" style="background-color: #ffd72d;">
-
-
-
-<div class="">
-<p style="margin-bottom: 0; color: #96c13e "><strong></strong><strong></strong></p></div>
-</div>
-<div id="main-header">
-    <div class="container">
-        <div class="inner-wrap">
-            <div class="logo-wrap">
-
-            <a href="#" class="d-inline-block">
-            <picture class="d-inline-block">
-                <img loading="lazy" class="img-fluid" src="/ThinkBox/Think Box Logo.png" title="ThinkBox" alt="ThinkBox">
-            </picture>
-            </a>
-</div>
-            <div class="primary-nav">
-<ul class="navbar-nav">
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-explore" role="button" aria-expanded="false">
-                    <span>Explore</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-explore">
-                        <div class="dropdown-menu-image left">
-                            <img loading="lazy" src="/ThinkBox/www.crayola.com/images/default-source/default-album/green-mascot_sfvrsn%3D1180e295_15.png" alt="">
-                        </div>
-
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#00892D;">Discover & Learn</h3>
-                                            <p>Explore fascinating topics across science, nature, history, and more. Fuel your curiosity!</p>
-                                                <a tabindex="0" class="link" aria-label="Browse All Topics" href="#"><span>Browse All Topics</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-            <li>
-                <a href="#" class="hover-link" target="_self">Science</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Technology</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Nature & Animals</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Geography</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">History</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Culture & Society</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Space</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">How Things Work</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Africa & The World</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#003C8C;">
-                                                    <a href="#" tabindex="0" aria-label="Explore Space topics">
-                                                        <div class="inner-wrap">
-                                                            <h3>Explore Space</h3>
-                                                            <p class="description">Discover the wonders of our universe.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#00892D;">
-                                                    <a href="#" tabindex="0" aria-label="Explore Nature & Animals">
-                                                        <div class="inner-wrap">
-                                                            <h3>Nature & Animals</h3>
-                                                            <p class="description">Learn about the natural world around us.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                        <div class="dropdown-menu-image right">
-                            <img loading="lazy" src="/ThinkBox/www.crayola.com/images/default-source/default-album/dropdown-accent_sfvrsn%3Dbc1abc47_14.png" alt="">
-                        </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-learn" role="button" aria-expanded="false">
-                    <span>Learn</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-learn">
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#0078C2;">Structured Learning</h3>
-                                            <p>Curriculum-aligned content designed to make learning engaging and effective.</p>
-                                                <a tabindex="0" class="link" aria-label="Browse All Learning Content" href="#"><span>Browse All Content</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-                    <li>
-                        <a class="hover-link" href="#" target="_self">By Age Group</a>
-                        <ul>
-            <li>
-                <a href="#" class="hover-link" target="_self">Ages 6-8</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Ages 9-11</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Ages 12-14</a>
-            </li>
-        </ul>
-                    </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">By Subject</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Topic Collections</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Quick Lessons</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Knowledge Paths</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#0078C2;">
-                                                    <a href="#" tabindex="0" aria-label="Topic Collections">
-                                                        <div class="inner-wrap">
-                                                            <h3>Topic Collections</h3>
-                                                            <p class="description">Themed learning bundles for deeper exploration.</p>
-                                                            <p class="link alternative">
-                                                                <span>Browse Collections</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#00892D;">
-                                                    <a href="#" tabindex="0" aria-label="Knowledge Paths">
-                                                        <div class="inner-wrap">
-                                                            <h3>Knowledge Paths</h3>
-                                                            <p class="description">Guided learning journeys through subjects.</p>
-                                                            <p class="link alternative">
-                                                                <span>Start Learning</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-play-discover" role="button" aria-expanded="false">
-                    <span>Play & Discover</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-play-discover">
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#592E87;">Interactive Fun</h3>
-                                            <p>Make learning fun with games, quizzes, and interactive experiences.</p>
-                                                <a tabindex="0" class="link" aria-label="Browse All Activities" href="#"><span>Browse All Activities</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-            <li>
-                <a href="#" class="hover-link" target="_self">Learning Games</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Quizzes & Challenges</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Did You Know?</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Interactive Maps</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Simulations (Coming Soon)</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#592E87;">
-                                                    <a href="#" tabindex="0" aria-label="Learning Games">
-                                                        <div class="inner-wrap">
-                                                            <h3>Learning Games</h3>
-                                                            <p class="description">Fun games that make learning exciting.</p>
-                                                            <p class="link alternative">
-                                                                <span>Play Now</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#C25400;">
-                                                    <a href="#" tabindex="0" aria-label="Interactive Maps">
-                                                        <div class="inner-wrap">
-                                                            <h3>Interactive Maps</h3>
-                                                            <p class="description">Explore the world through interactive mapping.</p>
-                                                            <p class="link alternative">
-                                                                <span>Explore</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-for-schools" role="button" aria-expanded="false">
-                    <span>For Schools</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-for-schools">
-
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#0078C2;">Educator Resources</h3>
-                                            <p>Powerful tools designed for teachers and classrooms to bring learning to life.</p>
-                                                <a tabindex="0" class="link" aria-label="Browse All School Resources" href="#"><span>Browse All Resources</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-            <li>
-                <a href="#" class="hover-link" target="_self">Teacher Mode</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Classroom Use</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Offline Installation</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Content Packs</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Curriculum Alignment</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Request a Demo</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#003C8C;">
-                                                    <a href="#" tabindex="0" aria-label="Explore Teacher Mode">
-                                                        <div class="inner-wrap">
-                                                            <h3>Teacher Mode</h3>
-                                                            <p class="description">Customizable dashboard for educators with progress tracking.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#0078C2;">
-                                                    <a href="#" tabindex="0" aria-label="Get Content Packs">
-                                                        <div class="inner-wrap">
-                                                            <h3>Content Packs</h3>
-                                                            <p class="description">Downloadable curriculum-aligned content bundles.</p>
-                                                            <p class="link alternative">
-                                                                <span>Browse Packs</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-for-parents" role="button" aria-expanded="false">
-                    <span>For Parents</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-for-parents">
-
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#00892D;">Parent Resources</h3>
-                                            <p>Everything you need to know about how ThinkBox supports your child's learning journey.</p>
-                                                <a tabindex="0" class="link" aria-label="Browse All Parent Resources" href="#"><span>Browse All Resources</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-            <li>
-                <a href="#" class="hover-link" target="_self">Why ThinkBox?</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Safe Learning Promise</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Offline & Screen-Time Friendly</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Learning at Home</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">FAQs</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#00892D;">
-                                                    <a href="#" tabindex="0" aria-label="Learn Why ThinkBox">
-                                                        <div class="inner-wrap">
-                                                            <h3>Why ThinkBox?</h3>
-                                                            <p class="description">Discover how ThinkBox makes learning fun and effective.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#003C8C;">
-                                                    <a href="#" tabindex="0" aria-label="Safe Learning Promise">
-                                                        <div class="inner-wrap">
-                                                            <h3>Safe Learning Promise</h3>
-                                                            <p class="description">Our commitment to safe, ad-free education.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown" data-template="sitefinity-navigation.desktop-mega-menu">
-                <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdownMenuLink-about" role="button" aria-expanded="false">
-                    <span>About</span>
-                </a>
-                <div class="dropdown-menu mega-menu " role="menu" aria-labelledby="navbarDropdownMenuLink-about">
-
-                    <div class="dropdown-menu-inner-wrap">
-                        <div class="container">
-                            <div class="row d-flex">
-                                <div class="col-3">
-                                        <div class="dropdown-cta">
-                                            <h3 style="color:#592E87;">About Us</h3>
-                                            <p>Learn more about ThinkBox, KayCorp, and our mission to make knowledge accessible to all.</p>
-                                                <a tabindex="0" class="link" aria-label="Learn More About Us" href="#"><span>Learn More</span></a>
-                                        </div>
-                                </div>
-                                    <div class="col-auto flex-fill">
-        <ul class="links-list">
-            <li>
-                <a href="#" class="hover-link" target="_self">About ThinkBox</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">About KayCorp</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Our Story</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Impact & Vision</a>
-            </li>
-            <li>
-                <a href="#" class="hover-link" target="_self">Contact Us</a>
-            </li>
-        </ul>
-                                    </div>
-                                        <div class="col-4 ms-auto">
-                                                <div class="dropdown-card" style="background-color:#592E87;">
-                                                    <a href="#" tabindex="0" aria-label="About ThinkBox">
-                                                        <div class="inner-wrap">
-                                                            <h3>About ThinkBox</h3>
-                                                            <p class="description">Our mission to inspire curious minds everywhere.</p>
-                                                            <p class="link alternative">
-                                                                <span>Learn More</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-card" style="background-color:#C25400;">
-                                                    <a href="#" tabindex="0" aria-label="Impact & Vision">
-                                                        <div class="inner-wrap">
-                                                            <h3>Impact & Vision</h3>
-                                                            <p class="description">See how we're changing the future of learning.</p>
-                                                            <p class="link alternative">
-                                                                <span>Explore</span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-</ul>
-
-
-
-
-</div>
-            <div class="secondary-nav">
-                <nav aria-label="Additional Links">
-                    <ul>
-                        <li>
-                            <button id="mobile-nav-toggle" role="button" aria-label="Toggle Navigation Menu">
-                                <p class="sr-only">Toggle Navigation Menu</p>
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-
-    </div>
-</div>
-<div id="mobile-nav-flyout" aria-labelledby="mobile-nav-toggle">
-    <div class="inner-flyout-wrap">
-        <nav class="mobile-nav">
-            <div>
-                <ul>
-                    <li class="nav-item"><a class="nav-link" href="#">Explore</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Learn</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Play & Discover</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">For Schools</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">For Parents</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</div>
-<div id="nav-underlay">
-</div>
-<div id="nav-underlay-mobile">
-</div></header>
-    <main id="main">
-
-<!-- Hero Section -->
-<section class="hero-section" style="color: white; position: relative; overflow: hidden;">
-
-        <div style="" class="inner-section-wrap -sc-image">
-                <div class="row">
-                        <div style="" class="col ">
-
-<style>
-    #id5bbd3f7a .hero-description p{
-        color:#2D2E2F;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ThinkBox | A Smarter Way for Kids to Explore Knowledge</title>
+  <meta
+    name="description"
+    content="ThinkBox turns learning into a playful adventure with safe offline content, lovable characters, and bite-sized knowledge quests for curious kids."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #46a302;
+      --green-deep: #2b7f06;
+      --yellow: #ffd94d;
+      --cream: #fffaf1;
+      --ink: #19323c;
+      --muted: #587179;
+      --shadow-soft: 0 22px 45px rgba(44, 82, 32, 0.12);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 20px;
+      --max-width: 1180px;
     }
 
-    .hero-banner .hero-banner-image-standard {
-        margin-left: 20px;
-        width: auto;
-        align-self: center;
-        padding: 20px 0;
+    * {
+      box-sizing: border-box;
     }
 
-    .hero-banner .hero-banner-image-standard img {
-            border-radius: 40px;
-            max-height:520px;
-        }
-
-
-    @media (max-width: 1399px) {
-        .hero-banner .hero-banner-image-standard img
-        {
-        max-height: 400px;
-        }
+    html {
+      scroll-behavior: smooth;
     }
 
+    body {
+      margin: 0;
+      font-family: "Nunito", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, #f6ffcf 0, transparent 25%),
+        radial-gradient(circle at 85% 12%, #dff8ff 0, transparent 24%),
+        linear-gradient(180deg, #f8fff2 0%, #f7fbff 44%, #fffaf1 100%);
+      min-height: 100vh;
+    }
 
-    @media (max-width: 991px) {
-        .hero-banner .hero-banner-image-standard
-     {
-        height: auto;
-        position: relative;
-        right: 0;
-        margin: auto;
-        width: 90%;
+    img {
+      display: block;
+      max-width: 100%;
     }
-    .hero-banner .hero-inner {
-            padding: 23% 0 10% 0;
-        }
-    }
-    
-    /* Enhanced Hero Section Styles */
-    .hero-banner.default {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
-    }
-    
-    .hero-banner.default::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url('/ThinkBox/Hero Background.jpg');
-        background-size: cover;
-        background-position: center;
-        opacity: 0.15;
-        z-index: 0;
-    }
-    
-    .hero-banner .container {
-        position: relative;
-        z-index: 1;
-    }
-    
-    .hero-inner {
-        animation: fadeInUp 0.8s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .hero-tag {
-        font-weight: 700;
-        font-size: 1.1rem;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-bottom: 1rem;
-        display: inline-block;
-        padding: 0.5rem 1.5rem;
-        background: rgba(53, 1, 109, 0.1);
-        border-radius: 50px;
-    }
-    
-    .hero-header {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .hero-header {
-            font-size: 2.5rem;
-        }
-    }
-    
-    .hero-description {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
-        color: #333;
-        line-height: 1.6;
-    }
-    
-    .hero-banner-image-standard img {
-        animation: floatAnimation 3s ease-in-out infinite;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
-    }
-    
-    @keyframes floatAnimation {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-        50% {
-            transform: translateY(-20px);
-        }
-    }
-    
-    .btn.large-primary {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn.large-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    }
-    
-    .btn.large-primary::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-    
-    .btn.large-primary:hover::before {
-        width: 300px;
-        height: 300px;
-    }
-</style>
-<section data-template="HeroBanner.default">
-    <div class="hero-banner default " id="id5bbd3f7a" style="">
-        <div class="container">
-            <div class="row d-flex flex-row">
-                <div class="col-lg-6 col-12">
-                    <div class="hero-inner">                        <h1 class="hero-header" style="color: #00502e">A smarter way for kids to explore knowledge.</h1>
-                            <div class="hero-description">
-                                <p>Explore science, history, nature, and more offline, safe, and made for curious minds.</p>
-                            </div>
-                        <div class="btn-row">
-                                <a href="/products/thinkbox#demo-form" class="btn large-primary" tabindex="0" aria-label="Request demo access or sign in to ThinkBox" id="hero_cta_1">Start Exploring</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="image-style" class="hero-banner-image-standard">
-                        <img loading="lazy" src="/ThinkBox/Hero Picture.svg" alt="ThinkBox Hero">
-                </div>
-            </div>
-        </div>
-    </div>
-</section></div>
-                </div>
-        </div>
 
-</section>
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
+    button,
+    input {
+      font: inherit;
+    }
 
+    .page-shell {
+      position: relative;
+      overflow: hidden;
+    }
 
-<section class="green-brush-stroke">
+    .page-shell::before,
+    .page-shell::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0.7;
+      pointer-events: none;
+    }
 
-            <div class="inner-section-wrap padding-xl-top padding-xl-bottom">
-                <div class="row">
-                        <div style="" class="col ">
+    .page-shell::before {
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(255, 217, 77, 0.25), rgba(255, 217, 77, 0));
+      top: 180px;
+      left: -120px;
+    }
 
-<style>
-    /* Enhanced Card Styles with Modern Effects */
+    .page-shell::after {
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle, rgba(137, 226, 255, 0.2), rgba(137, 226, 255, 0));
+      top: 60px;
+      right: -140px;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(248, 255, 242, 0.85);
+      border-bottom: 1px solid rgba(88, 204, 2, 0.12);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 60px;
+      height: 60px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #7be52e 0%, #58cc02 100%);
+      border: 3px solid #ffffff;
+      box-shadow: 0 8px 0 rgba(41, 90, 16, 0.16);
+      padding: 0.55rem;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title,
+    .hero-title,
+    .section-heading h2,
+    .cta-card h2,
+    .faq-card h2 {
+      font-family: "Baloo 2", "Trebuchet MS", sans-serif;
+    }
+
+    .brand-title {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .brand-subtitle {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0.95rem 1.55rem;
+      border-radius: 999px;
+      border: 0;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      color: #fff;
+      background: linear-gradient(180deg, #6fe81d 0%, var(--green) 100%);
+      box-shadow: 0 8px 0 var(--green-dark);
+    }
+
+    .button-secondary {
+      color: var(--green-deep);
+      background: #fff;
+      border: 2px solid #d7e5c8;
+      box-shadow: 0 8px 0 rgba(176, 201, 155, 0.75);
+    }
+
+    .hero {
+      padding: 2.5rem 0 1.8rem;
+    }
+
+    .hero-card,
+    .feature-card,
+    .path-card,
+    .trust-card,
+    .faq-card,
+    .cta-card {
+      background: #fff;
+      border: 1px solid rgba(215, 229, 200, 0.95);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+    }
+
     .hero-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        position: relative;
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 255, 237, 0.96)),
+        linear-gradient(135deg, rgba(137, 226, 255, 0.16), rgba(255, 217, 77, 0.12));
+      overflow: hidden;
+      padding: 1.25rem;
     }
-    
-    .hero-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        z-index: 1;
-        pointer-events: none;
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      align-items: center;
+      gap: 2rem;
     }
-    
-    .hero-card:hover::before {
-        opacity: 1;
+
+    .hero-copy {
+      padding: 1rem 0.4rem 1rem 0.6rem;
     }
-    
-    .hero-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(88, 204, 2, 0.16);
+      box-shadow: 0 6px 18px rgba(43, 127, 6, 0.08);
+      color: var(--green-deep);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
     }
-    
-    .hero-card .card-image {
-        height: 250px;
-        overflow: hidden;
-        position: relative;
+
+    .hero-title {
+      margin: 1rem 0 0.75rem;
+      font-size: clamp(3rem, 5vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      max-width: 10ch;
     }
-    
-    .hero-card .card-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .green {
+      color: var(--green);
     }
-    
-    .hero-card:hover .card-image img {
-        transform: scale(1.1);
+
+    .hero-text {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 56ch;
+      margin: 0;
     }
-    
-    .hero-card .card-body {
-        position: relative;
-        z-index: 2;
-        padding: 2rem;
+
+    .hero-actions,
+    .mini-chip-row,
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
     }
-    
-    .hero-card .card-category {
-        font-size: 0.85rem;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        margin-bottom: 0.5rem;
-        opacity: 0.9;
+
+    .hero-actions {
+      margin-top: 1.6rem;
     }
-    
-    .hero-card .card-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 1.4rem;
     }
-    
-    .hero-card .card-text {
+
+    .stat,
+    .lesson-card,
+    .path-step {
+      background: #fff;
+      border: 1px solid rgba(215, 229, 200, 0.9);
+    }
+
+    .stat {
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: 0 8px 22px rgba(25, 50, 60, 0.06);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--green-deep);
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 0.4rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0.5rem;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      inset: 9% 6% auto auto;
+      width: 92%;
+      height: 82%;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75)),
+        linear-gradient(180deg, #dcf8c6 0%, #f2ffe7 100%);
+      border: 1px solid rgba(88, 204, 2, 0.12);
+      transform: rotate(-5deg);
+    }
+
+    .lesson-card {
+      position: absolute;
+      border-radius: var(--radius-md);
+      box-shadow: 0 20px 34px rgba(43, 127, 6, 0.12);
+      padding: 0.8rem 0.95rem;
+      z-index: 3;
+    }
+
+    .lesson-card strong,
+    .lesson-card span,
+    .progress-copy strong,
+    .progress-copy span {
+      display: block;
+    }
+
+    .lesson-card strong {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .lesson-card span,
+    .progress-copy span,
+    .section-heading p,
+    .feature-card p,
+    .path-card p,
+    .trust-card p,
+    .faq-panel p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .lesson-card span,
+    .progress-copy span {
+      font-size: 0.88rem;
+      margin-top: 0.25rem;
+    }
+
+    .lesson-card.xp {
+      top: 4%;
+      left: 10%;
+      background: linear-gradient(180deg, #fffef7, #fff8d9);
+    }
+
+    .lesson-card.streak {
+      right: 1%;
+      top: 16%;
+    }
+
+    .lesson-card.safe {
+      bottom: 10%;
+      left: 2%;
+      background: linear-gradient(180deg, #f4fff0, #e7ffd1);
+    }
+
+    .character-stage {
+      position: relative;
+      z-index: 4;
+      width: min(420px, 92%);
+      padding: 1.15rem;
+      border-radius: 36px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fff0 100%);
+      border: 1px solid rgba(215, 229, 200, 0.95);
+      box-shadow: 0 28px 46px rgba(25, 50, 60, 0.12);
+    }
+
+    .progress-strip {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.9rem 1rem;
+      border-radius: 22px;
+      background: var(--cream);
+      border: 1px solid rgba(255, 217, 77, 0.55);
+      margin-bottom: 0.9rem;
+    }
+
+    .progress-badge,
+    .step-dot,
+    .lane-icon,
+    .trust-icon {
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .progress-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #74e721 0%, var(--green) 100%);
+      color: #fff;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 0 var(--green-dark);
+      flex-shrink: 0;
+    }
+
+    .progress-copy strong {
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .character-frame,
+    .feature-media {
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .character-frame {
+      position: relative;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.6), transparent 32%),
+        linear-gradient(180deg, #9de7ff 0%, #cdeeff 100%);
+      min-height: 390px;
+      padding: 1rem;
+    }
+
+    .character-frame img {
+      width: min(100%, 330px);
+      filter: drop-shadow(0 18px 24px rgba(16, 60, 82, 0.18));
+      transform: translateY(6px);
+    }
+
+    .section {
+      padding: 1.4rem 0 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.3rem;
+      color: var(--green-deep);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+    }
+
+    .section-heading h2,
+    .cta-card h2,
+    .faq-card h2 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3.3rem);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      max-width: 40ch;
+      font-size: 1rem;
+    }
+
+    .cards-3,
+    .path-grid,
+    .trust-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .cards-3,
+    .path-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .trust-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .feature-card,
+    .path-card,
+    .trust-card {
+      padding: 1rem;
+      min-height: 100%;
+    }
+
+    .feature-media {
+      border-radius: 24px;
+      background: linear-gradient(180deg, #dff8ff 0%, #f7fbff 100%);
+      min-height: 240px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-media img {
+      width: min(100%, 260px);
+      border-radius: 22px;
+      object-fit: cover;
+      box-shadow: 0 18px 30px rgba(25, 50, 60, 0.12);
+    }
+
+    .feature-card h3,
+    .path-card h3,
+    .trust-card h3,
+    .faq-item button span {
+      margin: 0;
+      font-size: 1.28rem;
+      font-weight: 900;
+    }
+
+    .feature-card p,
+    .path-card p,
+    .trust-card p {
+      margin: 0.6rem 0 0;
+      font-size: 1rem;
+    }
+
+    .mini-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: var(--cream);
+      color: var(--green-deep);
+      font-size: 0.82rem;
+      font-weight: 900;
+      border: 1px solid rgba(255, 217, 77, 0.4);
+    }
+
+    .path-card {
+      padding: 1.2rem;
+    }
+
+    .lane-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 0 rgba(25, 50, 60, 0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .lane-green {
+      background: linear-gradient(180deg, #8df046 0%, #66d716 100%);
+    }
+
+    .lane-yellow {
+      background: linear-gradient(180deg, #ffe36e 0%, #ffd249 100%);
+    }
+
+    .lane-blue {
+      background: linear-gradient(180deg, #9be8ff 0%, #5dcbff 100%);
+    }
+
+    .path-steps,
+    .faq-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .path-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 18px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .step-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #6ce61a 0%, #58cc02 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      box-shadow: 0 6px 0 var(--green-dark);
+      flex-shrink: 0;
+    }
+
+    .trust-card {
+      padding: 1.35rem;
+    }
+
+    .trust-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #f0ffe3 0%, #dbf8c0 100%);
+      margin-bottom: 0.95rem;
+      font-size: 1rem;
+      box-shadow: 0 10px 0 rgba(88, 204, 2, 0.18);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cta-wrap {
+      padding: 1.4rem 0 3rem;
+    }
+
+    .cta-card {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)),
+        linear-gradient(135deg, #58cc02 0%, #2cb216 100%);
+      padding: 1.5rem;
+      color: #fff;
+    }
+
+    .cta-card::before,
+    .cta-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0.22;
+    }
+
+    .cta-card::before {
+      width: 260px;
+      height: 260px;
+      background: #fff;
+      top: -70px;
+      right: -50px;
+    }
+
+    .cta-card::after {
+      width: 180px;
+      height: 180px;
+      background: #ffd94d;
+      left: -30px;
+      bottom: -70px;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .cta-card p {
+      margin: 0.75rem 0 0;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      max-width: 46ch;
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .waitlist-form {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 28px;
+      padding: 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .waitlist-form label {
+      display: block;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+
+    .waitlist-form input {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 1rem 1.1rem;
+      color: var(--ink);
+      background: #fff;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+    }
+
+    .waitlist-form .button {
+      width: 100%;
+      background: linear-gradient(180deg, #ffe36e 0%, #ffd249 100%);
+      color: #5c3c00;
+      box-shadow: 0 8px 0 #e7b823;
+    }
+
+    .form-note,
+    .form-status {
+      display: block;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-top: 0.7rem;
+    }
+
+    .form-note {
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .form-status {
+      min-height: 1.4rem;
+      color: #fffbe0;
+      font-weight: 800;
+    }
+
+    .faq-card {
+      margin-top: 1rem;
+      padding: 1.3rem;
+    }
+
+    .faq-item {
+      border: 1px solid rgba(215, 229, 200, 0.95);
+      border-radius: 22px;
+      background: #fafff6;
+      overflow: hidden;
+    }
+
+    .faq-item button {
+      width: 100%;
+      padding: 1rem 1.05rem;
+      border: 0;
+      background: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .faq-item button strong {
+      font-size: 1.7rem;
+      line-height: 1;
+      color: var(--green);
+      transition: transform 0.2s ease;
+    }
+
+    .faq-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+
+    .faq-panel p {
+      margin: 0;
+      padding: 0 1.05rem 1rem;
+    }
+
+    .faq-item[open] button strong {
+      transform: rotate(45deg);
+    }
+
+    .footer-card {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(215, 229, 200, 0.95);
+      border-radius: 24px;
+      color: var(--muted);
+    }
+
+    .footer-card strong {
+      color: var(--ink);
+    }
+
+    .footer-links {
+      gap: 1rem;
+      font-weight: 800;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-grid,
+      .cta-content,
+      .cards-3,
+      .path-grid,
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        padding: 0.3rem 0.2rem 0;
+      }
+
+      .hero-visual {
+        min-height: 500px;
+      }
+
+      .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: min(var(--max-width), calc(100% - 1rem));
+      }
+
+      .topbar-inner {
+        padding: 0.9rem 0;
+      }
+
+      .brand-mark {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+      }
+
+      .brand-title {
+        font-size: 1.35rem;
+      }
+
+      .hero {
+        padding-top: 1rem;
+      }
+
+      .hero-card {
+        border-radius: 30px;
+        padding: 1rem;
+      }
+
+      .hero-title {
+        max-width: 100%;
+      }
+
+      .hero-text {
         font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 440px;
+      }
+
+      .character-stage {
+        width: 100%;
+        padding: 0.85rem;
+      }
+
+      .character-frame {
+        min-height: 300px;
+      }
+
+      .lesson-card {
+        padding: 0.7rem 0.8rem;
+      }
+
+      .lesson-card.xp {
+        left: 0;
+        top: 2%;
+      }
+
+      .lesson-card.streak {
+        right: 0;
+        top: 20%;
+      }
+
+      .lesson-card.safe {
+        left: 0;
+        bottom: 5%;
+      }
+
+      .feature-media {
+        min-height: 210px;
+      }
+
+      .cta-card,
+      .faq-card {
+        border-radius: 28px;
+      }
+
+      .footer-card {
+        padding: 1rem;
+      }
     }
-    
-    .hero-card .card-cta {
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="#top" aria-label="ThinkBox home">
+          <span class="brand-mark">
+            <img src="/ThinkBox/Think Box Logo.png" alt="ThinkBox logo">
+          </span>
+          <span>
+            <span class="brand-title">ThinkBox</span>
+            <span class="brand-subtitle">Curiosity that levels up</span>
+          </span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#why">Why it works</a>
+          <a href="#paths">Learning paths</a>
+          <a href="#families">For families</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <a class="button button-primary" href="#waitlist">Join Waitlist</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container">
+          <div class="hero-card reveal">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <div class="pill">Game-on learning for curious kids</div>
+                <h1 class="hero-title">
+                  Make every lesson feel like a <span class="green">win streak</span>.
+                </h1>
+                <p class="hero-text">
+                  ThinkBox brings science, history, space, nature, and culture to life with playful
+                  challenges, lovable characters, and offline-safe exploration that keeps kids asking
+                  for one more lesson.
+                </p>
+
+                <div class="hero-actions">
+                  <a class="button button-primary" href="#waitlist">Start the adventure</a>
+                  <a class="button button-secondary" href="#paths">See the lesson map</a>
+                </div>
+
+                <div class="hero-stats" aria-label="ThinkBox highlights">
+                  <div class="stat">
+                    <strong>5+ worlds</strong>
+                    <span>Science, stories, nature, tech, and more</span>
+                  </div>
+                  <div class="stat">
+                    <strong>100% kid-safe</strong>
+                    <span>Offline-friendly and built for focused discovery</span>
+                  </div>
+                  <div class="stat">
+                    <strong>Daily streak energy</strong>
+                    <span>Bite-sized sessions that feel rewarding</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-visual" aria-hidden="true">
+                <div class="hero-orbit"></div>
+                <div class="lesson-card xp">
+                  <strong>+120 Curiosity XP</strong>
+                  <span>Complete today's wild facts quest</span>
+                </div>
+                <div class="lesson-card streak">
+                  <strong>7 day streak</strong>
+                  <span>Kids come back because progress feels fun</span>
+                </div>
+                <div class="lesson-card safe">
+                  <strong>Parent-approved</strong>
+                  <span>No chaos. Just clear, guided exploration.</span>
+                </div>
+
+                <div class="character-stage">
+                  <div class="progress-strip">
+                    <div class="progress-badge">3</div>
+                    <div class="progress-copy">
+                      <strong>Quest 3: Animals &amp; Habitats</strong>
+                      <span>Watch, answer, collect a badge, move up.</span>
+                    </div>
+                  </div>
+
+                  <div class="character-frame">
+                    <img src="/ThinkBox/ThinkBox Characters/Dogo.jpg" alt="ThinkBox character Dogo">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="why">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Why kids stay hooked</span>
+              <h2>Big curiosity. Tiny wins. Zero boring energy.</h2>
+            </div>
+            <p>
+              The whole page is built around the feeling of progress: bright feedback, simple next
+              steps, and character-led moments that make learning feel playful from the first scroll.
+            </p>
+          </div>
+
+          <div class="cards-3">
+            <article class="feature-card reveal">
+              <div class="feature-media">
+                <img src="/ThinkBox/ThinkBox Characters/Mimi.jpg" alt="ThinkBox character Mimi">
+              </div>
+              <h3>Short quests, fast rewards</h3>
+              <p>
+                Lessons feel approachable because every topic is broken into quick wins, visual
+                checkpoints, and confidence-building milestones.
+              </p>
+              <div class="mini-chip-row">
+                <span class="mini-chip">XP moments</span>
+                <span class="mini-chip">Lesson streaks</span>
+                <span class="mini-chip">Skill badges</span>
+              </div>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-media">
+                <img src="/ThinkBox/ThinkBox Characters/Badosh.jpg" alt="ThinkBox character Badosh">
+              </div>
+              <h3>Bright, friendly motivation</h3>
+              <p>
+                ThinkBox nudges kids forward with cheerful visuals, rounded cards, and clear action
+                choices that feel encouraging instead of overwhelming.
+              </p>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Playful UI</span>
+                <span class="mini-chip">Bold feedback</span>
+                <span class="mini-chip">Low friction</span>
+              </div>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-media">
+                <img src="/ThinkBox/ThinkBox Characters/Steph.jpg" alt="ThinkBox character Steph">
+              </div>
+              <h3>Safe exploration for real families</h3>
+              <p>
+                Parents and schools get the fun without the mess: guided pathways, offline-ready use,
+                and content designed to keep kids focused on learning.
+              </p>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Offline-ready</span>
+                <span class="mini-chip">Kid-friendly</span>
+                <span class="mini-chip">Classroom fit</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="paths">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Learning map</span>
+              <h2>Pick a lane and let the curiosity path unfold.</h2>
+            </div>
+            <p>
+              This section borrows that gamified course-map feeling: simple lanes, visible progress,
+              and each stop giving kids a reason to tap into the next challenge.
+            </p>
+          </div>
+
+          <div class="path-grid">
+            <article class="path-card reveal">
+              <div class="lane-icon lane-green" aria-hidden="true">SP</div>
+              <h3>Space explorer lane</h3>
+              <p>
+                Lift off with planets, stars, rockets, and "how it works" explainers that turn big
+                ideas into fun discoveries.
+              </p>
+              <div class="path-steps">
+                <div class="path-step"><span class="step-dot">1</span> Meet the solar system crew</div>
+                <div class="path-step"><span class="step-dot">2</span> Unlock wild space facts</div>
+                <div class="path-step"><span class="step-dot">3</span> Finish with a rocket quiz</div>
+              </div>
+            </article>
+
+            <article class="path-card reveal">
+              <div class="lane-icon lane-yellow" aria-hidden="true">NA</div>
+              <h3>Nature adventure lane</h3>
+              <p>
+                Walk through habitats, food chains, and amazing animals with playful prompts that make
+                kids want to keep exploring.
+              </p>
+              <div class="path-steps">
+                <div class="path-step"><span class="step-dot">1</span> Visit rainforest habitats</div>
+                <div class="path-step"><span class="step-dot">2</span> Match animals to clues</div>
+                <div class="path-step"><span class="step-dot">3</span> Earn a wildlife badge</div>
+              </div>
+            </article>
+
+            <article class="path-card reveal">
+              <div class="lane-icon lane-blue" aria-hidden="true">HI</div>
+              <h3>History detective lane</h3>
+              <p>
+                Turn timelines and famous stories into a guided mission full of surprising facts and
+                quick confidence boosts.
+              </p>
+              <div class="path-steps">
+                <div class="path-step"><span class="step-dot">1</span> Unlock a time-travel clue</div>
+                <div class="path-step"><span class="step-dot">2</span> Explore a key moment</div>
+                <div class="path-step"><span class="step-dot">3</span> Beat the memory challenge</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="families">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Built for trust</span>
+              <h2>Fun for kids, clarity for parents, simplicity for schools.</h2>
+            </div>
+            <p>
+              The visual theme is playful, but the message stays clear: ThinkBox helps families and
+              educators feel confident while kids stay excited.
+            </p>
+          </div>
+
+          <div class="trust-grid">
+            <article class="trust-card reveal">
+              <div class="trust-icon" aria-hidden="true">SAFE</div>
+              <h3>Confidence-first design</h3>
+              <p>
+                Friendly cards, strong contrast, and obvious next steps make the experience easy for
+                younger learners to navigate without feeling lost.
+              </p>
+            </article>
+
+            <article class="trust-card reveal">
+              <div class="trust-icon" aria-hidden="true">LEARN</div>
+              <h3>Content with real educational depth</h3>
+              <p>
+                Under the playful skin, ThinkBox still points toward structured learning, exploration,
+                and classroom-friendly use cases that matter to adults.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-wrap" id="waitlist">
+        <div class="container">
+          <div class="cta-card reveal">
+            <div class="cta-content">
+              <div>
+                <span class="eyebrow" style="color:#f8ffcf;">Ready to launch</span>
+                <h2>Bring ThinkBox's Duolingo-style energy to your next signup push.</h2>
+                <p>
+                  This waitlist section is designed to feel high-momentum: bold call-to-action, soft
+                  motion, strong contrast, and just enough gamified language to make joining feel like
+                  starting a new streak.
+                </p>
+              </div>
+
+              <form class="waitlist-form" id="waitlist-form">
+                <label for="email">Get launch updates</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  autocomplete="email"
+                  required
+                >
+                <button class="button" type="submit">Join the waitlist</button>
+                <span class="form-note">Kid-safe learning updates, launch invites, and first-look access.</span>
+                <span class="form-status" id="form-status" aria-live="polite"></span>
+              </form>
+            </div>
+          </div>
+
+          <div class="faq-card reveal" id="faq">
+            <span class="eyebrow">FAQ</span>
+            <h2>Quick answers for curious parents and partners.</h2>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>What makes this landing page feel Duolingo-inspired?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    The redesign leans on cheerful greens, chunky shadows, rounded cards, lesson-path
+                    framing, progress language, and a playful keep-going rhythm. It keeps ThinkBox's
+                    own identity and characters instead of copying another brand directly.
+                  </p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>Can this theme still work for schools and parents?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    Yes. The page balances the playful surface with trust signals like offline-ready
+                    messaging, safe exploration, and classroom-friendly learning paths so it still feels
+                    credible to adults.
+                  </p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary hidden></summary>
+                <button type="button">
+                  <span>Is the page mobile-friendly?</span>
+                  <strong>+</strong>
+                </button>
+                <div class="faq-panel">
+                  <p>
+                    The layout collapses to single-column sections, stacks the stats and path cards, and
+                    keeps the CTA form easy to use on smaller screens.
+                  </p>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-card">
+          <div>
+            <strong>ThinkBox</strong>
+            <span> | Curiosity that levels up</span>
+          </div>
+          <div class="footer-links" aria-label="Footer">
+            <a href="#why">Why it works</a>
+            <a href="#paths">Learning paths</a>
+            <a href="#waitlist">Join waitlist</a>
+          </div>
+          <div>&copy; <span id="year"></span> ThinkBox. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const revealItems = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
     }
-    
-    .hero-card:hover .card-cta {
-        transform: translateX(5px);
-    }
-    
-    /* Staggered Animation for Cards */
-    .hero-card {
-        opacity: 0;
-        animation: fadeInUpCard 0.6s ease-out forwards;
-    }
-    
-    .col-lg-4:nth-child(1) .hero-card { animation-delay: 0.1s; }
-    .col-lg-4:nth-child(2) .hero-card { animation-delay: 0.2s; }
-    .col-lg-4:nth-child(3) .hero-card { animation-delay: 0.3s; }
-    
-    @keyframes fadeInUpCard {
-        from {
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 pb-4 text-center">
-            <h2 style="color: #ffffff; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; animation: fadeIn 0.8s ease-out;">Explore Topics</h2>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#0078C2;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=300&fit=crop" alt="Science">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Science</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Discover the wonders of scientific discovery</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Science" id="content_card_1">Explore Science</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#00892D;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/440px-African_Bush_Elephant.jpg" alt="Nature & Animals">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Nature & Animals</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Learn about the natural world around us</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Nature & Animals" id="content_card_2">Explore Nature</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#C25400;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=300&fit=crop" alt="Geography">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Geography</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Explore our world and its diverse places</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Geography" id="content_card_3">Explore Geography</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center" style="margin-top: 40px;">
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#592E87;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://www.atlanticcouncil.org/wp-content/uploads/2010/12/reuters-12-15-10-Muammar-Gaddafi.jpg" alt="History">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">History</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Journey through time and ancient civilizations</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about History" id="content_card_4">Explore History</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#003C8C;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop" alt="Space">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Space</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Discover the wonders of our universe</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Space" id="content_card_5">Explore Space</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#35016D;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Assorted_gears.jpg/440px-Assorted_gears.jpg" alt="How Things Work">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Topic</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">How Things Work</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Understand the science behind everyday technology</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about How Things Work" id="content_card_6">Learn More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center" style="margin-top: 80px;">
-        <div class="col-12 pb-4">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #35016D; font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Learn by Age</h2>
-                <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">Age-appropriate content tailored for different learning stages</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#0078C2;">
-                    <div class="card-body">
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Ages 6–8</h2>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Ages 6-8" id="content_card_7">Start Learning</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#00892D;">
-                    <div class="card-body">
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Ages 9–11</h2>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Ages 9-11" id="content_card_8">Start Learning</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#C25400;">
-                    <div class="card-body">
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Ages 12–14</h2>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Learn more about Ages 12-14" id="content_card_9">Start Learning</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center" style="margin-top: 60px;">
-        <div class="col-12 pb-4">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: #35016D; font-size: 2.5rem; font-weight: bold;">Play & Discover</h2>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#592E87;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop" alt="Quiz of the Day">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Interactive</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Quiz of the Day</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Test your knowledge with daily brain teasers</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Take the Quiz of the Day" id="content_card_10">Take Quiz</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#003C8C;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1532619675605-1ede6c2e7b94?w=400&h=300&fit=crop" alt="Did You Know">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Interactive</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Did You Know?</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Learn amazing facts about the world</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Discover amazing facts" id="content_card_11">Discover Facts</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4 col-12 pb-lg-0 pb-4">
-            <div style="height:100%;" data-template="CTACard.HeroCard">
-                <div class="card hero-card" style="background-color:#35016D;">
-                    <div class="card-image">
-                        <img loading="lazy" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=300&fit=crop" alt="Interactive Map">
-                    </div>
-                    <div class="card-body">
-                        <p class="card-category" style="color:#FFFFFF;">Interactive</p>
-                        <h2 class="card-title" style="color: rgba(255, 255, 255, 1)">Interactive Map</h2>
-                        <p class="card-text" style="color:#FFFFFF;">Explore global knowledge through interactive mapping</p>
-                        <a href="#" tabindex="0" class="card-cta btn small-secondary" aria-label="Explore Interactive Maps" id="content_card_12">Explore Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div></div>
-                </div>
-            </div>
+    document.querySelectorAll(".faq-item").forEach((item) => {
+      const button = item.querySelector("button");
+      const panel = item.querySelector(".faq-panel");
 
-</section>
+      const setState = () => {
+        panel.style.maxHeight = item.open ? panel.scrollHeight + "px" : "0px";
+      };
 
+      button.addEventListener("click", () => {
+        item.open = !item.open;
+        setState();
+      });
 
+      setState();
+    });
 
-<section class="">
+    const form = document.getElementById("waitlist-form");
+    const status = document.getElementById("form-status");
 
-            <div class="inner-section-wrap padding-lg-top">
-                <div class="row">
-                        <div style="" class="col ">
-<div class="butterfly page-image"></div>
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const button = form.querySelector("button");
+      button.disabled = true;
+      button.textContent = "Saving your spot...";
+      status.textContent = "You're on the list. Expect launch updates soon.";
+      form.reset();
 
-            <picture class="d-inline-block flightpath-placement">
-                        <source media="(max-width: 2544px)" srcset="/ThinkBox/www.crayola.com/images/default-source/default-album/background-images/flight-line.tmb-0_Culture%3Den%26sfvrsn%3Dad175942_3.png" type="image/png" width="2544" height="160">
-                <img loading="lazy" class="img-fluid" src="/ThinkBox/www.crayola.com/images/default-source/default-album/background-images/flight-line_sfvrsn%3Dad175942_5.png" title="flight-line">
-            </picture>
+      window.setTimeout(() => {
+        button.disabled = false;
+        button.textContent = "Join the waitlist";
+      }, 1400);
+    });
 
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-9">
-
-
-
-<div class="">
-<h2>Browse African History</h2></div>
-</div>
-    </div>
-    <div class="row">
-
-
-<div class="container category-tiles" data-template="sitefinity-navigation.category-tiles">
-    <div class="row">
-        <ul class="category-tile-list">
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Lucy_Skeleton.jpg/440px-Lucy_Skeleton.jpg" alt="Methodology and African Prehistory">
-                    <p>Methodology and African Prehistory</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/All_Gizah_Pyramids.jpg/440px-All_Gizah_Pyramids.jpg" alt="Ancient Civilizations of Africa">
-                    <p>Ancient Civilizations of Africa (Early-7th Century AD)</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mosque_Sana%27a_edit.jpg/440px-Mosque_Sana%27a_edit.jpg" alt="Africa from the 7th to the 11th Century">
-                    <p>Africa from the 7th to the 11th Century</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Great_Enclosure%2C_Great_Zimbabwe.jpg/440px-Great_Enclosure%2C_Great_Zimbabwe.jpg" alt="Africa from the 12th to the 16th Century">
-                    <p>Africa from the 12th to the 16th Century</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Slaveshipposter.jpg/440px-Slaveshipposter.jpg" alt="Africa from the 16th to the 18th Century">
-                    <p>Africa from the 16th to the 18th Century</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Samori_Toure_circa_1890.jpg/440px-Samori_Toure_circa_1890.jpg" alt="Africa in the 19th Century until the 1880s">
-                    <p>Africa in the 19th Century until the 1880s</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Colonisation_of_Africa_1913_map.svg/440px-Colonisation_of_Africa_1913_map.svg.png" alt="Africa Under Colonial Domination">
-                    <p>Africa Under Colonial Domination (1880–1935)</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Kwame_Nkrumah_%28JFKWHP-AR6409-A%29_cropped.jpg/440px-Kwame_Nkrumah_%28JFKWHP-AR6409-A%29_cropped.jpg" alt="Africa Since 1935">
-                    <p>Africa Since 1935</p>
-                </a>
-            </li>
-            <li>
-                <a class="category-tile" href="#" target="_self" tabindex="0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/African_Union_building_in_Addis_Ababa.jpg/440px-African_Union_building_in_Addis_Ababa.jpg" alt="General History of Africa Revisited">
-                    <p>General History of Africa Revisited (Contemporary Period)</p>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-</div>
-
-
-</div>
-
-</div></div>
-                </div>
-            </div>
-
-</section>
-
-
-
-<section class="brush-mask-top">
-
-
-</div>
-                </div>
-        </div>
-
-</section>
-
-
-
-<section class="drop-shadow-soft">
-
-            <div class="inner-section-wrap padding-xl-top padding-xl-bottom">
-                <div class="row">
-                        <div style="" class="col ">
-
-
-
-<div class="container" data-template="content-list.featured-slider">
-    <div class="row featured-desktop-slider align-items-center" role="region">
-        <div class="col-5 ">
-            <div class="slider-cta">
-                <h2>Join the Waitlist</h2>
-                    <p></p><p></p><p></p>
-                <form style="display: flex; gap: 10px; margin-top: 15px;">
-                    <input type="email" placeholder="Enter your email" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; flex: 1; font-size: 14px;">
-                    <button type="submit" class="btn large-primary" style="padding: 10px 25px; white-space: nowrap;">Send</button>
-                </form>
-            </div>
-        </div>
-
-    </div>
-    <div class="row featured-mobile-slider" role="region">
-        <div class="col-12">
-            <div class="slider-cta" style="background: linear-gradient(135deg, #35016D 0%, #592E87 100%); padding: 60px 40px; border-radius: 25px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); text-align: center; position: relative; overflow: hidden;">
-                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(60px);"></div>
-                <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(50px);"></div>
-                <h2 style="color: #FFFFFF; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; position: relative; z-index: 1;">Join the Waitlist</h2>
-                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem; margin-bottom: 2rem; position: relative; z-index: 1; max-width: 600px; margin-left: auto; margin-right: auto;">Be the first to experience ThinkBox when we launch. Get exclusive early access and updates!</p>
-                <form style="display: flex; gap: 15px; margin-top: 25px; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; flex-wrap: wrap; justify-content: center;">
-                    <input type="email" placeholder="Enter your email address" required style="padding: 18px 25px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50px; flex: 1; min-width: 280px; font-size: 16px; background: rgba(255, 255, 255, 0.95); transition: all 0.3s ease;" onfocus="this.style.background='#FFFFFF'; this.style.transform='scale(1.02)';" onblur="this.style.background='rgba(255, 255, 255, 0.95)'; this.style.transform='scale(1)';">
-                    <button type="submit" class="btn large-primary" style="padding: 18px 45px; white-space: nowrap; border-radius: 50px; font-weight: 700; font-size: 16px; background: #FFD72D; color: #00502E; border: none;">Join Waitlist</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-</div>
-                </div>
-            </div>
-
-</section>
-
-</main>
-    <footer id="footer" class="footer">
-
-
-
-<div class="be-ix-link-block"><!--Link Block Target Div--></div>
-<div class="footer-main">
-    <div class="container">
-        <div class="row d-flex">
-            <div class="col-8 p-0 d-flex mx-auto align-items-center justify-content-center">
-                <div class="divider"></div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-
-<style type="text/css">
-.footer h2 a {
-   color:#FCE828;
-   text-decoration:none;
-}
-.footer h2 a:hover{
-   color:#FCE828;
-   text-decoration:underline;
-}
-</style>
-
-<div class="">
-<h2><a href="#">Explore</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer Explore Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">Science</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Technology</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Nature & Animals</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Geography</a></li>
-                    <li><a href="#" class="hover-link" target="_self">History</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Space</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-<div class="">
-<h2><a href="#">Learn</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer Learn Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">By Age Group</a></li>
-                    <li><a href="#" class="hover-link" target="_self">By Subject</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Topic Collections</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Quick Lessons</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Knowledge Paths</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-<div class="">
-<h2><a href="#">Play & Discover</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer Play Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">Learning Games</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Quizzes & Challenges</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Did You Know?</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Interactive Maps</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-<div class="">
-<h2><a href="#">For Schools</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer Schools Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">Teacher Mode</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Classroom Use</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Content Packs</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Request a Demo</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-<div class="">
-<h2><a href="#">For Parents</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer Parents Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">Why ThinkBox?</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Safe Learning Promise</a></li>
-                    <li><a href="#" class="hover-link" target="_self">FAQs</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-            <div class="col-lg-2 col-6 link-column">
-                <div>
-<div class="">
-<h2><a href="#">About</a></h2></div>
-</div>
-                <div>
-<nav aria-label="Footer About Links">
-    <ul>
-                    <li><a href="#" class="hover-link" target="_self">About ThinkBox</a></li>
-                    <li><a href="#" class="hover-link" target="_self">About KayCorp</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Our Story</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Impact & Vision</a></li>
-                    <li><a href="#" class="hover-link" target="_self">Contact Us</a></li>
-    </ul>
-</nav>
-</div>
-            </div>
-        </div>
-
-    </div>
-    <div class="footer-banner">
-        <div class="desktop">
-        </div>
-        <div class="mobile">
-        </div>
-    </div>
-</div>
-<div class="footer-aux">
-    <div class="container">
-        <div class="aux-inner-wrap">
-            <div class="aux-left">
-
-
-
-<div class="">
-<p>© <span id="copyrightYear">2026</span>  ThinkBox® All Rights Reserved.</p></div>
-<script>
-  document.getElementById("copyrightYear").textContent = new Date().getFullYear();
-</script></div>
-            <div class="aux-right">
-                <div>
-
-
-<nav aria-label="Footer Aux Navigation">
-    <ul>
-            <li>
-                <a href="#" target="_self">
-                        <img src="/ThinkBox/www.crayola.com/img/footer/privacy-choices.svg" alt="Privacy Choices Icon">
-                        <span>Your Privacy Choices</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>Privacy Policy</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>SMS Terms</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>GDPR</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>CA Privacy Notice</span>
-                </a>
-            </li>
-            <li>
-                <a class="ot-sdk-show-settings" href="#" target="_self">
-                        <span>Cookie Preferences</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>Terms of Use</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" target="_self">
-                        <span>Web Accessibility</span>
-                </a>
-            </li>
-    </ul>
-</nav>
-
-
-
-
-
-</div>
-                <div class="back-to-top-container">
-                    <div class="back-to-top">
-                        <button class="back-to-top-anchor" aria-label="Back to top of the page">
-                            <span class="sr-only">Back to Top</span>
-                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 32C2 48.5685 15.4315 62 32 62C48.5685 62 62 48.5685 62 32C62 15.4315 48.5685 2 32 2C15.4315 2 2 15.4315 2 32Z" fill="#00502E" stroke="#FFCC33" stroke-width="3"></path>
-                                <path d="M31.9727 26.4404L22.9999 35.4132" stroke="#FFCC33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M40.9453 35.4132L31.9726 26.4404" stroke="#FFCC33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div></footer>
-    <script src="/ThinkBox/www.crayola.com/js/GSAP/gsap.min.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/GSAP/plugins/ScrollTrigger.min.js"></script>
-        <script src="/ThinkBox/www.crayola.com/js/masonry.pkgd.min.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/swiper-bundle.min.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/navigation.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/scroll-triggers.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/fslightbox.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/fslightbox-accessibility.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/content-lightbox.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/functions.js"></script>
-    <script src="/ThinkBox/www.crayola.com/js/timeline-slider.js"></script>
-    
-    <!-- Enhanced Mobile & Desktop Styles -->
-    <style>
-        /* Mobile Responsiveness Improvements */
-        @media (max-width: 992px) {
-            .hero-banner .row {
-                min-height: auto !important;
-                padding: 40px 0 !important;
-            }
-            
-            .hero-banner-image-standard {
-                margin-top: 30px;
-                text-align: center;
-            }
-            
-            .hero-banner-image-standard img {
-                max-width: 80%;
-                height: auto;
-            }
-            
-            .hero-card {
-                margin-bottom: 20px;
-            }
-            
-            .dropdown-menu.mega-menu {
-                position: static !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .hero-header {
-                font-size: 2rem !important;
-            }
-            
-            .hero-description {
-                font-size: 1.1rem !important;
-            }
-            
-            .hero-tag {
-                font-size: 0.9rem !important;
-            }
-            
-            .slider-cta {
-                padding: 40px 25px !important;
-            }
-            
-            .slider-cta h2 {
-                font-size: 2rem !important;
-            }
-            
-            .slider-cta form {
-                flex-direction: column;
-            }
-            
-            .slider-cta form input {
-                min-width: 100% !important;
-            }
-            
-            .slider-cta form button {
-                width: 100%;
-            }
-        }
-        
-        /* Smooth Scroll Behavior */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Enhanced Button Styles */
-        .btn.small-secondary {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn.small-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Improved Focus States for Accessibility */
-        a:focus, button:focus, input:focus {
-            outline: 3px solid #FFD72D;
-            outline-offset: 2px;
-        }
-        
-        /* Loading Spinner */
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-        
-        /* Section Padding Improvements */
-        .green-brush-stroke .inner-section-wrap {
-            padding-top: 80px;
-            padding-bottom: 80px;
-        }
-        
-        @media (max-width: 768px) {
-            .green-brush-stroke .inner-section-wrap {
-                padding-top: 50px;
-                padding-bottom: 50px;
-            }
-        }
-        
-        /* Enhanced Navigation Hover Effects */
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: #FFD72D;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-        
-        .nav-link:hover::after {
-            width: 80%;
-        }
-        
-        /* Back to Top Button Enhancement */
-        .back-to-top-anchor {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-        
-        .back-to-top-anchor:hover {
-            transform: translateY(-5px) scale(1.1);
-        }
-    </style>
-    
-    <!-- Enhanced JavaScript for Animations -->
-    <script>
-        // Wait for DOM to be ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize GSAP ScrollTrigger animations if available
-            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-                gsap.registerPlugin(ScrollTrigger);
-                
-                // Animate cards on scroll
-                gsap.utils.toArray('.hero-card').forEach((card, index) => {
-                    gsap.from(card, {
-                        scrollTrigger: {
-                            trigger: card,
-                            start: 'top 85%',
-                            toggleActions: 'play none none reverse'
-                        },
-                        y: 50,
-                        opacity: 0,
-                        duration: 0.6,
-                        delay: index * 0.1,
-                        ease: 'power2.out'
-                    });
-                });
-                
-                // Animate section headings
-                gsap.utils.toArray('h2').forEach(heading => {
-                    gsap.from(heading, {
-                        scrollTrigger: {
-                            trigger: heading,
-                            start: 'top 90%',
-                            toggleActions: 'play none none reverse'
-                        },
-                        y: 30,
-                        opacity: 0,
-                        duration: 0.5,
-                        ease: 'power2.out'
-                    });
-                });
-            }
-            
-            // Enhanced image loading
-            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-                img.addEventListener('load', function() {
-                    this.style.opacity = '0';
-                    this.style.transition = 'opacity 0.5s ease';
-                    setTimeout(() => {
-                        this.style.opacity = '1';
-                    }, 10);
-                });
-            });
-            
-            // Waitlist form submission enhancement
-            const waitlistForm = document.querySelector('.slider-cta form');
-            if (waitlistForm) {
-                waitlistForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const email = this.querySelector('input[type="email"]').value;
-                    const button = this.querySelector('button[type="submit"]');
-                    const originalText = button.textContent;
-                    
-                    button.textContent = 'Joining...';
-                    button.disabled = true;
-                    
-                    // Simulate API call
-                    setTimeout(() => {
-                        button.textContent = '✓ Joined!';
-                        button.style.background = '#00892D';
-                        
-                        setTimeout(() => {
-                            button.textContent = originalText;
-                            button.disabled = false;
-                            button.style.background = '#FFD72D';
-                            this.reset();
-                        }, 2000);
-                    }, 1500);
-                });
-            }
-            
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href !== '#' && href !== '#main') {
-                        e.preventDefault();
-                        const target = document.querySelector(href);
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    }
-                });
-            });
-            
-            // Add parallax effect to hero background
-            const heroSection = document.querySelector('.hero-banner.default');
-            if (heroSection) {
-                window.addEventListener('scroll', () => {
-                    const scrolled = window.pageYOffset;
-                    const parallax = scrolled * 0.5;
-                    heroSection.style.backgroundPositionY = parallax + 'px';
-                });
-            }
-            
-            // Enhanced card hover effects
-            document.querySelectorAll('.hero-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.zIndex = '10';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.zIndex = '1';
-                });
-            });
-            
-            // Back to top button visibility
-            const backToTopBtn = document.querySelector('.back-to-top');
-            if (backToTopBtn) {
-                window.addEventListener('scroll', () => {
-                    if (window.pageYOffset > 300) {
-                        backToTopBtn.style.opacity = '1';
-                        backToTopBtn.style.pointerEvents = 'auto';
-                    } else {
-                        backToTopBtn.style.opacity = '0';
-                        backToTopBtn.style.pointerEvents = 'none';
-                    }
-                });
-            }
-        });
-    </script>
-    
-
-
-<script id="1548297642" src="/ThinkBox/www.crayola.com/sfrenderer/Scripts/SearchWidgets/search-box.min_assembly_name%3DProgress.Sitefinity.AspNetCore.Widgets%26version%3D-1744962191.js" type="text/javascript"></script><script defer="" id="-1291637893" src="/ThinkBox/www.crayola.com/sfrenderer/Scripts/form-all.min_assembly_name%3DProgress.Sitefinity.AspNetCore.FormWidgets%26version%3D-1846535055.js" type="text/javascript"></script>
-
-</body></html>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
