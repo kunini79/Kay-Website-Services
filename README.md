@@ -20,6 +20,7 @@
 |-------|---------|------|-------|
 | `/` | Marketing homepage | Public | Agency services, portfolio |
 | `/products/thinkbox` | ThinkBox product page + demo signup + login | Public | Unified entry point for ThinkBox |
+| `/products/thinkbox/pitchdeck` | ThinkBox pitch deck page | Public | Investor and partner overview |
 | `/thinkbox` | Redirect to `/products/thinkbox` | Public | Canonical alias |
 | `/dashboard` | User profile dashboard | User | Post-login profile view |
 | `/system` | ThinkBox app (articles, backpack, XP) | User | Main educational interface |

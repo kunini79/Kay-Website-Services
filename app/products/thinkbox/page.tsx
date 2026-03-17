@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThinkBoxForm from './forms';
-import { ArrowLeft, LogIn } from 'lucide-react';
+import { ArrowLeft, LogIn, Presentation } from 'lucide-react';
 
 export default function ThinkBoxProductPage() {
   const features = [
@@ -135,6 +135,13 @@ export default function ThinkBoxProductPage() {
               <LogIn size={16} />
               I have login details
             </a>
+            <Link
+              href="/products/thinkbox/pitchdeck"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#FEF3C7', color: '#7c2d12', fontWeight: 700, fontSize: 16, padding: '14px 32px', borderRadius: 9999, border: '2px solid #fcd34d', boxShadow: '0 4px 0 #f59e0b', textDecoration: 'none' }}
+            >
+              <Presentation size={16} />
+              View Pitch Deck
+            </Link>
           </div>
 
           {/* Trust line */}

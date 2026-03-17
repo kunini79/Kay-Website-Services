@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORY_CONFIG } from '../constants';
 
@@ -15,6 +15,7 @@ interface SubcategoryData {
 interface SubcategoryViewProps {
   category: string;
   subcategories: SubcategoryData[];
+  initialSubcategoryId?: string;
   onTopicClick: (topic: string) => void;
   onBack: () => void;
 }
@@ -22,11 +23,25 @@ interface SubcategoryViewProps {
 export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
   category,
   subcategories,
+  initialSubcategoryId,
   onTopicClick,
   onBack,
 }) => {
   const config = CATEGORY_CONFIG[category as keyof typeof CATEGORY_CONFIG];
-  const [activeSubcategory, setActiveSubcategory] = useState<string>(subcategories[0]?.id || '');
+  const [activeSubcategory, setActiveSubcategory] = useState<string>(() => {
+    if (initialSubcategoryId && subcategories.some((s) => s.id === initialSubcategoryId)) {
+      return initialSubcategoryId;
+    }
+    return subcategories[0]?.id || '';
+  });
+
+  useEffect(() => {
+    if (initialSubcategoryId && subcategories.some((s) => s.id === initialSubcategoryId)) {
+      setActiveSubcategory(initialSubcategoryId);
+      return;
+    }
+    setActiveSubcategory(subcategories[0]?.id || '');
+  }, [initialSubcategoryId, subcategories]);
 
   const activeSub = subcategories.find((s) => s.id === activeSubcategory);
   const topics = activeSub?.topics || [];

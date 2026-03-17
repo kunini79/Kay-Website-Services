@@ -11,6 +11,7 @@ import Autoplay from 'embla-carousel-autoplay';
 interface ArticleViewProps {
   article: Article;
   onTopicClick: (topic: string) => void;
+  onBack: () => void;
   isSaved?: boolean;
   onToggleSave?: () => void;
   onEarnXP?: (amount: number, isPerfect?: boolean) => void;
@@ -19,6 +20,7 @@ interface ArticleViewProps {
 export const ArticleView: React.FC<ArticleViewProps> = ({
   article,
   onTopicClick,
+  onBack,
   isSaved = false,
   onToggleSave,
   onEarnXP,
@@ -58,7 +60,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
       
       {/* Back button */}
       <button
-        onClick={() => onTopicClick('back')}
+        onClick={onBack}
         style={{
             marginBottom: '16px',
             background: 'none',

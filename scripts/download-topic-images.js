@@ -35,6 +35,7 @@ const RETRIES = Math.max(1, Math.min(8, Number(args.retries || 4)));
 const BASE_BACKOFF_MS = Math.max(100, Number(args.backoff || 650));
 
 const NASA_API_KEY = process.env.NASA_API_KEY || process.env.NEXT_PUBLIC_NASA_API_KEY || 'DEMO_KEY';
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.NEXT_PUBLIC_PEXELS_API_KEY || '';
 
 const SPACE_TOPIC_KEYWORDS = [
   'space', 'astronomy', 'nasa', 'solar system', 'planet', 'earth', 'moon', 'sun', 'star',
@@ -138,9 +139,12 @@ const extractTopics = () => {
   return topics;
 };
 
-const fetchJson = async (url) => {
+const fetchJson = async (url, headers = {}) => {
   const response = await fetchWithRetry(url, {
-    headers: { 'User-Agent': 'Kay-Website-Services-Image-Downloader/1.0' },
+    headers: { 
+      'User-Agent': 'Kay-Website-Services-Image-Downloader/1.0',
+      ...headers
+    },
   });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} for ${url}`);
@@ -298,9 +302,145 @@ const fetchWikimediaCandidate = async (topic) => {
   return best;
 };
 
+const scorePexelsPhoto = (topic, photo) => {
+  const normalizedTopic = topic.toLowerCase();
+  const alt = String(photo.alt || '').toLowerCase();
+  const photographer = String(photo.photographer || '').toLowerCase();
+  
+  // Token matching score
+  const topicTokens = normalizedTopic.split(/\s+/).filter(t => t.length > 2);
+  let tokenMatches = 0;
+  for (const token of topicTokens) {
+    if (alt.includes(token)) tokenMatches += 3;
+    if (photographer.includes(token)) tokenMatches += 1;
+  }
+  
+  // Image quality score (resolution)
+  const pixels = (photo.width || 0) * (photo.height || 0);
+  const qualityScore = Math.min(pixels / 500_000, 20); // Cap at 20 points
+  
+  // Aspect ratio preference (landscape images work better)
+  const aspectRatio = (photo.width || 1) / (photo.height || 1);
+  const aspectScore = (aspectRatio >= 1.2 && aspectRatio <= 2.0) ? 5 : 0;
+  
+  // Minimum resolution requirement
+  if (photo.width < 1200 || photo.height < 800) {
+    return -100; // Reject low resolution
+  }
+  
+  // Avoid generic/poor matches
+  const avoidWords = ['abstract', 'texture', 'pattern', 'background', 'wallpaper'];
+  const penalty = avoidWords.some(word => alt.includes(word) && !normalizedTopic.includes(word)) ? -5 : 0;
+  
+  return tokenMatches + qualityScore + aspectScore + penalty;
+};
+
+const fetchPexelsCandidate = async (topic) => {
+  if (!PEXELS_API_KEY) {
+    console.warn('[Pexels] No API key provided');
+    return null;
+  }
+
+  try {
+    // Try different query variations for better results
+    const queries = [
+      topic,
+      topic.replace(/\b(the|a|an)\b/gi, '').trim(), // Remove articles
+      topic.split(' ').slice(0, 3).join(' '), // First 3 words
+    ].filter((q, i, arr) => q && arr.indexOf(q) === i); // Unique, non-empty
+
+    let allPhotos = [];
+    
+    // Fetch from multiple queries to get more options
+    for (const query of queries) {
+      try {
+        const data = await fetchJson(
+          `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=40&orientation=landscape`,
+          { 'Authorization': PEXELS_API_KEY }
+        );
+        
+        const photos = Array.isArray(data?.photos) ? data.photos : [];
+        allPhotos.push(...photos);
+        
+        if (allPhotos.length >= 50) break; // Got enough options
+        
+        if (query !== queries[queries.length - 1]) {
+          await sleep(200); // Small delay between queries
+        }
+      } catch (err) {
+        console.warn(`[Pexels] Query "${query}" failed: ${err.message}`);
+      }
+    }
+
+    if (allPhotos.length === 0) {
+      return null;
+    }
+
+    // Remove duplicates by photo ID
+    const uniquePhotos = Array.from(
+      new Map(allPhotos.map(p => [p.id, p])).values()
+    );
+
+    // Score and sort all photos
+    let best = null;
+    let bestScore = -Infinity;
+
+    for (const photo of uniquePhotos) {
+      if (!photo?.src?.original && !photo?.src?.large2x && !photo?.src?.large) continue;
+
+      const score = scorePexelsPhoto(topic, photo);
+      
+      if (score > bestScore) {
+        bestScore = score;
+        // Use highest quality available
+        const imageUrl = photo.src.original || photo.src.large2x || photo.src.large;
+        
+        best = {
+          score,
+          imageUrl,
+          title: photo.alt || topic,
+          source: 'Pexels',
+          pageUrl: photo.url || '',
+          license: 'Pexels License (Free to use)',
+          licenseUrl: 'https://www.pexels.com/license/',
+          author: photo.photographer || 'Pexels Contributor',
+          creditLine: `Photo by ${photo.photographer || 'Pexels'} on Pexels`,
+          resolution: `${photo.width}x${photo.height}`,
+        };
+      }
+    }
+
+    if (best) {
+      console.log(`[Pexels] Best match for "${topic}": ${best.title} (score: ${best.score.toFixed(1)}, ${best.resolution})`);
+    }
+
+    return best;
+  } catch (error) {
+    console.warn(`[Pexels] Lookup failed: ${error.message}`);
+    return null;
+  }
+};
+
 const getBestCandidate = async (topic) => {
+  // TEMPORARILY USING ONLY PEXELS - ALL OTHER SOURCES DISABLED
+  
+  // Try Pexels only
+  if (PEXELS_API_KEY) {
+    try {
+      const pexels = await fetchPexelsCandidate(topic);
+      if (pexels) return pexels;
+    } catch (error) {
+      console.warn(`[${topic}] Pexels lookup failed: ${error.message}`);
+    }
+  } else {
+    console.warn(`[${topic}] Pexels API key not provided - cannot fetch images`);
+  }
+
+  // ALL OTHER SOURCES TEMPORARILY DISABLED
+  /*
   const space = isSpaceTopic(topic);
 
+  // For space topics, try NASA first
   if (space) {
     try {
       const nasa = await fetchNasaCandidate(topic);
@@ -310,6 +450,7 @@ const getBestCandidate = async (topic) => {
     }
   }
 
+  // Try Wikimedia Commons
   try {
     const wiki = await fetchWikimediaCandidate(topic);
     if (wiki) return wiki;
@@ -317,6 +458,7 @@ const getBestCandidate = async (topic) => {
     console.warn(`[${topic}] Wikimedia lookup failed: ${error.message}`);
   }
 
+  // NASA fallback for non-space topics
   if (!space) {
     try {
       const nasaFallback = await fetchNasaCandidate(topic);
@@ -325,6 +467,7 @@ const getBestCandidate = async (topic) => {
       console.warn(`[${topic}] NASA fallback failed: ${error.message}`);
     }
   }
+  */
 
   return null;
 };
@@ -402,6 +545,7 @@ const main = async () => {
           extension: ext,
           updatedAt: new Date().toISOString(),
           nasaApiKeyUsed: best.source === 'NASA' ? (NASA_API_KEY === 'DEMO_KEY' ? 'DEMO_KEY' : 'CUSTOM_KEY') : undefined,
+          pexelsApiKeyUsed: best.source === 'Pexels' ? (PEXELS_API_KEY ? 'PROVIDED' : 'MISSING') : undefined,
         };
 
         results.push(entry);

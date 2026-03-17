@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CATEGORY_CONFIG, STATIC_TOPICS } from '../constants';
+import { CATEGORY_CONFIG, STATIC_TOPICS, SUBCATEGORIES_DATA } from '../constants';
 import { Category, ReadHistoryItem, TopicPreview } from '../types';
 import { ArrowRight, Clock } from 'lucide-react';
 
@@ -9,13 +9,186 @@ interface HomeViewProps {
   exploredCategories: Set<string>;
   onCategoryChange?: (category: Category) => void;
   readHistory?: ReadHistoryItem[];
-  onCategoryClick?: (category: Category) => void;
+  onCategoryClick?: (category: Category, subcategoryId?: string) => void;
 }
 
 type TopicOption = {
   label: string;
   query: string;
   meta?: string;
+};
+
+const CATEGORY_TOPIC_TO_SUBCATEGORY_ID: Partial<Record<Category, Record<string, string>>> = {
+  [Category.ANIMALS]: {
+    Mammals: 'mammals',
+    'The Big Five': 'kinds',
+    Birds: 'birds',
+    'Reptiles & Amphibians': 'reptiles',
+    'Ocean Giants': 'sea',
+    'Rainforest Critters': 'kinds',
+    'Baby Animals': 'how',
+    'Insects & Bugs': 'insects',
+    'Super Fast Animals': 'how',
+    'Endangered Animals': 'how',
+    'Animal Homes': 'how',
+    'Night Animals': 'how',
+  },
+  [Category.SCIENCE]: {
+    Plants: 'plants',
+    'The Human Body': 'body',
+    'The Solar System': 'space',
+    'Weather & Climate': 'earth',
+    'Rocks & Minerals': 'earth',
+    'Light & Sound': 'physics',
+    Electricity: 'physics',
+    'States of Matter': 'physics',
+    'Simple Experiments': 'experiments',
+    Ecosystems: 'earth',
+    Recycling: 'earth',
+    Microorganisms: 'chemistry',
+  },
+  [Category.HISTORY]: {
+    'Ancient Civilizations': 'ancient',
+    'African Kingdoms': 'africa',
+    'Early Humans': 'ancient',
+    Explorers: 'explorers',
+    Inventions: 'inventions',
+    'Nigerian History': 'nigeria',
+    Timelines: 'modern',
+    'Castles & Pyramids': 'ancient',
+  },
+  [Category.PEOPLE]: {
+    'African Heroes': 'african',
+    Inventors: 'scientists',
+    'World Leaders': 'leaders',
+    'Everyday Heroes': 'leaders',
+    'Famous Scientists': 'scientists',
+    'Artists & Musicians': 'artists',
+    Careers: 'scientists',
+    'Family & Traditions': 'african',
+  },
+  [Category.WORLD]: {
+    Continents: 'africa',
+    Africa: 'africa',
+    Nigeria: 'africa',
+    'Natural Wonders': 'oceans',
+    Oceans: 'oceans',
+    'Famous Cities': 'europe',
+    Maps: 'cultures',
+    'Deserts & Forests': 'africa',
+  },
+  [Category.ARTS]: {
+    'Drawing & Painting': 'visual',
+    Music: 'music',
+    Dance: 'dance',
+    'African Masks': 'crafts',
+    Sculpture: 'visual',
+    Storytelling: 'theatre',
+    Photography: 'visual',
+    'Fashion Design': 'crafts',
+    'Famous Artists': 'visual',
+  },
+  [Category.SPORTS]: {
+    'Football (Soccer)': 'football',
+    Basketball: 'team',
+    Athletics: 'individual',
+    Swimming: 'individual',
+    'Famous Athletes': 'olympics',
+    'The Olympics': 'olympics',
+    'Outdoor Adventure': 'games',
+    'Martial Arts': 'individual',
+  },
+  [Category.TECH]: {
+    'How Computers Work': 'computers',
+    'The Internet': 'internet',
+    'Coding Basics': 'coding',
+    Robotics: 'inventions',
+    'AI & Machine Learning': 'future',
+    'Video Games': 'coding',
+    'Space Technology': 'future',
+    'Future Tech': 'future',
+  },
+  [Category.READING]: {
+    Folktales: 'stories',
+    'African Proverbs': 'proverbs',
+    Poetry: 'writing',
+    'Creative Writing': 'writing',
+    'Myths & Legends': 'stories',
+    'Vocabulary Fun': 'writing',
+    'Great Books': 'authors',
+  },
+};
+
+const ROUTING_STOP_WORDS = new Set(['the', 'and', 'of', 'for', 'to', 'in', 'a', 'an']);
+
+const tokenizeForRouting = (value: string) =>
+  value
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length > 0 && !ROUTING_STOP_WORDS.has(token));
+
+const getSharedTokenCount = (sourceTokens: string[], targetTokens: string[]) => {
+  if (sourceTokens.length === 0 || targetTokens.length === 0) {
+    return 0;
+  }
+
+  const targetTokenSet = new Set(targetTokens);
+  return sourceTokens.reduce((count, token) => {
+    return targetTokenSet.has(token) ? count + 1 : count;
+  }, 0);
+};
+
+const inferSubcategoryId = (category: Category, topicTitle: string) => {
+  const subcategories = SUBCATEGORIES_DATA[category] || [];
+  if (subcategories.length === 0) {
+    return undefined;
+  }
+
+  const topicLower = topicTitle.toLowerCase();
+  const topicTokens = tokenizeForRouting(topicTitle);
+  let bestMatchId: string | undefined;
+  let bestScore = -1;
+
+  subcategories.forEach((subcategory) => {
+    let score = 0;
+    const subcategoryTitleLower = subcategory.title.toLowerCase();
+    const subcategoryDescriptionLower = subcategory.description.toLowerCase();
+    const subcategoryTitleTokens = tokenizeForRouting(subcategory.title);
+    const subcategoryDescriptionTokens = tokenizeForRouting(subcategory.description);
+
+    if (subcategoryTitleLower === topicLower) {
+      score += 20;
+    }
+
+    if (subcategoryTitleLower.includes(topicLower) || topicLower.includes(subcategoryTitleLower)) {
+      score += 12;
+    }
+
+    score += getSharedTokenCount(topicTokens, subcategoryTitleTokens) * 6;
+    score += getSharedTokenCount(topicTokens, subcategoryDescriptionTokens) * 2;
+
+    subcategory.topics.forEach((subcategoryTopic) => {
+      const subcategoryTopicLower = subcategoryTopic.toLowerCase();
+
+      if (subcategoryTopicLower === topicLower) {
+        score += 30;
+        return;
+      }
+
+      if (subcategoryTopicLower.includes(topicLower) || topicLower.includes(subcategoryTopicLower)) {
+        score += 10;
+      }
+
+      score += getSharedTokenCount(topicTokens, tokenizeForRouting(subcategoryTopic)) * 3;
+    });
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatchId = subcategory.id;
+    }
+  });
+
+  return bestMatchId || subcategories[0]?.id;
 };
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -225,14 +398,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
       { label: 'Edinburgh Castle', query: 'Edinburgh Castle' },
       { label: 'Alhambra', query: 'Alhambra' },
       { label: 'Lalibela Churches', query: 'Rock-Hewn Churches, Lalibela' },
-    ],
-    Mammals: [
-      { label: 'Big Cats', query: 'Big cat', meta: 'Lions, tigers, leopards' },
-      { label: 'Whales & Dolphins', query: 'Cetacea', meta: 'Ocean mammals' },
-      { label: 'Primates', query: 'Primate', meta: 'Monkeys and apes' },
-      { label: 'Marsupials', query: 'Marsupial', meta: 'Kangaroos and koalas' },
-      { label: 'Bats', query: 'Bat', meta: 'Flying mammals' },
-      { label: 'How Mammals Care for Babies', query: 'Parental care in mammals', meta: 'Family life' },
     ],
     Birds: [
       { label: 'Eagles', query: 'Eagle' },
@@ -482,6 +647,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
     ];
   }, [selectedTopic, selectedCategory]);
 
+  const handleTopicListClick = (topicTitle: string) => {
+    if (typeof onCategoryClick === 'function') {
+      const categoryTopicMap = CATEGORY_TOPIC_TO_SUBCATEGORY_ID[selectedCategory];
+      const subcategoryId = categoryTopicMap?.[topicTitle] || inferSubcategoryId(selectedCategory, topicTitle);
+      onCategoryClick(selectedCategory, subcategoryId);
+      return;
+    }
+
+    setSelectedTopic(topicTitle);
+  };
+
   const [dailyTopic, setDailyTopic] = useState<any>(null); // Use any to avoid strict type check on static topics structure for now or update type
 
   useEffect(() => {
@@ -724,7 +900,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     className={`tb-encarta-topic ${
                       selectedTopic === topic.title ? 'tb-encarta-topic--active' : ''
                     }`}
-                    onClick={() => setSelectedTopic(topic.title)}
+                    onClick={() => handleTopicListClick(topic.title)}
                     aria-label={`Show options for ${topic.title}`}
                   >
                     <span className="tb-encarta-topic-icon" role="img" aria-hidden="true">

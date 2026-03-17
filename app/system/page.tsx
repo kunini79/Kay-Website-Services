@@ -27,6 +27,7 @@ export default function SystemPage() {
   const [homeCategory, setHomeCategory] = useState<Category>(Category.ANIMALS);
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
 
   // -- Loading State --
   const [isLoading, setIsLoading] = useState(true);
@@ -422,6 +423,8 @@ export default function SystemPage() {
     setViewState(ViewState.HOME);
     setCurrentArticle(null);
     setSearchFilter('');
+    setSelectedCategory(null);
+    setSelectedSubcategoryId(null);
   }, []);
 
   const handleHomeCategoryChange = useCallback((cat: Category) => {
@@ -594,8 +597,9 @@ export default function SystemPage() {
                 exploredCategories={exploredCategories}
                 onCategoryChange={handleHomeCategoryChange}
                 readHistory={readHistory}
-                onCategoryClick={(category: Category) => {
+                onCategoryClick={(category: Category, subcategoryId?: string) => {
                   setSelectedCategory(category);
+                  setSelectedSubcategoryId(subcategoryId || null);
                   setViewState(ViewState.SUBCATEGORIES);
                 }}
               />
@@ -605,11 +609,13 @@ export default function SystemPage() {
               <SubcategoryView
                 category={selectedCategory}
                 subcategories={SUBCATEGORIES_DATA[selectedCategory] || []}
+                initialSubcategoryId={selectedSubcategoryId || undefined}
                 onTopicClick={(topic: string) => {
                   handleTopicSelect(topic);
                 }}
                 onBack={() => {
                   setSelectedCategory(null);
+                  setSelectedSubcategoryId(null);
                   setViewState(ViewState.HOME);
                 }}
               />
@@ -619,6 +625,7 @@ export default function SystemPage() {
               <ArticleView 
                   article={currentArticle} 
                   onTopicClick={handleTopicSelect}
+                  onBack={goHome}
                   isSaved={!!savedArticles.find(a => a.title === currentArticle.title)}
                   onToggleSave={() => toggleSaveFilter(currentArticle)}
                   onEarnXP={handleEarnXP}
