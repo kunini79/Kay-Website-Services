@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import BlogNewsletterSignup from "@/components/BlogNewsletterSignup";
 import Navigation from "@/components/Navigation";
-import { blogPosts } from "@/data/blogPosts";
+import { getPublishedBlogPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -10,8 +10,46 @@ export const metadata: Metadata = {
     "Articles from KayCorp on technology, digital habits, and how modern life interacts with screens and family wellbeing.",
 };
 
-export default function BlogPage() {
-  const featuredPost = blogPosts[0];
+export const dynamic = "force-dynamic";
+
+export default async function BlogPage() {
+  const posts = await getPublishedBlogPosts();
+  const featuredPost = posts[0];
+
+  if (!featuredPost) {
+    return (
+      <>
+        <main
+          className="min-h-screen bg-[#f6f1e8] px-4 py-[12vh] text-black md:px-[5vw] md:py-[14vh]"
+          style={{ colorScheme: "light" }}
+        >
+          <section className="max-w-4xl">
+            <p className="text-xs font-sans uppercase tracking-[0.3em] text-lime-700 md:text-sm">
+              KayCorp Journal
+            </p>
+            <h1 className="mt-4 text-[16vw] leading-[0.9] font-display font-semibold uppercase md:text-[7vw]">
+              No published posts yet.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base font-sans text-black/70 md:text-lg">
+              Your blog CMS is ready. Publish your first article and it will appear here automatically.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/admin/blog"
+                className="inline-flex items-center gap-3 rounded-full bg-black px-5 py-3 text-sm font-sans font-semibold uppercase tracking-[0.2em] text-white"
+              >
+                Open CMS
+                <span aria-hidden="true">-&gt;</span>
+              </Link>
+            </div>
+          </section>
+
+          <BlogNewsletterSignup />
+        </main>
+        <Navigation />
+      </>
+    );
+  }
 
   return (
     <>
@@ -94,6 +132,26 @@ export default function BlogPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="mt-12 rounded-[2rem] border border-black/10 bg-white p-6 md:p-8">
+          <div className="flex items-center justify-between gap-6">
+            <div>
+              <p className="text-xs font-sans uppercase tracking-[0.25em] text-black/45">
+                Live Blog
+              </p>
+              <p className="mt-3 text-sm font-sans leading-7 text-black/70 md:text-base">
+                New posts you publish from the CMS will appear here automatically.
+              </p>
+            </div>
+            <Link
+              href="/admin/blog"
+              className="inline-flex items-center gap-3 rounded-full bg-[#BBFD6A] px-5 py-3 text-sm font-sans font-semibold uppercase tracking-[0.2em] text-black"
+            >
+              Open CMS
+              <span aria-hidden="true">-&gt;</span>
+            </Link>
           </div>
         </section>
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import BlogNewsletterSignup from "@/components/BlogNewsletterSignup";
 import Navigation from "@/components/Navigation";
-import { blogPosts } from "@/data/blogPosts";
+import { getPublishedBlogPostBySlug } from "@/lib/blog";
 
 type BlogArticlePageProps = {
   params: Promise<{
@@ -11,17 +11,13 @@ type BlogArticlePageProps = {
   }>;
 };
 
-export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: BlogArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPosts.find((entry) => entry.slug === slug);
+  const post = await getPublishedBlogPostBySlug(slug);
 
   if (!post) {
     return {
@@ -39,7 +35,7 @@ export default async function BlogArticlePage({
   params,
 }: BlogArticlePageProps) {
   const { slug } = await params;
-  const post = blogPosts.find((entry) => entry.slug === slug);
+  const post = await getPublishedBlogPostBySlug(slug);
 
   if (!post) {
     notFound();

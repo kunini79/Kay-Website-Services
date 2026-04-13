@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
+import { getPublishedBlogPosts } from "@/lib/blog";
 
 const baseUrl = "https://kaycorp.tech";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  const blogPosts = await getPublishedBlogPosts();
 
   return [
     {
@@ -22,12 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/blog`,
       lastModified,
       changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/blog/new-screen-time-rules-for-under-5s`,
-      lastModified,
-      changeFrequency: "monthly",
       priority: 0.7,
     },
     {
@@ -54,5 +50,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    ...blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }
