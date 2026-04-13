@@ -93,6 +93,9 @@ function serializePublicPost(source: {
   };
 }
 
+type SerializablePublicPost = Parameters<typeof serializePublicPost>[0];
+type SerializableAdminPost = Parameters<typeof serializeAdminPost>[0];
+
 function serializeAdminPost(source: {
   _id?: unknown;
   title: string;
@@ -146,7 +149,7 @@ export function slugify(value: string): string {
 export async function seedDefaultBlogPosts() {
   const connection = await connectDB();
   const collectionName = BlogPostModel.collection.collectionName;
-  const database = connection.connection.db;
+  const database = connection?.connection?.db;
 
   if (!database) {
     throw new Error('Database connection is not ready');
@@ -181,7 +184,7 @@ export async function getPublishedBlogPosts(): Promise<PublicBlogPost[]> {
     await seedDefaultBlogPosts();
     const posts = await BlogPostModel.find({ status: 'published' })
       .sort({ featured: -1, publishedAt: -1, updatedAt: -1 })
-      .lean();
+      .lean<SerializablePublicPost[]>();
 
     return posts.map((post) => serializePublicPost(post));
   } catch (error) {
@@ -198,7 +201,7 @@ export async function getPublishedBlogPostBySlug(
     const post = await BlogPostModel.findOne({
       slug,
       status: 'published',
-    }).lean();
+    }).lean<SerializablePublicPost | null>();
 
     if (!post) return null;
     return serializePublicPost(post);
@@ -213,7 +216,7 @@ export async function getAdminBlogPosts(): Promise<AdminBlogPost[]> {
   await seedDefaultBlogPosts();
   const posts = await BlogPostModel.find({})
     .sort({ featured: -1, publishedAt: -1, updatedAt: -1 })
-    .lean();
+    .lean<SerializableAdminPost[]>();
 
   return posts.map((post) => serializeAdminPost(post));
 }
@@ -222,6 +225,6 @@ export async function getAdminBlogPostById(
   id: string
 ): Promise<AdminBlogPost | null> {
   await seedDefaultBlogPosts();
-  const post = await BlogPostModel.findById(id).lean();
+  const post = await BlogPostModel.findById(id).lean<SerializableAdminPost | null>();
   return post ? serializeAdminPost(post) : null;
 }
