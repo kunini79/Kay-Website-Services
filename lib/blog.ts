@@ -144,9 +144,15 @@ export function slugify(value: string): string {
 }
 
 export async function seedDefaultBlogPosts() {
-  await connectDB();
+  const connection = await connectDB();
   const collectionName = BlogPostModel.collection.collectionName;
-  const existingCollections = await BlogPostModel.db.db
+  const database = connection.connection.db;
+
+  if (!database) {
+    throw new Error('Database connection is not ready');
+  }
+
+  const existingCollections = await database
     .listCollections({ name: collectionName })
     .toArray();
 
