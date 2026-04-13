@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  return apiKey ? new Resend(apiKey) : null;
+}
 const adminEmail = process.env.ADMIN_EMAIL;
 
 export async function POST(request: NextRequest) {
   try {
+    const resend = getResendClient();
     const { feedback, email } = await request.json();
     if (!feedback || typeof feedback !== 'string' || feedback.length < 5) {
       return NextResponse.json({ message: 'Feedback is required.' }, { status: 400 });
     }
     // Send feedback to admin
-    if (adminEmail) {
+    if (adminEmail && resend) {
       await resend.emails.send({
         from: 'ThinkBox Feedback <noreply@thinkbox.kaycorp.com>',
         to: adminEmail,

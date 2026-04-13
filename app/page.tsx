@@ -9,6 +9,7 @@ import Process from "@/components/Process";
 import Work from "@/components/Work";
 import TrustedBy from "@/components/TrustedBy";
 import CaseStudies from "@/components/CaseStudies";
+import BlogSection from "@/components/BlogSection";
 import Engagements from "@/components/Engagements";
 import FaqSection from "@/components/FaqSection";
 import FinalCTA from "@/components/FinalCTA";
@@ -32,6 +33,7 @@ export default function Home() {
         <Work />
         <TrustedBy />
         <CaseStudies />
+        <BlogSection />
         <Engagements />
         <FaqSection />
         <FinalCTA />

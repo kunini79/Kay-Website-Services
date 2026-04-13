@@ -33,6 +33,7 @@ export default function Navigation() {
                             {[
                                 { name: "Home", href: "/" },
                                 { name: "Services", href: "/#services" },
+                                { name: "Blog", href: "/#blog" },
                                 { name: "ThinkBox", href: "/thinkbox" },
                                 { name: "Process", href: "/#process" },
                                 { name: "Work", href: "/#work" },

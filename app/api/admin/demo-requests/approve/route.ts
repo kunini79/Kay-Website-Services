@@ -8,7 +8,10 @@ import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import { createRequestLogger, withRequestId, ValidationError } from '@/lib/logger';
 import crypto from 'crypto';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  return apiKey ? new Resend(apiKey) : null;
+}
 
 /**
  * Sanitize HTML special chars to prevent injection in email templates.
@@ -26,6 +29,7 @@ function sanitizeHtml(input: string): string {
 
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST /api/admin/demo-requests/approve', request);
+  const resend = getResendClient();
   const clientIp = getClientIp(request);
 
   // Rate limit: 20 approve/reject actions per 15 minutes per IP
@@ -108,6 +112,7 @@ export async function POST(request: NextRequest) {
 
       // Send email with one-time setup link (never expose password or hash)
       try {
+        if (resend) {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
         const setupLink = demoUser.setupToken
           ? `${appUrl}/products/thinkbox?setup=${demoUser.setupToken}`
@@ -148,6 +153,7 @@ export async function POST(request: NextRequest) {
             </div>
           `,
         });
+        }
       } catch (emailError) {
         log.error('failed to send approval email', emailError, { demoRequestId });
       }
@@ -185,6 +191,7 @@ export async function POST(request: NextRequest) {
 
       // Send rejection email
       try {
+        if (resend) {
         // Sanitize user-controlled fields for HTML email
         const safeName = sanitizeHtml(demoRequest.name);
         const safeReason = reason ? sanitizeHtml(reason.trim()) : null;
@@ -235,6 +242,7 @@ export async function POST(request: NextRequest) {
             </div>
           `,
         });
+        }
       } catch (emailError) {
         log.error('failed to send rejection email', emailError, { demoRequestId });
       }

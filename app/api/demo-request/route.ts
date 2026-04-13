@@ -5,7 +5,10 @@ import { Resend } from 'resend';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import { createRequestLogger, withRequestId } from '@/lib/logger';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  return apiKey ? new Resend(apiKey) : null;
+}
 
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST /api/demo-request', request);
@@ -29,6 +32,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const resend = getResendClient();
     const body = await request.json();
     const { name, email, company, phone, role, useCase, message } = body;
 
@@ -78,7 +82,8 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email to user
     try {
-      await resend.emails.send({
+      if (resend) {
+        await resend.emails.send({
         from: 'ThinkBox <noreply@kaycorp.tech>',
         to: email,
         subject: "We've received your ThinkBox beta request!",
@@ -134,7 +139,8 @@ export async function POST(request: NextRequest) {
             </table>
           </div>
         `,
-      });
+        });
+      }
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
       // Don't fail the entire request if email fails
@@ -142,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Send notification email to admin
     const adminEmail = process.env.ADMIN_EMAIL;
-    if (adminEmail) {
+    if (adminEmail && resend) {
       try {
         await resend.emails.send({
           from: 'ThinkBox Admin <noreply@kaycorp.tech>',

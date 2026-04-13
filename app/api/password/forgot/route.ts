@@ -4,7 +4,10 @@ import { connectDB } from '@/lib/db';
 import { Resend } from 'resend';
 import crypto from 'crypto';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  return apiKey ? new Resend(apiKey) : null;
+}
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 function buildResetEmail(token: string) {
@@ -25,6 +28,7 @@ function buildResetEmail(token: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const resend = getResendClient();
     await connectDB();
     const { email } = await req.json();
 
@@ -46,12 +50,14 @@ export async function POST(req: NextRequest) {
     await user.save();
 
     try {
-      await resend.emails.send({
+      if (resend) {
+        await resend.emails.send({
         from: 'ThinkBox Password Reset <noreply@kaycorp.tech>',
         to: user.email,
         subject: 'ThinkBox Password Reset',
         html: buildResetEmail(resetToken),
-      });
+        });
+      }
     } catch (emailError) {
       console.error('Email sending error:', emailError);
       user.passwordResetToken = undefined;
