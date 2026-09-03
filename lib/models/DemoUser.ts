@@ -2,10 +2,13 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcryptjs from 'bcryptjs';
 
 export interface IDemoUser extends Document {
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
   name: string;
   company: string;
+  school?: mongoose.Types.ObjectId;
+  studentId?: string;
+  pin?: string;
   createdAt: Date;
   approvedAt: Date;
   lastLoginAt?: Date;
@@ -13,20 +16,20 @@ export interface IDemoUser extends Document {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
+  comparePin(candidatePin: string): Promise<boolean>;
 }
 
 const demoUserSchema = new Schema(
   {
     email: {
       type: String,
-      required: [true, 'Email is required'],
       unique: true,
+      sparse: true,
       match: [/^\S+@\S+\.\S+$/, 'Invalid email format'],
       lowercase: true,
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
       minlength: 6,
       select: false, // Don't return password by default
     },
@@ -48,6 +51,19 @@ const demoUserSchema = new Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    school: {
+      type: Schema.Types.ObjectId,
+      ref: 'School',
+    },
+    studentId: {
+      type: String,
+      trim: true,
+      uppercase: true,
+    },
+    pin: {
+      type: String,
+      select: false,
     },
     setupToken: {
       type: String,
@@ -71,15 +87,21 @@ const demoUserSchema = new Schema(
   { timestamps: true }
 );
 
+demoUserSchema.index({ school: 1, studentId: 1 }, { unique: true, sparse: true });
+
 // Hash password before saving
 demoUserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-
   try {
-    const salt = await bcryptjs.genSalt(10);
-    this.password = await bcryptjs.hash(this.password, salt);
+    if (this.isModified('password') && this.password) {
+      const salt = await bcryptjs.genSalt(10);
+      this.password = await bcryptjs.hash(this.password, salt);
+    }
+
+    if (this.isModified('pin') && this.pin) {
+      const salt = await bcryptjs.genSalt(10);
+      this.pin = await bcryptjs.hash(this.pin, salt);
+    }
+
     next();
   } catch (error) {
     next(error as Error);
@@ -90,7 +112,15 @@ demoUserSchema.pre('save', async function (next) {
 demoUserSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
+  if (!this.password) return false;
   return await bcryptjs.compare(candidatePassword, this.password);
+};
+
+demoUserSchema.methods.comparePin = async function (
+  candidatePin: string
+): Promise<boolean> {
+  if (!this.pin) return false;
+  return await bcryptjs.compare(candidatePin, this.pin);
 };
 
 export const DemoUser =

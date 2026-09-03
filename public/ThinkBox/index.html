@@ -1283,7 +1283,7 @@
           <a href="#faq">FAQ</a>
         </nav>
 
-        <a class="button button-primary" href="/products/thinkbox#demo-form">Get Access</a>
+        <a class="button button-primary" href="/products/thinkbox#demo-form" data-app-path="/products/thinkbox#demo-form">Get Access</a>
       </div>
     </header>
 
@@ -1335,8 +1335,8 @@
                 </div>
 
                 <div class="hero-actions">
-                  <a class="button button-primary" href="/products/thinkbox#demo-form">Start the adventure</a>
-                  <a class="button button-secondary" href="/products/thinkbox?tab=login#demo-form">Already have login details?</a>
+                  <a class="button button-primary" href="/products/thinkbox#demo-form" data-app-path="/products/thinkbox#demo-form">Start the adventure</a>
+                  <a class="button button-secondary" href="/products/thinkbox?tab=login#demo-form" data-app-path="/products/thinkbox?tab=login#demo-form">Already have login details?</a>
                 </div>
               </div>
 
@@ -1581,8 +1581,8 @@
                   have already received.
                 </p>
                 <div class="cta-actions">
-                  <a class="button button-secondary" href="/products/thinkbox#demo-form">Request beta access</a>
-                  <a class="button button-login" href="/products/thinkbox?tab=login#demo-form">Sign in to ThinkBox</a>
+                  <a class="button button-secondary" href="/products/thinkbox#demo-form" data-app-path="/products/thinkbox#demo-form">Request beta access</a>
+                  <a class="button button-login" href="/products/thinkbox?tab=login#demo-form" data-app-path="/products/thinkbox?tab=login#demo-form">Sign in to ThinkBox</a>
                 </div>
                 <div class="cta-points">
                   <div class="cta-point">Request review is typically completed within 24 hours.</div>
@@ -1728,7 +1728,7 @@
           <div class="footer-links" aria-label="Footer">
             <a href="#how">How it works</a>
             <a href="#worlds">Explore worlds</a>
-            <a href="/products/thinkbox#demo-form">Get access</a>
+            <a href="/products/thinkbox#demo-form" data-app-path="/products/thinkbox#demo-form">Get access</a>
           </div>
           <div>&copy; <span id="year"></span> ThinkBox. All rights reserved.</div>
         </div>
@@ -1737,6 +1737,14 @@
   </div>
 
   <script>
+    const localAppOrigin = "http://localhost:3000";
+
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-app-path]").forEach((link) => {
+        link.href = localAppOrigin + link.dataset.appPath;
+      });
+    }
+
     const revealItems = document.querySelectorAll(".reveal");
 
     if ("IntersectionObserver" in window) {

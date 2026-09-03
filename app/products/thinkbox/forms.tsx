@@ -73,7 +73,7 @@ export default function ThinkBoxForm({ defaultTab = 'request' }: ThinkBoxFormPro
             Welcome back! 👋
           </h3>
           <p style={{ fontSize: 14, color: '#777', marginBottom: 24, lineHeight: 1.6 }}>
-            Enter the credentials we sent to your email to access ThinkBox.
+            Sign in with your email and password, or choose your school and use your User ID and PIN.
           </p>
           <LoginForm />
         </div>

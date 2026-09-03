@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import { DemoUser } from '@/lib/models/DemoUser';
+import { School } from '@/lib/models/School';
 import { createToken } from '@/lib/auth';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import { createRequestLogger, withRequestId } from '@/lib/logger';
@@ -28,25 +30,46 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { email, password } = body;
-
-    // Validate required fields
-    if (!email || !password) {
-      return NextResponse.json(
-        { message: 'Email and password are required' },
-        { status: 400 }
-      );
-    }
-
-    // Connect to database
     await connectDB();
 
-    // Find user and select password (normalise email to lowercase so it matches stored value)
-    const user = await DemoUser.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    const isSchoolLogin = body.loginMethod === 'school';
+    let user;
+    let isCredentialValid = false;
+    const invalidCredentialsMessage = isSchoolLogin
+      ? 'Invalid school, User ID, or PIN'
+      : 'Invalid email or password';
+
+    if (isSchoolLogin) {
+      const schoolId = typeof body.schoolId === 'string' ? body.schoolId : '';
+      const studentId = typeof body.studentId === 'string' ? body.studentId.trim().toUpperCase() : '';
+      const pin = typeof body.pin === 'string' ? body.pin : '';
+
+      if (!mongoose.isValidObjectId(schoolId) || !/^[A-Z0-9-]{2,40}$/.test(studentId) || !/^\d{4,8}$/.test(pin)) {
+        return NextResponse.json({ message: 'Enter your school, User ID, and 4 to 8 digit PIN.' }, { status: 400 });
+      }
+
+      const school = await School.exists({ _id: schoolId, isActive: true });
+      if (!school) {
+        return NextResponse.json({ message: invalidCredentialsMessage }, { status: 401 });
+      }
+
+      user = await DemoUser.findOne({ school: schoolId, studentId }).select('+pin');
+      if (user) isCredentialValid = await user.comparePin(pin);
+    } else {
+      const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+      const password = typeof body.password === 'string' ? body.password : '';
+
+      if (!email || !password) {
+        return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
+      }
+
+      user = await DemoUser.findOne({ email }).select('+password');
+      if (user) isCredentialValid = await user.comparePassword(password);
+    }
 
     if (!user) {
       return NextResponse.json(
-        { message: 'Invalid email or password' },
+        { message: invalidCredentialsMessage },
         { status: 401 }
       );
     }
@@ -59,12 +82,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Compare passwords
-    const isPasswordValid = await user.comparePassword(password);
-
-    if (!isPasswordValid) {
+    if (!isCredentialValid) {
       return NextResponse.json(
-        { message: 'Invalid email or password' },
+        { message: invalidCredentialsMessage },
         { status: 401 }
       );
     }
@@ -76,7 +96,7 @@ export async function POST(request: NextRequest) {
     // Create JWT token via shared auth module (fails hard if JWT_SECRET is missing)
     const token = createToken(
       user._id.toString(),
-      user.email,
+      user.email || '',
       user.name
     );
 
@@ -89,6 +109,7 @@ export async function POST(request: NextRequest) {
           email: user.email,
           name: user.name,
           company: user.company,
+          schoolId: user.school?.toString(),
         },
       },
       { status: 200 }
