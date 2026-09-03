@@ -318,6 +318,10 @@
       box-shadow: 0 12px 26px rgba(25, 50, 60, 0.05);
     }
 
+    .waitlist-form .hero-check {
+      color: var(--ink);
+    }
+
     .hero-check-dot {
       width: 18px;
       height: 18px;
@@ -979,7 +983,26 @@
 
     .faq-card {
       margin-top: 1rem;
-      padding: 1.3rem;
+      padding: clamp(1.3rem, 4vw, 2rem);
+      background:
+        radial-gradient(circle at 100% 0, rgba(255, 217, 77, 0.2), transparent 29%),
+        #fff;
+    }
+
+    .faq-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .faq-heading p {
+      max-width: 38ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      font-weight: 700;
+      line-height: 1.6;
     }
 
     .faq-item {
@@ -987,9 +1010,10 @@
       border-radius: 22px;
       background: #fafff6;
       overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .faq-item button {
+    .faq-item summary {
       width: 100%;
       padding: 1rem 1.05rem;
       border: 0;
@@ -1001,13 +1025,62 @@
       gap: 1rem;
       text-align: left;
       cursor: pointer;
+      list-style: none;
     }
 
-    .faq-item button strong {
-      font-size: 1.7rem;
-      line-height: 1;
-      color: var(--green);
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .faq-question::before {
+      content: "?";
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: #e4f8d3;
+      color: var(--green-deep);
+      font-size: 1rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .faq-toggle {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(88, 204, 2, 0.28);
+      border-radius: 50%;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .faq-toggle::before,
+    .faq-toggle::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 12px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--green-deep);
       transition: transform 0.2s ease;
+    }
+
+    .faq-toggle::before {
+      transform: translate(-50%, -50%);
+    }
+
+    .faq-toggle::after {
+      transform: translate(-50%, -50%) rotate(90deg);
     }
 
     .faq-panel {
@@ -1023,8 +1096,23 @@
       line-height: 1.7;
     }
 
-    .faq-item[open] button strong {
-      transform: rotate(45deg);
+    .faq-item[open] {
+      border-color: rgba(88, 204, 2, 0.45);
+      box-shadow: 0 8px 18px rgba(43, 127, 6, 0.08);
+    }
+
+    .faq-item[open] .faq-panel {
+      max-height: 14rem;
+    }
+
+    .faq-item[open] .faq-toggle::after {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    .faq-item summary:focus-visible {
+      outline: 3px solid rgba(88, 204, 2, 0.45);
+      outline-offset: -3px;
+      border-radius: 20px;
     }
 
     .footer-card {
@@ -1092,6 +1180,11 @@
       }
 
       .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .faq-heading {
         align-items: start;
         flex-direction: column;
       }
@@ -1577,15 +1670,19 @@
           </div>
 
           <div class="faq-card reveal" id="faq">
-            <span class="eyebrow">FAQ</span>
-            <h2>Quick answers for families, teachers, and early supporters.</h2>
+            <div class="faq-heading">
+              <div>
+                <span class="eyebrow">FAQ</span>
+                <h2>Answers before the adventure begins.</h2>
+              </div>
+              <p>Everything families, teachers, and early supporters need to know about getting started.</p>
+            </div>
             <div class="faq-list">
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>How do I get access to ThinkBox?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">How do I get access to ThinkBox?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     Use the access page at <strong>/products/thinkbox</strong> to request beta access.
@@ -1595,11 +1692,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>What ages is ThinkBox designed for?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">What ages is ThinkBox designed for?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     ThinkBox is being shaped for curious kids who enjoy guided discovery, especially in
@@ -1610,11 +1706,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>Do I need separate pages for sign up and sign in?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">Do I need separate pages for sign up and sign in?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     No. ThinkBox uses one unified access page. New users request access there, and existing
@@ -1624,11 +1719,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>Can ThinkBox be used offline?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">Can ThinkBox be used offline?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     Yes. Offline-friendly use is part of the value story here, helping kids stay focused
@@ -1638,11 +1732,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>Is ThinkBox meant for home use or school use?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">Is ThinkBox meant for home use or school use?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     Both. The structure supports family learning at home while also making room for
@@ -1652,11 +1745,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>How long does approval usually take?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">How long does approval usually take?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     The current ThinkBox flow says requests are usually reviewed within 24 hours, after
@@ -1666,11 +1758,10 @@
               </details>
 
               <details class="faq-item">
-                <summary hidden></summary>
-                <button type="button">
-                  <span>What can kids explore inside ThinkBox?</span>
-                  <strong>+</strong>
-                </button>
+                <summary>
+                  <span class="faq-question">What can kids explore inside ThinkBox?</span>
+                  <span class="faq-toggle" aria-hidden="true"></span>
+                </summary>
                 <div class="faq-panel">
                   <p>
                     ThinkBox is positioned around broad discovery topics like science, nature, history,
@@ -1722,22 +1813,6 @@
     } else {
       revealItems.forEach((item) => item.classList.add("is-visible"));
     }
-
-    document.querySelectorAll(".faq-item").forEach((item) => {
-      const button = item.querySelector("button");
-      const panel = item.querySelector(".faq-panel");
-
-      const setState = () => {
-        panel.style.maxHeight = item.open ? panel.scrollHeight + "px" : "0px";
-      };
-
-      button.addEventListener("click", () => {
-        item.open = !item.open;
-        setState();
-      });
-
-      setState();
-    });
 
     const form = document.getElementById("waitlist-form");
     const status = document.getElementById("form-status");
