@@ -484,8 +484,7 @@
     .track-node,
     .progress-badge,
     .step-dot,
-    .lane-icon,
-    .trust-icon {
+    .lane-icon {
       display: grid;
       place-items: center;
       font-weight: 900;
@@ -739,11 +738,10 @@
       width: 68px;
       height: 68px;
       border-radius: 22px;
-      font-size: 1rem;
+      font-size: 2rem;
+      line-height: 1;
       margin-bottom: 1rem;
       box-shadow: 0 10px 0 rgba(25, 50, 60, 0.08);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
     }
 
     .lane-green {
@@ -788,18 +786,6 @@
 
     .trust-card {
       padding: 1.35rem;
-    }
-
-    .trust-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #f0ffe3 0%, #dbf8c0 100%);
-      margin-bottom: 0.95rem;
-      font-size: 1rem;
-      box-shadow: 0 10px 0 rgba(88, 204, 2, 0.18);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
     }
 
     .cta-wrap {
@@ -866,6 +852,18 @@
 
     .cta-actions .button {
       min-width: 210px;
+    }
+
+    .cta-actions .button-login {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 0 rgba(43, 127, 6, 0.42);
+    }
+
+    .cta-actions .button-login:hover,
+    .cta-actions .button-login:focus-visible {
+      background: rgba(255, 255, 255, 0.24);
     }
 
     .cta-points {
@@ -1485,7 +1483,7 @@
 
           <div class="path-grid">
             <article class="path-card reveal">
-              <div class="lane-icon lane-green" aria-hidden="true">SP</div>
+              <div class="lane-icon lane-green" aria-hidden="true">🚀</div>
               <h3>Science and space</h3>
               <p>
                 Big ideas become kid-sized adventures with lessons on planets, inventions, experiments,
@@ -1499,7 +1497,7 @@
             </article>
 
             <article class="path-card reveal">
-              <div class="lane-icon lane-yellow" aria-hidden="true">NA</div>
+              <div class="lane-icon lane-yellow" aria-hidden="true">🦋</div>
               <h3>Nature and animals</h3>
               <p>
                 Explore habitats, ecosystems, food chains, wild creatures, and surprising natural facts
@@ -1513,7 +1511,7 @@
             </article>
 
             <article class="path-card reveal">
-              <div class="lane-icon lane-blue" aria-hidden="true">HI</div>
+              <div class="lane-icon lane-blue" aria-hidden="true">🏛️</div>
               <h3>History and culture</h3>
               <p>
                 Timelines, people, places, inventions, and world stories become guided journeys that
@@ -1544,7 +1542,6 @@
 
           <div class="trust-grid">
             <article class="trust-card reveal">
-              <div class="trust-icon" aria-hidden="true">KIDS</div>
               <h3>For kids</h3>
               <p>
                 Friendly visuals, lovable characters, and quick wins make it easy to keep exploring
@@ -1553,7 +1550,6 @@
             </article>
 
             <article class="trust-card reveal">
-              <div class="trust-icon" aria-hidden="true">HOME</div>
               <h3>For parents</h3>
               <p>
                 Clear pathways, focused sessions, and offline-friendly use help families feel good about
@@ -1562,7 +1558,6 @@
             </article>
 
             <article class="trust-card reveal">
-              <div class="trust-icon" aria-hidden="true">CLASS</div>
               <h3>For schools</h3>
               <p>
                 The same playful format can support classroom enrichment, early finishers, guided
@@ -1587,7 +1582,7 @@
                 </p>
                 <div class="cta-actions">
                   <a class="button button-secondary" href="/products/thinkbox#demo-form">Request beta access</a>
-                  <a class="button" href="/products/thinkbox?tab=login#demo-form">Sign in to ThinkBox</a>
+                  <a class="button button-login" href="/products/thinkbox?tab=login#demo-form">Sign in to ThinkBox</a>
                 </div>
                 <div class="cta-points">
                   <div class="cta-point">Request review is typically completed within 24 hours.</div>
