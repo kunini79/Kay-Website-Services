@@ -13,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json({
       schools: schools.map((school) => ({
-        id: school._id.toString(),
+        id: String(school._id),
         name: school.name,
       })),
     });
