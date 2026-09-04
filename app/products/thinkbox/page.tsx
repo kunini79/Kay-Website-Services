@@ -53,10 +53,10 @@ export default function ThinkBoxProductPage() {
   ];
 
   const steps = [
-    { n: '1', title: 'Request Demo', desc: 'Fill in the short form below with your details and how you plan to use ThinkBox.' },
-    { n: '2', title: 'We Review', desc: 'Our team reviews your request and sets up your account — usually within 24 hours.' },
-    { n: '3', title: 'Get Credentials', desc: "You'll receive a welcome email with your login details and a getting-started guide." },
-    { n: '4', title: 'Start Exploring', desc: 'Sign in and browse our offline knowledge library across 9 topic categories — no internet needed.' },
+    { n: '1', title: 'Choose a plan', desc: 'Select the ThinkBox licence that fits your school, campuses, and hardware needs.' },
+    { n: '2', title: 'Start your trial', desc: 'Tell us about your school and begin a one-month trial with no payment taken today.' },
+    { n: '3', title: 'Set up together', desc: 'We confirm your rollout, training, and the right local setup for your campus.' },
+    { n: '4', title: 'Sign in and explore', desc: 'Your teachers and learners use their issued credentials to access ThinkBox.' },
   ];
 
   return (
@@ -108,7 +108,7 @@ export default function ThinkBoxProductPage() {
       <section style={{ background: 'linear-gradient(160deg, #ECFDF5 0%, #F0FDF4 40%, #EFF6FF 100%)', padding: '80px 24px 64px' }}>
         <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
           <span style={{ display: 'inline-block', backgroundColor: '#DCFCE7', border: '2px solid #86efac', color: '#15803d', fontWeight: 800, fontSize: 13, padding: '4px 16px', borderRadius: 9999, marginBottom: 24, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            V1 Beta — Open for Testers
+            School plans with a 1-month trial
           </span>
 
           <h1 style={{ fontFamily: "Fredoka, Nunito, 'Trebuchet MS', sans-serif", fontSize: 'clamp(2.6rem, 6vw, 4.2rem)', fontWeight: 700, color: '#1a1a1a', lineHeight: 1.1, marginBottom: 20 }}>
@@ -123,10 +123,10 @@ export default function ThinkBoxProductPage() {
           {/* CTAs */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginBottom: 32 }}>
             <a
-              href="#demo-form"
+              href="#plans"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#58CC02', color: '#fff', fontWeight: 800, fontSize: 16, padding: '14px 32px', borderRadius: 9999, boxShadow: '0 4px 0 #46A302', textDecoration: 'none' }}
             >
-              Request Demo Access
+              Explore school plans
             </a>
             <a
               href="/products/thinkbox?tab=login#demo-form"
@@ -146,7 +146,7 @@ export default function ThinkBoxProductPage() {
 
           {/* Trust line */}
           <p style={{ color: '#999', fontSize: 13, fontWeight: 600 }}>
-            Free beta &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; Approved within 24 hrs
+            One-month trial &nbsp;&middot;&nbsp; School licensing &nbsp;&middot;&nbsp; Existing users can sign in
           </p>
         </div>
       </section>
@@ -191,27 +191,27 @@ export default function ThinkBoxProductPage() {
         </div>
       </section>
 
-      {/* Demo Form */}
-      <section id="demo-form" style={{ padding: '72px 24px 96px', backgroundColor: '#fff' }}>
+      {/* Plans */}
+      <section id="plans" style={{ padding: '72px 24px 96px', backgroundColor: '#fff' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <span style={{ display: 'inline-block', backgroundColor: '#DCFCE7', border: '2px solid #86efac', color: '#15803d', fontWeight: 800, fontSize: 12, padding: '4px 14px', borderRadius: 9999, marginBottom: 16, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              Beta Sign Up
+              ThinkBox for schools
             </span>
             <h2 style={{ fontFamily: "Fredoka, Nunito, sans-serif", fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
-              Become a ThinkBox Beta Tester
+              Choose the right plan for your campus
             </h2>
             <p style={{ fontSize: 15, color: '#777', maxWidth: 460, margin: '0 auto', lineHeight: 1.65 }}>
-              We&apos;re looking for early testers to try ThinkBox V1. Fill in your details and we&apos;ll
-              email your login credentials within 24 hours so you can start exploring.
+              Begin with a one-month ThinkBox trial. Select a school plan, share your requirements,
+              and our team will confirm the right local rollout with you.
             </p>
           </div>
 
           {/* Form card */}
           <div style={{ backgroundColor: '#F7F7F7', border: '2px solid #E5E5E5', borderRadius: 24, padding: '36px 32px', boxShadow: '0 6px 0 #D9D9D9' }}>
             <Suspense fallback={<div style={{ textAlign: 'center', color: '#777', padding: 40 }}>Loading…</div>}>
-              <ThinkBoxForm defaultTab="request" />
+              <ThinkBoxForm defaultTab="plans" />
             </Suspense>
           </div>
         </div>
@@ -225,8 +225,8 @@ export default function ThinkBoxProductPage() {
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {[
-              { q: 'How long does approval take?', a: 'We typically approve requests within 24 hours and send your login credentials by email.' },
-              { q: 'Is beta access free?', a: 'Yes — completely free. No payment details or credit card required.' },
+              { q: 'How does the one-month trial work?', a: 'Choose a plan and send us your school details. We will confirm the trial setup and rollout steps with you. No payment is taken when you submit the enquiry.' },
+              { q: 'What happens after the trial?', a: 'At the end of the trial, you can continue on the plan that best fits your school. Annual and termly options are available for eligible plans.' },
               { q: 'Does ThinkBox need an internet connection?', a: 'No. ThinkBox V1 is fully offline. All content is stored locally so it works anywhere, even without Wi-Fi.' },
               { q: 'What age group is ThinkBox designed for?', a: 'ThinkBox is built for learners aged 6 to 14, covering topics in a way that is engaging, safe, and easy to understand.' },
               { q: 'Can my whole class or team join?', a: 'Currently each account is individual. Reach out to us if you need classroom or group access.' },

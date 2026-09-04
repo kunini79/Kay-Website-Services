@@ -2,8 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const tractionItems = [
-  { label: 'Product stage', value: 'V1 beta running in live pilots' },
-  { label: 'Demo testers', value: '20 approved beta testers' },
+  { label: 'Product stage', value: 'School plans now available' },
+  { label: 'Trial model', value: 'One-month school trial' },
   { label: 'Pilot students', value: '40+ students actively accessing ThinkBox' },
   { label: 'Pilot school', value: 'American University of Nigeria Schools' },
 ];
@@ -32,7 +32,7 @@ const solutionPillars = [
 const gtMChannels = [
   {
     title: 'Families first',
-    detail: 'Parent-facing beta onboarding through the public ThinkBox product funnel.',
+    detail: 'School-led onboarding through a plan and one-month trial flow.',
   },
   {
     title: 'School pilots',
@@ -47,8 +47,8 @@ const gtMChannels = [
 const roadmap = [
   {
     quarter: 'Now',
-    title: 'Beta access funnel',
-    detail: 'Live request, approval, login, and dashboard flow with real user onboarding.',
+    title: 'School plan rollout',
+    detail: 'Live plan enquiry, one-month trial, credential sign-in, and school onboarding flow.',
   },
   {
     quarter: 'Next',
@@ -150,7 +150,7 @@ export default function ThinkBoxPitchDeckPage() {
                 boxShadow: '0 3px 0 #46A302',
               }}
             >
-              Request Demo
+              Explore school plans
             </Link>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function ThinkBoxPitchDeckPage() {
                   Building the offline learning platform for curious kids.
                 </h1>
                 <p style={{ margin: 0, color: '#d1d5db', fontSize: 16, lineHeight: 1.7, maxWidth: 620 }}>
-                  ThinkBox turns passive screen time into structured, safe, and self-driven discovery for learners aged 6-14, with 20 demo testers and an active 40+ student pilot at American University of Nigeria Schools.
+                  ThinkBox turns passive screen time into structured, safe, and self-driven discovery for learners aged 6-14, with an active 40+ student pilot at American University of Nigeria Schools and school plans now available.
                 </p>
               </div>
 
@@ -329,7 +329,7 @@ export default function ThinkBoxPitchDeckPage() {
                 </h3>
                 <div style={{ display: 'grid', gap: 10 }}>
                   <div style={{ borderRadius: 12, border: '1px solid #93c5fd', backgroundColor: '#fff', padding: '10px 12px', color: '#1e3a8a' }}>
-                    Beta now includes 20 demo testers and a 40+ student school pilot, validating engagement and retention loops with real learners.
+                    Live school use includes a 40+ student pilot, validating engagement and retention loops with real learners.
                   </div>
                   <div style={{ borderRadius: 12, border: '1px solid #93c5fd', backgroundColor: '#fff', padding: '10px 12px', color: '#1e3a8a' }}>
                     Phase 1: subscription for families with bundled premium packs.
@@ -355,7 +355,7 @@ export default function ThinkBoxPitchDeckPage() {
               Slide 04 - Roadmap and Ask
             </p>
             <h2 style={{ margin: '0 0 18px', fontFamily: "Fredoka, Nunito, sans-serif", fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', color: '#111827' }}>
-              Focused milestones to scale from beta traction to repeatable growth.
+              Focused milestones to scale school adoption and repeatable growth.
             </h2>
             <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: 20 }}>
               {roadmap.map((item) => (
@@ -383,7 +383,7 @@ export default function ThinkBoxPitchDeckPage() {
                 Current ask
               </h3>
               <p style={{ margin: 0, color: '#166534', lineHeight: 1.65 }}>
-                Strategic support for pilot distribution, content expansion, and early GTM execution to move ThinkBox from beta to broad adoption.
+                Strategic support for school distribution, content expansion, and early GTM execution to move ThinkBox from initial adoption to broad rollout.
               </p>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 <Link
@@ -414,7 +414,7 @@ export default function ThinkBoxPitchDeckPage() {
                     padding: '8px 16px',
                   }}
                 >
-                  Open Live Demo Funnel
+                  Explore school plans
                 </Link>
               </div>
             </div>

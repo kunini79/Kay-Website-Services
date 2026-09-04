@@ -236,9 +236,9 @@ export default function LoginForm() {
 
       <p className="text-xs text-[#aaa] text-center font-medium">
         {loginMethod === 'school' ? 'Ask your teacher or school administrator for your User ID and PIN.' : <>
-          Don&apos;t have credentials yet?{' '}
-          <button type="button" className="text-[#58CC02] font-bold hover:underline" onClick={() => (document.querySelector('[data-tab="request"]') as HTMLButtonElement)?.click()}>
-            Request demo access
+          Need ThinkBox for your school?{' '}
+          <button type="button" className="text-[#58CC02] font-bold hover:underline" onClick={() => router.push('/products/thinkbox?tab=plans#plans')}>
+            Choose a plan and start a trial
           </button>{' '}above to get started.
         </>}
       </p>

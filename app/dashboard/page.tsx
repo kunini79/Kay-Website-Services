@@ -143,7 +143,7 @@ export default function DashboardPage() {
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Access Status</p>
                 <p className="text-green-400 text-lg font-semibold">✓ Active</p>
-                <p className="text-gray-400 text-sm mt-1">Your demo access is valid indefinitely</p>
+                <p className="text-gray-400 text-sm mt-1">Your ThinkBox credentials are active</p>
               </div>
             </div>
           </div>
