@@ -136,7 +136,7 @@ export default function ThinkBoxPitchDeckPage() {
               Back to ThinkBox
             </Link>
             <Link
-              href="/products/thinkbox#demo-form"
+              href="/products/thinkbox#plans"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -402,7 +402,7 @@ export default function ThinkBoxPitchDeckPage() {
                   Contact KayCorp Team
                 </Link>
                 <Link
-                  href="/products/thinkbox#demo-form"
+                  href="/products/thinkbox#plans"
                   style={{
                     textDecoration: 'none',
                     fontWeight: 800,

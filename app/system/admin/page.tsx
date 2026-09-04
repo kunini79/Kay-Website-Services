@@ -36,7 +36,7 @@ export default function AdminActivityPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
-    // For demo: only check password, but you can add email check if needed
+    // Legacy archive access uses the existing admin request endpoint.
     if (!email || !password) {
       setLoginError("Email and password required");
       return;
@@ -127,7 +127,7 @@ export default function AdminActivityPage() {
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: 24 }}>
       <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 24 }}>ThinkBox Admin Analytics</h1>
-      <h2 style={{ fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Pending Demo Requests</h2>
+      <h2 style={{ fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Legacy Access Requests</h2>
       <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 32 }}>
         <thead>
           <tr style={{ background: "#f7f7f7" }}>
@@ -136,7 +136,7 @@ export default function AdminActivityPage() {
             <th>Company</th>
             <th>Status</th>
             <th>Created</th>
-            <th>Action</th>
+            <th>Archive</th>
           </tr>
         </thead>
         <tbody>
@@ -150,13 +150,7 @@ export default function AdminActivityPage() {
               <td>{r.company}</td>
               <td>{r.status}</td>
               <td>{new Date(r.createdAt).toLocaleString()}</td>
-              <td>
-                {r.status !== "approved" && (
-                  <button onClick={() => approveRequest(r._id)} disabled={approving === r._id}>
-                    {approving === r._id ? "Approving..." : "Approve"}
-                  </button>
-                )}
-              </td>
+              <td>Testing closed</td>
             </tr>
           ))}
         </tbody>

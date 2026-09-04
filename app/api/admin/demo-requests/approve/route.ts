@@ -72,6 +72,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (action === 'approve' || action === 'reject') {
+      return withRequestId(
+        NextResponse.json(
+          { message: 'Demo testing has closed. New ThinkBox access is available through school plans and one-month trials.' },
+          { status: 410 }
+        ),
+        log.requestId
+      );
+    }
+
     await connectDB();
 
     const demoRequest = await DemoRequest.findById(demoRequestId);
@@ -125,12 +135,12 @@ export async function POST(request: NextRequest) {
         await resend.emails.send({
           from: 'ThinkBox <noreply@kaycorp.tech>',
           to: demoRequest.email,
-          subject: 'Your ThinkBox Beta Access is Approved!',
+          subject: 'Your ThinkBox Access Is Ready',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #e5e5e5;">
               <h1 style="color: #58CC02; font-size: 28px; margin-bottom: 8px;">You're in! Welcome to ThinkBox 🎉</h1>
               <p style="font-size: 16px; color: #333;">Hi ${safeName},</p>
-              <p style="font-size: 15px; color: #555;">Your beta tester request has been approved. Click the button below to choose your password and activate your account.</p>
+              <p style="font-size: 15px; color: #555;">Your ThinkBox access is ready. Click the button below to choose your password and activate your account.</p>
 
               <div style="background: #F7F7F7; border: 1px solid #E5E5E5; padding: 20px; border-radius: 10px; margin: 24px 0;">
                 <p style="font-size: 14px; color: #333;"><strong>Email:</strong> ${safeEmail}</p>

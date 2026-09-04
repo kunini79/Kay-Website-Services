@@ -81,7 +81,7 @@ function buildCredentialsEmail(name, email, plainPassword, loginUrl) {
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;border:1px solid #e5e5e5;">
       <h1 style="color:#58CC02;font-size:28px;margin-bottom:8px;">You're in! Welcome to ThinkBox 🎉</h1>
       <p style="font-size:16px;color:#333;">Hi ${name},</p>
-      <p style="font-size:15px;color:#555;">Your beta tester request has been approved. Below are your login credentials — keep them safe.</p>
+      <p style="font-size:15px;color:#555;">Your ThinkBox access is ready. Below are your login credentials — keep them safe.</p>
 
       <div style="background:#F7F7F7;border:1px solid #E5E5E5;padding:20px;border-radius:10px;margin:24px 0;">
         <p style="margin:0 0 10px;font-size:14px;"><strong>Email:</strong></p>

@@ -146,7 +146,7 @@ export default function AdminDemoRequestsPage() {
         <div className="max-w-md w-full">
           <form onSubmit={handleLogin} className="bg-gray-800 rounded-lg border border-gray-700 p-8">
             <h1 className="text-3xl font-bold text-white mb-2 text-center">Admin Dashboard</h1>
-            <p className="text-gray-400 text-center mb-8">Demo Request Management</p>
+            <p className="text-gray-400 text-center mb-8">Legacy Access Request Archive</p>
 
             {error && (
               <div className="bg-red-900/30 border border-red-600/50 text-red-400 p-4 rounded-lg mb-6 text-sm">
@@ -188,8 +188,8 @@ export default function AdminDemoRequestsPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">Demo Requests</h1>
-              <p className="text-gray-400">Review and manage ThinkBox demo access requests</p>
+              <h1 className="text-4xl font-bold text-white mb-2">Legacy Access Requests</h1>
+              <p className="text-gray-400">Archived requests from the closed ThinkBox testing programme</p>
             </div>
             <button
               onClick={async () => {
@@ -313,73 +313,10 @@ export default function AdminDemoRequestsPage() {
                   </div>
                 )}
 
-                {/* Actions */}
                 {request.status === 'pending' && (
-                  <div className="flex gap-3 mt-6 pt-6 border-t border-gray-700">
-                    {selectedRequestId === request._id ? (
-                      <div className="flex-1 space-y-3">
-                        <textarea
-                          placeholder="Rejection reason (optional)"
-                          value={rejectionReason}
-                          onChange={(e) => setRejectionReason(e.target.value)}
-                          className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#BBFD6A] resize-none"
-                          rows={2}
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleReject(request._id)}
-                            disabled={processingId === request._id}
-                            className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2"
-                          >
-                            {processingId === request._id ? (
-                              <>
-                                <LoaderIcon size={16} className="animate-spin" />
-                                Rejecting...
-                              </>
-                            ) : (
-                              <>
-                                <XCircle size={16} />
-                                Confirm Reject
-                              </>
-                            )}
-                          </button>
-                          <button
-                            onClick={() => setSelectedRequestId(null)}
-                            className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded transition-colors"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => handleApprove(request._id)}
-                          disabled={processingId === request._id}
-                          className="flex-1 bg-[#BBFD6A] hover:bg-[#a9e65e] disabled:opacity-50 text-black font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2"
-                        >
-                          {processingId === request._id ? (
-                            <>
-                              <LoaderIcon size={16} className="animate-spin" />
-                              Approving...
-                            </>
-                          ) : (
-                            <>
-                              <CheckCircle size={16} />
-                              Approve & Send Credentials
-                            </>
-                          )}
-                        </button>
-                        <button
-                          onClick={() => setSelectedRequestId(request._id)}
-                          className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center gap-2"
-                        >
-                          <XCircle size={16} />
-                          Reject
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  <p className="mt-6 border-t border-gray-700 pt-6 text-sm font-medium text-gray-400">
+                    This request is archived. Demo testing is closed and no further approval actions are available.
+                  </p>
                 )}
 
                 {request.status === 'approved' && (

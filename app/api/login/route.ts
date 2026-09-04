@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     // Check if user account is active
     if (!user.isActive) {
       return NextResponse.json(
-        { message: 'Your demo access has been revoked' },
+        { message: 'Your ThinkBox access has been revoked' },
         { status: 403 }
       );
     }

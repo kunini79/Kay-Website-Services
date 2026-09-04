@@ -59,6 +59,45 @@ export default function ThinkBoxProductPage() {
     { n: '4', title: 'Sign in and explore', desc: 'Your teachers and learners use their issued credentials to access ThinkBox.' },
   ];
 
+  const plans = [
+    {
+      name: 'Standard Campus Lab',
+      fit: 'Private primary schools with 150-400 pupils',
+      price: 'N650,000 - N850,000 / year',
+      termly: 'or N250,000 - N300,000 / term',
+      color: '#ECFDF5',
+      border: '#86efac',
+      features: ['Local server setup on existing lab devices', 'Up to 300 active pupil profiles', 'STEM, digital literacy, teacher diagnostics, and termly reports'],
+    },
+    {
+      name: 'Premium / Multi-Arm Campus',
+      fit: 'Private and missionary schools with 400-1,000 pupils',
+      price: 'N1,200,000 - N1,800,000 / year',
+      termly: 'or N450,000 - N650,000 / term',
+      color: '#EFF6FF',
+      border: '#93c5fd',
+      features: ['Unlimited pupil accounts across all school sections', 'Curriculum tagging and weekly local backups', 'Priority support and parent progress summaries'],
+    },
+    {
+      name: 'Network / Group of Schools',
+      fit: 'Proprietors with 3+ campuses or education boards',
+      price: 'N2,500,000+ / year',
+      termly: 'Volume-based enterprise licence',
+      color: '#FFF7ED',
+      border: '#fdba74',
+      features: ['Multi-campus reporting and performance benchmarking', 'Centralised administrator dashboard', 'Professional development and a custom-branded portal'],
+    },
+    {
+      name: 'Turnkey Hardware + Software Kit',
+      fit: 'Schools without reliable computers or power',
+      price: 'N1,500,000 setup fee',
+      termly: '+ N500,000 annual licence',
+      color: '#FDF2F8',
+      border: '#f0abfc',
+      features: ['Pre-configured local ThinkBox hub', '10 durable offline student tablets', 'Solar charging station and pre-installed software suite'],
+    },
+  ];
+
   return (
     <main style={{ fontFamily: "Nunito, 'Segoe UI', Roboto, sans-serif", backgroundColor: '#F7F7F7' }}>
 
@@ -94,7 +133,7 @@ export default function ThinkBoxProductPage() {
               kaycorp.tech
             </Link>
             <Link
-              href="/products/thinkbox?tab=login#demo-form"
+              href="/products/thinkbox?tab=login#plans"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none', padding: '8px 18px', borderRadius: 9999, backgroundColor: '#58CC02', boxShadow: '0 3px 0 #46A302' }}
             >
               <LogIn size={14} />
@@ -129,7 +168,7 @@ export default function ThinkBoxProductPage() {
               Explore school plans
             </a>
             <a
-              href="/products/thinkbox?tab=login#demo-form"
+              href="/products/thinkbox?tab=login#plans"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#fff', color: '#3C3C3C', fontWeight: 700, fontSize: 16, padding: '14px 32px', borderRadius: 9999, border: '2px solid #E5E5E5', boxShadow: '0 4px 0 #D9D9D9', textDecoration: 'none' }}
             >
               <LogIn size={16} />
@@ -193,7 +232,7 @@ export default function ThinkBoxProductPage() {
 
       {/* Plans */}
       <section id="plans" style={{ padding: '72px 24px 96px', backgroundColor: '#fff' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <span style={{ display: 'inline-block', backgroundColor: '#DCFCE7', border: '2px solid #86efac', color: '#15803d', fontWeight: 800, fontSize: 12, padding: '4px 14px', borderRadius: 9999, marginBottom: 16, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
@@ -208,8 +247,22 @@ export default function ThinkBoxProductPage() {
             </p>
           </div>
 
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 40 }}>
+            {plans.map((plan) => (
+              <article key={plan.name} style={{ backgroundColor: plan.color, border: `2px solid ${plan.border}`, borderRadius: 16, padding: 20, display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontFamily: "Fredoka, Nunito, sans-serif", fontSize: 19, fontWeight: 700, color: '#1a1a1a', lineHeight: 1.2, marginBottom: 8 }}>{plan.name}</h3>
+                <p style={{ color: '#555', fontSize: 13, lineHeight: 1.5, minHeight: 40, marginBottom: 16 }}>{plan.fit}</p>
+                <p style={{ color: '#15803d', fontFamily: "Fredoka, Nunito, sans-serif", fontSize: 18, fontWeight: 700, lineHeight: 1.25, marginBottom: 4 }}>{plan.price}</p>
+                <p style={{ color: '#777', fontSize: 13, fontWeight: 700, marginBottom: 16 }}>{plan.termly}</p>
+                <ul style={{ color: '#555', fontSize: 13, lineHeight: 1.55, margin: 0, paddingLeft: 18 }}>
+                  {plan.features.map((feature) => <li key={feature} style={{ marginBottom: 7 }}>{feature}</li>)}
+                </ul>
+              </article>
+            ))}
+          </div>
+
           {/* Form card */}
-          <div style={{ backgroundColor: '#F7F7F7', border: '2px solid #E5E5E5', borderRadius: 24, padding: '36px 32px', boxShadow: '0 6px 0 #D9D9D9' }}>
+          <div style={{ maxWidth: 640, margin: '0 auto', backgroundColor: '#F7F7F7', border: '2px solid #E5E5E5', borderRadius: 24, padding: '36px 32px', boxShadow: '0 6px 0 #D9D9D9' }}>
             <Suspense fallback={<div style={{ textAlign: 'center', color: '#777', padding: 40 }}>Loading…</div>}>
               <ThinkBoxForm defaultTab="plans" />
             </Suspense>
