@@ -8,9 +8,20 @@ export interface QuizQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+}
+
+export interface TopicMastery {
+  attempts: number;
+  correct: number;
+  accuracy: number;
+  level: number;
+  lastAttemptAt: number;
+  nextReviewAt: number;
 }
 
 export interface Article {
+  topicId?: string;
   title: string;
   intro: string;
   funFact: string;
@@ -18,6 +29,14 @@ export interface Article {
   relatedTopics: string[];
   category: string;
   imageSeed?: string;
+  ageRange?: [number, number];
+  source?: {
+    type: 'wikipedia' | 'nasa' | 'editorial' | 'offline';
+    title?: string;
+    url?: string;
+    accessedAt?: string;
+  };
+  reviewStatus?: 'ai-draft' | 'review' | 'published' | 'needs-update';
   quiz?: QuizQuestion[];
 }
 

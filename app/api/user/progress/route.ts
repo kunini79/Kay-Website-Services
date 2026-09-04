@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
       backpack: user.backpack || [],
       quizzesCompleted: user.quizzesCompleted || 0,
       perfectQuizzes: user.perfectQuizzes || 0,
+      topicMastery: user.topicMastery || {},
     });
   } catch (err) {
     return NextResponse.json({ message: 'Error', error: typeof err === 'object' && err !== null ? (err as any).message : String(err) }, { status: 500 });
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
     user.backpack = body.backpack ?? user.backpack;
     user.quizzesCompleted = body.quizzesCompleted ?? user.quizzesCompleted;
     user.perfectQuizzes = body.perfectQuizzes ?? user.perfectQuizzes;
+    user.topicMastery = body.topicMastery ?? user.topicMastery;
     await user.save();
     return NextResponse.json({ message: 'Progress updated' });
   } catch (err) {

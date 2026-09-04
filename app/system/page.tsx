@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { ViewState, Article, Category, UserSettings, DEFAULT_SETTINGS, SavedArticle, ReadHistoryItem, Achievement, ALL_ACHIEVEMENTS } from './types';
+import { ViewState, Article, Category, UserSettings, DEFAULT_SETTINGS, SavedArticle, ReadHistoryItem, Achievement, ALL_ACHIEVEMENTS, TopicMastery } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { SubcategoryView } from './components/SubcategoryView';
@@ -11,9 +11,11 @@ import { ProfileView } from './components/ProfileView';
 import { LevelUpToast } from './components/LevelUpToast';
 import { Loader } from './components/Loader';
 import { SystemErrorBoundary } from './components/SystemErrorBoundary';
+import { AIModelStatus } from './components/AIModelStatus';
 import { fetchArticle } from './services/geminiService';
 import { STATIC_TOPICS, SUBCATEGORIES_DATA } from './constants';
 import { AlertCircle } from 'lucide-react';
+import { QuizResult, updateTopicMastery } from './services/learning';
 import './globals.css';
 
 export default function SystemPage() {
@@ -49,6 +51,7 @@ export default function SystemPage() {
   // -- Quiz Stats --
   const [quizzesCompleted, setQuizzesCompleted] = useState(0);
   const [perfectQuizzes, setPerfectQuizzes] = useState(0);
+  const [topicMastery, setTopicMastery] = useState<Record<string, TopicMastery>>({});
 
   // -- Achievements --
   const [achievements, setAchievements] = useState<Achievement[]>(
@@ -99,6 +102,7 @@ export default function SystemPage() {
         const perfectsValue = cloud.perfectQuizzes ?? parseInt(localStorage.getItem('tb-perfect-quizzes') || '0', 10);
         const backpackValue = cloud.backpack ?? (localStorage.getItem('tb-backpack') ? JSON.parse(localStorage.getItem('tb-backpack')!) : []);
         const historyValue = cloud.history ?? (localStorage.getItem('tb-history') ? JSON.parse(localStorage.getItem('tb-history')!) : []);
+        const masteryValue = cloud.topicMastery ?? (localStorage.getItem('tb-topic-mastery') ? JSON.parse(localStorage.getItem('tb-topic-mastery')!) : {});
 
         // Update state with cloud data (preferred)
         setUserXP(xpValue);
@@ -107,6 +111,7 @@ export default function SystemPage() {
         setPerfectQuizzes(perfectsValue);
         setSavedArticles(backpackValue);
         setReadHistory(historyValue);
+        setTopicMastery(masteryValue);
         setAchievements(
           ALL_ACHIEVEMENTS.map((a) => ({
             ...a,
@@ -122,6 +127,7 @@ export default function SystemPage() {
         localStorage.setItem('tb-perfect-quizzes', perfectsValue.toString());
         localStorage.setItem('tb-backpack', JSON.stringify(backpackValue));
         localStorage.setItem('tb-history', JSON.stringify(historyValue));
+        localStorage.setItem('tb-topic-mastery', JSON.stringify(masteryValue));
         const achievementsMap = Object.fromEntries(
           ALL_ACHIEVEMENTS.filter(a => cloud.achievements && cloud.achievements[a.id])
             .map(a => [a.id, cloud.achievements[a.id]])
@@ -141,6 +147,7 @@ export default function SystemPage() {
           backpack: localStorage.getItem('tb-backpack'),
           quizzesCompleted: localStorage.getItem('tb-quizzes-completed'),
           perfectQuizzes: localStorage.getItem('tb-perfect-quizzes'),
+          topicMastery: localStorage.getItem('tb-topic-mastery'),
         };
         setUserXP(parseInt(local.xp || '0', 10));
         setStreakCount(parseInt(local.streak || '1', 10));
@@ -148,6 +155,7 @@ export default function SystemPage() {
         setPerfectQuizzes(parseInt(local.perfectQuizzes || '0', 10));
         setSavedArticles(local.backpack ? JSON.parse(local.backpack) : []);
         setReadHistory(local.history ? JSON.parse(local.history) : []);
+        setTopicMastery(local.topicMastery ? JSON.parse(local.topicMastery) : {});
         setAchievements(
           ALL_ACHIEVEMENTS.map((a) => ({
             ...a,
@@ -268,11 +276,12 @@ export default function SystemPage() {
         backpack: savedArticles,
         quizzesCompleted,
         perfectQuizzes,
+        topicMastery,
       }).catch(e => {
         console.error('Cloud progress save failed', e);
       });
     });
-  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
+  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes, topicMastery]);
 
   /* Periodic cloud sync (fallback to ensure data persists) */
   useEffect(() => {
@@ -292,6 +301,7 @@ export default function SystemPage() {
           backpack: savedArticles,
           quizzesCompleted,
           perfectQuizzes,
+          topicMastery,
         }).catch(e => {
           console.warn('Periodic cloud sync failed (will retry)', e);
         });
@@ -299,7 +309,7 @@ export default function SystemPage() {
     }, 30000); // Every 30 seconds
 
     return () => clearInterval(intervalId);
-  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes]);
+  }, [isLoading, userXP, streakCount, achievements, readHistory, savedArticles, quizzesCompleted, perfectQuizzes, topicMastery]);
 
   // Touch streak on any activity (topic open, random, search)
   const touchStreak = useCallback(() => {
@@ -332,7 +342,8 @@ export default function SystemPage() {
     localStorage.setItem('tb-streak-last-active', now.toString());
   }, []);
 
-  const handleEarnXP = useCallback((amount: number, isPerfect?: boolean) => {
+  const handleEarnXP = useCallback((result: QuizResult) => {
+    const amount = result.xpEarned;
     setUserXP(prev => {
         const newXP = prev + amount;
         const newLevel = Math.floor(newXP / 100) + 1;
@@ -346,14 +357,24 @@ export default function SystemPage() {
       localStorage.setItem('tb-quizzes-completed', next.toString());
       return next;
     });
-    if (isPerfect) {
+    if (result.isPerfect) {
       setPerfectQuizzes(prev => {
         const next = prev + 1;
         localStorage.setItem('tb-perfect-quizzes', next.toString());
         return next;
       });
     }
-  }, [userLevel]);
+    if (currentArticle?.topicId) {
+      setTopicMastery(prev => {
+        const next = {
+          ...prev,
+          [currentArticle.topicId as string]: updateTopicMastery(prev[currentArticle.topicId as string], result),
+        };
+        localStorage.setItem('tb-topic-mastery', JSON.stringify(next));
+        return next;
+      });
+    }
+  }, [currentArticle, userLevel]);
 
   const toggleSaveFilter = useCallback((article: Article) => {
     setSavedArticles(prev => {
@@ -526,6 +547,8 @@ export default function SystemPage() {
             unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
           />
           <main className="tb-system-main">
+          {/* Offline/Local AI status badge — fixed bottom-right */}
+          <AIModelStatus alwaysShow={false} />
             {/* Feedback Modal */}
             {feedbackOpen && (
               <div style={{
@@ -628,6 +651,7 @@ export default function SystemPage() {
                   onBack={goHome}
                   isSaved={!!savedArticles.find(a => a.title === currentArticle.title)}
                   onToggleSave={() => toggleSaveFilter(currentArticle)}
+                  topicMastery={currentArticle.topicId ? topicMastery[currentArticle.topicId] : undefined}
                   onEarnXP={handleEarnXP}
               />
             )}
@@ -643,6 +667,7 @@ export default function SystemPage() {
                 achievements={achievements}
                 quizzesCompleted={quizzesCompleted}
                 perfectQuizzes={perfectQuizzes}
+                topicMastery={topicMastery}
                 onBack={goHome}
               />
             )}

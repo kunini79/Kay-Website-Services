@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import { DemoUser } from '@/lib/models/DemoUser';
+import { Teacher } from '@/lib/models/Teacher';
 import { School } from '@/lib/models/School';
 import { createToken } from '@/lib/auth';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import { createRequestLogger, withRequestId } from '@/lib/logger';
+import bcryptjs from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST /api/login', request);
@@ -35,6 +37,7 @@ export async function POST(request: NextRequest) {
     const isSchoolLogin = body.loginMethod === 'school';
     let user;
     let isCredentialValid = false;
+    let accountRole: 'user' | 'teacher' = 'user';
     const invalidCredentialsMessage = isSchoolLogin
       ? 'Invalid school, User ID, or PIN'
       : 'Invalid email or password';
@@ -65,6 +68,14 @@ export async function POST(request: NextRequest) {
 
       user = await DemoUser.findOne({ email }).select('+password');
       if (user) isCredentialValid = await user.comparePassword(password);
+      if (!user) {
+        const teacher = await Teacher.findOne({ email, isActive: true }).select('+password');
+        if (teacher) {
+          user = teacher;
+          accountRole = 'teacher';
+          isCredentialValid = await bcryptjs.compare(password, teacher.password);
+        }
+      }
     }
 
     if (!user) {
@@ -97,7 +108,9 @@ export async function POST(request: NextRequest) {
     const token = createToken(
       user._id.toString(),
       user.email || '',
-      user.name
+      user.name,
+      accountRole,
+      user.school?.toString()
     );
 
     // Create response with cookie

@@ -43,6 +43,7 @@ export async function getOfflineQuickPicks(count = 12): Promise<OfflineTopic[]> 
 
 export function toArticleFromOffline(topic: OfflineTopic): Article {
   return {
+    topicId: `offline-${topic.id}`,
     title: topic.title,
     intro: topic.summary || `Learn about ${topic.title}.`,
     funFact: '',
@@ -53,6 +54,13 @@ export function toArticleFromOffline(topic: OfflineTopic): Article {
         content: topic.summary || 'No summary available yet.'
       }
     ],
-    relatedTopics: []
+    relatedTopics: [],
+    imageSeed: topic.title,
+    source: {
+      type: 'offline',
+      title: topic.title,
+      url: topic.url,
+    },
+    reviewStatus: 'published',
   };
 }

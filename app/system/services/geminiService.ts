@@ -2,6 +2,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Article, TopicPreview, Category } from "../types";
 import { STATIC_TOPICS } from "../constants";
 import { getOfflineTopic, toArticleFromOffline } from './offlineTopics';
+import { enrichArticleMetadata, getCanonicalTopicId, getImageSeed } from './knowledge';
+import { isLocalAIReady, generateLocalArticle } from './localAIService';
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const openRouterApiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '';
@@ -185,6 +187,16 @@ const TOPIC_TO_WIKIPEDIA_MAP: Record<string, string> = {
   "Mammals": "Mammal",
   "The Big Five": "Big Five game",
   "Birds": "Bird",
+  "Chicken": "Chicken (bird)",
+  "Turkey": "Turkey (bird)",
+  "Ducks": "Duck",
+  "Penguins": "Penguin",
+  "Flamingos": "Flamingo",
+  "Parrots": "Parrot",
+  "Owls": "Owl",
+  "Eagles": "Eagle",
+  "Hawks": "Hawk",
+  "Pigeons": "Columbidae",
   "Reptiles & Amphibians": "Reptile",
   "Ocean Giants": "Whale",
   "Rainforest Critters": "Rainforest",
@@ -797,17 +809,35 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
   }
 
   try {
+    // Approved repository content is authoritative; AI remains the resilient fallback.
+    try {
+      const repositoryTopicId = getCanonicalTopicId(parseTopicQuery(topic).baseTopic);
+      const repositoryResponse = await fetch(
+        `/api/system/articles/${encodeURIComponent(repositoryTopicId)}`,
+        { cache: 'no-store' }
+      );
+      if (repositoryResponse.ok) {
+        const repositoryArticle = (await repositoryResponse.json()) as Article;
+        const enrichedRepositoryArticle = enrichArticleMetadata(repositoryArticle, topic);
+        contentCache.set(cacheKey, enrichedRepositoryArticle);
+        return enrichedRepositoryArticle;
+      }
+    } catch (repositoryError) {
+      console.warn('[Article] Published repository unavailable, using dynamic fallback:', repositoryError);
+    }
+
     const curatedArticle = getCuratedArticleOverride(topic);
     if (curatedArticle) {
-      contentCache.set(cacheKey, curatedArticle);
-      return curatedArticle;
+      const enrichedArticle = enrichArticleMetadata(curatedArticle, topic);
+      contentCache.set(cacheKey, enrichedArticle);
+      return enrichedArticle;
     }
 
     // If offline, try local cache first.
     if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) {
       const offlineHit = await getOfflineTopic(topic);
       if (offlineHit) {
-        const article = toArticleFromOffline(offlineHit);
+        const article = enrichArticleMetadata(toArticleFromOffline(offlineHit), topic);
         contentCache.set(cacheKey, article);
         return article;
       }
@@ -818,6 +848,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
 
     let sourceContent = '';
     let sourceName = 'Wikipedia';
+    let sourceImageSeed = getImageSeed(topic);
 
     if (isSpaceTopic) {
       const normalizedTopic = normalizeSpaceQuery(topic);
@@ -827,6 +858,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       if (nasaHit) {
         sourceContent = nasaHit.extract;
         sourceName = 'NASA';
+        sourceImageSeed = nasaHit.resolvedTitle;
         console.log(`[Article Fetch] NASA resolved title: ${nasaHit.resolvedTitle}`);
       } else {
         throw new Error(`NASA did not return enough information for "${normalizedBaseTopic}" right now. Please try another space topic or try again shortly.`);
@@ -847,6 +879,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       console.log(`[Article Fetch] Wikipedia resolved title: ${wikiHit.resolvedTitle}`);
       sourceContent = wikiHit.extract;
       sourceName = 'Wikipedia';
+      sourceImageSeed = wikiHit.resolvedTitle;
     }
 
     // Use Gemini to structure source content into ThinkBox format
@@ -950,10 +983,24 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
         if (geminiError) {
           const geminiMessage = getErrorMessage(geminiError);
           if (isRateLimitOrQuotaError(geminiMessage)) {
-            throw new Error(`Gemini quota reached and OpenRouter fallback failed: ${getErrorMessage(openRouterError)}`);
+            console.warn('[Article] Quota exhausted — attempting local AI (Tier 5)…');
           }
         }
-        throw openRouterError;
+        // Fall through to local AI — don't throw yet
+      }
+    }
+
+    // ── Tier 5: Local in-browser AI (works fully offline) ────────────────────
+    if (!text && isLocalAIReady()) {
+      try {
+        console.log('[Article] Trying local AI for:', topic);
+        const localArticle = await generateLocalArticle(topic, sourceContent);
+        const enriched = enrichArticleMetadata(localArticle, topic);
+        contentCache.set(cacheKey, enriched);
+        return enriched;
+      } catch (localError) {
+        console.error('[Article] Local AI fallback failed:', localError);
+        // Fall through to throw
       }
     }
 
@@ -985,6 +1032,15 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
     if (!article.title) article.title = topic;
     if (!article.intro) article.intro = `Learn about ${topic}.`;
     if (!article.funFact) article.funFact = `${topic} is fascinating!`;
+    if (!article.imageSeed) article.imageSeed = sourceImageSeed;
+    article.source = article.source || {
+      type: sourceName === 'NASA' ? 'nasa' : 'wikipedia',
+      title: sourceName === 'NASA' ? sourceImageSeed : sourceImageSeed,
+      url: sourceName === 'NASA'
+        ? 'https://www.nasa.gov/'
+        : `https://en.wikipedia.org/wiki/${encodeURIComponent(sourceImageSeed.replace(/ /g, '_'))}`,
+    };
+    article = enrichArticleMetadata(article, topic);
 
     console.log('[Article] Successfully structured:', {
       title: article.title,
@@ -1002,7 +1058,7 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
     try {
       const offlineHit = await getOfflineTopic(topic);
       if (offlineHit) {
-        const article = toArticleFromOffline(offlineHit);
+        const article = enrichArticleMetadata(toArticleFromOffline(offlineHit), topic);
         contentCache.set(cacheKey, article);
         return article;
       }

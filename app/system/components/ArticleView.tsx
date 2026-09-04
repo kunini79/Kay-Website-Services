@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Article } from '../types';
+import { Article, TopicMastery } from '../types';
 import { DidYouKnow } from './DidYouKnow';
 import { QuizView } from './QuizView';
 import { fetchWikimediaImage, fetchWikimediaImages } from '../services/geminiService';
-import { ArrowLeft, ArrowRight, Volume2, Bookmark, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Volume2, Bookmark, Check, Printer } from 'lucide-react';
 import { TextWithTTS } from './TextWithTTS';
+import { QuizResult } from '../services/learning';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
@@ -14,7 +15,8 @@ interface ArticleViewProps {
   onBack: () => void;
   isSaved?: boolean;
   onToggleSave?: () => void;
-  onEarnXP?: (amount: number, isPerfect?: boolean) => void;
+  topicMastery?: TopicMastery;
+  onEarnXP?: (result: QuizResult) => void;
 }
 
 export const ArticleView: React.FC<ArticleViewProps> = ({
@@ -24,6 +26,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
   isSaved = false,
   onToggleSave,
   onEarnXP,
+  topicMastery,
 }) => {
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [heroLoading, setHeroLoading] = useState(true);
@@ -56,12 +59,13 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
   const sectionColors = ['#0D9488', '#F97316', '#FCD34D', '#14B8A6'];
 
   return (
-    <div className="tb-article-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
+    <div className="tb-article-enter tb-printable-article" style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
       
       {/* Back button */}
-      <button
-        onClick={onBack}
-        style={{
+      <div className="tb-print-hide" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <button
+          onClick={onBack}
+          style={{
             marginBottom: '16px',
             background: 'none',
             border: 'none',
@@ -72,10 +76,21 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             color: 'var(--tb-text-muted)',
             fontWeight: 600,
             fontSize: '14px'
-        }}
-      >
-        <ArrowLeft size={16} /> Back to Topics
-      </button>
+          }}
+        >
+          <ArrowLeft size={16} /> Back to Topics
+        </button>
+        <button
+          type="button"
+          onClick={() => window.print()}
+          title="Print article"
+          aria-label="Print article"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '2px solid var(--tb-border)', borderRadius: '999px', background: 'var(--tb-surface)', color: 'var(--tb-text)', padding: '9px 14px', cursor: 'pointer', fontWeight: 700 }}
+        >
+          <Printer size={16} /> Print Article
+        </button>
+      </div>
+      <h1 className="tb-print-title">{article.title}</h1>
 
       {/* Hero Header with Carousel */}
       <div className="tb-article-hero" style={{ position: 'relative', borderRadius: 'var(--tb-radius-xl)', overflow: 'hidden', boxShadow: 'var(--tb-shadow-lg)', marginBottom: '32px' }}>
@@ -200,6 +215,31 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
           <TextWithTTS content={article.intro} title={article.title} />
         </div>
 
+        {article.source?.title && (
+          <div
+            style={{
+              marginBottom: '24px',
+              color: 'var(--tb-text-muted)',
+              fontSize: '13px',
+            }}
+          >
+            Source:{' '}
+            {article.source.url ? (
+              <a
+                href={article.source.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--tb-primary)', fontWeight: 700 }}
+              >
+                {article.source.title}
+              </a>
+            ) : (
+              article.source.title
+            )}
+            {article.reviewStatus === 'ai-draft' && ' | AI draft'}
+          </div>
+        )}
+
          {/* Fun Fact Card */}
          <DidYouKnow fact={article.funFact} />
       </div>
@@ -234,13 +274,13 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
       </div>
 
       {article.quiz && article.quiz.length > 0 && onEarnXP && (
-        <div style={{ marginTop: '48px', marginBottom: '48px' }}>
-          <QuizView questions={article.quiz} onComplete={onEarnXP} />
+        <div className="tb-article-quiz" style={{ marginTop: '48px', marginBottom: '48px' }}>
+          <QuizView questions={article.quiz} mastery={topicMastery} onComplete={onEarnXP} />
         </div>
       )}
 
       {/* Related Topics */}
-      <div style={{ marginTop: '48px', textAlign: 'center' }}>
+      <div className="tb-article-related" style={{ marginTop: '48px', textAlign: 'center' }}>
         <h3
           style={{
             fontSize: '24px',

@@ -14,6 +14,60 @@
 @import "@fontsource/nunito/latin-800.css";
 @import "@fontsource/opendyslexic";
 
+.tb-print-title {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+
+  body {
+    background: white !important;
+    color: #111827 !important;
+  }
+
+  .tb-bg-layer,
+  .tb-navbar,
+  .tb-print-hide,
+  .tb-article-hero,
+  .tb-article-related,
+  .tb-article-quiz {
+    display: none !important;
+  }
+
+  .tb-system-root,
+  .tb-printable-article {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .tb-print-title {
+    display: block;
+    color: #111827;
+    font-family: Georgia, serif;
+    font-size: 30pt;
+    margin: 0 0 18pt;
+  }
+
+  .tb-printable-article * {
+    color: #111827 !important;
+    box-shadow: none !important;
+  }
+
+  .tb-printable-article a {
+    color: #111827 !important;
+    text-decoration: underline;
+  }
+
+  .tb-printable-article section,
+  .tb-printable-article [style*="background"] {
+    break-inside: avoid;
+  }
+}
+
 :root {
   --tb-primary: #58CC02;
   --tb-primary-light: #89E219;

@@ -18,6 +18,13 @@ type TopicOption = {
   meta?: string;
 };
 
+type PublishedTopic = {
+  topicId: string;
+  title: string;
+  category: string;
+  intro: string;
+};
+
 const CATEGORY_TOPIC_TO_SUBCATEGORY_ID: Partial<Record<Category, Record<string, string>>> = {
   [Category.ANIMALS]: {
     Mammals: 'mammals',
@@ -228,10 +235,42 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   const [selectedCategory, setSelectedCategory] = useState<Category>(Category.ANIMALS);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [publishedTopics, setPublishedTopics] = useState<PublishedTopic[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/system/articles', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (mounted && Array.isArray(data?.articles)) {
+          setPublishedTopics(data.articles);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const normalizedQuery = searchFilter.trim().toLowerCase();
 
-  const getCategoryTopics = (cat: Category) => (STATIC_TOPICS[cat] || []) as TopicPreview[];
+  const getCategoryTopics = (cat: Category) => {
+    const staticTopics = (STATIC_TOPICS[cat] || []) as TopicPreview[];
+    const published = publishedTopics
+      .filter((topic) => topic.category === cat)
+      .map((topic) => ({
+        title: topic.title,
+        category: topic.category,
+        description: topic.intro,
+      }));
+    const seen = new Set<string>();
+    return [...staticTopics, ...published].filter((topic) => {
+      const key = topic.title.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  };
 
   const isCategoryMatch = (cat: Category) => {
     if (!normalizedQuery) return true;

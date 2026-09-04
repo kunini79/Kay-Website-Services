@@ -79,6 +79,7 @@ const demoUserSchema = new Schema(
     backpack: { type: Array, default: [] },
     quizzesCompleted: { type: Number, default: 0 },
     perfectQuizzes: { type: Number, default: 0 },
+    topicMastery: { type: Object, default: {} },
     
     // Password Reset
     passwordResetToken: String,

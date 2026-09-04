@@ -1,9 +1,10 @@
 'use client';
 import React, { useMemo } from 'react';
 import { ArrowLeft, Trophy, Flame, BookOpen, Star, Target, Award } from 'lucide-react';
-import { Achievement, ALL_ACHIEVEMENTS, Category, ReadHistoryItem, SavedArticle } from '../types';
+import { Achievement, ALL_ACHIEVEMENTS, Category, ReadHistoryItem, SavedArticle, TopicMastery } from '../types';
 import { CATEGORY_CONFIG } from '../constants';
 import ChangePasswordForm from '@/components/ChangePasswordForm';
+import { LEARNING_PATHS } from '../services/learning';
 
 interface ProfileViewProps {
   userName: string;
@@ -15,6 +16,7 @@ interface ProfileViewProps {
   achievements: Achievement[];
   quizzesCompleted: number;
   perfectQuizzes: number;
+  topicMastery: Record<string, TopicMastery>;
   onBack: () => void;
 }
 
@@ -42,6 +44,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   achievements,
   quizzesCompleted,
   perfectQuizzes,
+  topicMastery,
   onBack,
 }) => {
   const xpIntoLevel = userXP % XP_PER_LEVEL;
@@ -56,6 +59,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   }, [readHistory]);
 
   const favCategory = readsByCategory[0]?.[0] || '—';
+  const masteryEntries = Object.entries(topicMastery);
+  const dueReviews = masteryEntries.filter(([, mastery]) => mastery.nextReviewAt <= Date.now());
 
   const unlockedAchievements = achievements.filter((a) => a.unlockedAt);
   const lockedAchievements   = achievements.filter((a) => !a.unlockedAt);
@@ -219,6 +224,38 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Achievements */}
+      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', boxShadow: 'var(--tb-shadow-sm)', marginBottom: '28px' }}>
+        <h2 style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '20px', fontWeight: 800, color: 'var(--tb-text)', marginBottom: '16px' }}>Learning Paths</h2>
+        <div style={{ display: 'grid', gap: '12px' }}>
+          {LEARNING_PATHS.map((path) => {
+            const completed = path.topics.filter((topic) => topicMastery[topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')]);
+            return <div key={path.id} style={{ border: '1px solid var(--tb-border)', borderRadius: '14px', padding: '14px' }}><strong style={{ color: 'var(--tb-text)' }}>{path.title}</strong><div style={{ color: 'var(--tb-text-muted)', fontSize: '13px', marginTop: '5px' }}>{completed.length}/{path.topics.length} topics practiced</div></div>;
+          })}
+        </div>
+      </div>
+
+      {/* Achievements */}
+      <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', boxShadow: 'var(--tb-shadow-sm)', marginBottom: '28px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div>
+            <h2 style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '20px', fontWeight: 800, color: 'var(--tb-text)', margin: 0 }}>Learning Progress</h2>
+            <p style={{ color: 'var(--tb-text-muted)', fontSize: '13px', marginTop: '6px' }}>{dueReviews.length} topic{dueReviews.length === 1 ? '' : 's'} due for review</p>
+          </div>
+          <button type="button" onClick={() => window.print()} style={{ border: '2px solid var(--tb-primary)', background: 'transparent', color: 'var(--tb-primary-dark)', borderRadius: '999px', padding: '10px 16px', fontWeight: 800, cursor: 'pointer' }}>Print report</button>
+        </div>
+        {masteryEntries.length === 0 ? <p style={{ color: 'var(--tb-text-muted)', marginTop: '18px' }}>Complete a quiz to begin building topic mastery.</p> : (
+          <div style={{ display: 'grid', gap: '12px', marginTop: '18px' }}>
+            {masteryEntries.slice(0, 10).map(([topicId, mastery]) => (
+              <div key={topicId} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ flex: 1, minWidth: 0 }}><strong style={{ color: 'var(--tb-text)' }}>{topicId}</strong><div style={{ height: '7px', background: 'var(--tb-border)', borderRadius: '999px', marginTop: '6px' }}><div style={{ width: `${Math.round(mastery.accuracy * 100)}%`, height: '100%', background: mastery.nextReviewAt <= Date.now() ? 'var(--tb-coral)' : 'var(--tb-primary)', borderRadius: '999px' }} /></div></div>
+                <span style={{ color: 'var(--tb-text-muted)', fontSize: '12px', fontWeight: 700 }}>Level {mastery.level} · {Math.round(mastery.accuracy * 100)}%</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Achievements */}
       <div style={{ background: 'var(--tb-surface)', border: '2px solid var(--tb-border)', borderRadius: '20px', padding: '28px', boxShadow: 'var(--tb-shadow-sm)', marginBottom: '28px' }}>

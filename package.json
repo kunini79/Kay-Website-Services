@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "download:topic-images": "node scripts/download-topic-images.js"
+    "download:topic-images": "node scripts/download-topic-images.js",
+    "seed:thinkbox": "node scripts/seed-thinkbox-articles.mjs",
+    "seed:thinkbox-access": "node scripts/seed-thinkbox-access.mjs"
   },
   "dependencies": {
     "@fontsource/bebas-neue": "^5.2.7",
@@ -18,6 +20,7 @@
     "@fontsource/plus-jakarta-sans": "^5.2.8",
     "@google/genai": "^1.40.0",
     "@gsap/react": "^2.1.2",
+    "@huggingface/transformers": "^4.2.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@react-three/postprocessing": "^3.0.4",

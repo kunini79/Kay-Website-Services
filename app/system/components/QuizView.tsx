@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { QuizQuestion } from '../types';
+import React, { useMemo, useState } from 'react';
+import { QuizQuestion, TopicMastery } from '../types';
 import { Check, X, Award, ArrowRight, RotateCcw } from 'lucide-react';
 import { Button } from './Button';
+import { QuizResult, selectAdaptiveQuestions } from '../services/learning';
 
 interface QuizViewProps {
   questions: QuizQuestion[];
-  onComplete: (xpEarned: number, isPerfect?: boolean) => void;
+  mastery?: TopicMastery;
+  onComplete: (result: QuizResult) => void;
 }
 
-export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => {
+export const QuizView: React.FC<QuizViewProps> = ({ questions, mastery, onComplete }) => {
+  const adaptiveQuestions = useMemo(() => selectAdaptiveQuestions(questions, mastery), [questions, mastery]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -20,7 +23,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
   const XP_PER_QUESTION = 10;
   const XP_BONUS_ALL_CORRECT = 20;
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = adaptiveQuestions[currentQuestionIndex];
   
   // Debug: Log the correct answer to console to help diagnose
   console.log('Quiz Debug:', { 
@@ -82,9 +85,15 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
       // For the last question, handleOptionClick runs -> score updates -> user clicks "Finish" -> finishQuiz runs.
       // So `score` is correct.
       
-      let finalXP = score * XP_PER_QUESTION + (score === questions.length ? XP_BONUS_ALL_CORRECT : 0);
-      
-      onComplete(finalXP, score === questions.length);
+      const total = adaptiveQuestions.length;
+      const finalXP = score * XP_PER_QUESTION + (score === total ? XP_BONUS_ALL_CORRECT : 0);
+      onComplete({
+        score,
+        total,
+        accuracy: total > 0 ? score / total : 0,
+        xpEarned: finalXP,
+        isPerfect: score === total,
+      });
       setXpAwarded(true);
     }
   };
@@ -98,7 +107,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
         </div>
         <h3 className="text-2xl font-bold mb-2">Quiz Complete!</h3>
         <p className="text-lg text-gray-600 mb-6">
-          You got <span className="font-bold text-[var(--tb-primary)]">{score}</span> out of <span className="font-bold">{questions.length}</span> correct.
+          You got <span className="font-bold text-[var(--tb-primary)]">{score}</span> out of <span className="font-bold">{adaptiveQuestions.length}</span> correct.
         </p>
         
         <div className="inline-block bg-[var(--tb-category-bg)] px-6 py-3 rounded-full mb-8">
@@ -138,7 +147,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-gray-900">Pop Quiz!</h3>
           <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-            Question {currentQuestionIndex + 1} of {questions.length}
+            Question {currentQuestionIndex + 1} of {adaptiveQuestions.length}
           </span>
         </div>
 
@@ -196,7 +205,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onComplete }) => 
             
             <div className="flex justify-end">
               <Button onClick={() => handleNextQuestion()}>
-                {currentQuestionIndex < questions.length - 1 ? (
+                {currentQuestionIndex < adaptiveQuestions.length - 1 ? (
                   <>Next Question <ArrowRight size={18} className="ml-2" /></>
                 ) : (
                   <>See Results <Award size={18} className="ml-2" /></>

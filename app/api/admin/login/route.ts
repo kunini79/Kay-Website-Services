@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminToken } from '@/lib/auth';
+import { connectDB } from '@/lib/db';
+import { AdminAccount } from '@/lib/models/AdminAccount';
+import bcryptjs from 'bcryptjs';
 import { rateLimit, getClientIp } from '@/utils/rateLimit';
 import { createRequestLogger, withRequestId } from '@/lib/logger';
 
@@ -25,21 +28,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { password } = await request.json();
+    const body = await request.json();
+    const password = typeof body.password === 'string' ? body.password : '';
 
     const adminPassword = process.env.ADMIN_PASSWORD;
-    if (!adminPassword) {
-      log.error('ADMIN_PASSWORD env var not set');
-      return withRequestId(
-        NextResponse.json(
-          { message: 'Admin authentication is not configured' },
-          { status: 500 }
-        ),
-        log.requestId
-      );
+    const adminEmail = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+    let validCredentials = Boolean(password && adminPassword && password === adminPassword);
+    try {
+      await connectDB();
+      const account = adminEmail
+        ? await AdminAccount.findOne({ email: adminEmail, isActive: true }).select('+password')
+        : null;
+      if (account) validCredentials = await bcryptjs.compare(password, account.password);
+    } catch {
+      // Environment credentials remain available if the database is unavailable.
     }
 
-    if (!password || password !== adminPassword) {
+    if (!validCredentials) {
       log.warn('invalid admin password attempt', { clientIp });
       return withRequestId(
         NextResponse.json(

@@ -19,7 +19,8 @@ export interface DecodedToken {
   userId: string;
   email: string;
   name: string;
-  role?: 'user' | 'admin';
+  role?: 'user' | 'teacher' | 'admin';
+  schoolId?: string;
   iat: number;
   exp: number;
 }
@@ -52,10 +53,12 @@ export async function verifyAuth(): Promise<DecodedToken | null> {
 export function createToken(
   userId: string,
   email: string,
-  name: string
+  name: string,
+  role: 'user' | 'teacher' = 'user',
+  schoolId?: string
 ): string {
   return jwt.sign(
-    { userId, email, name, role: 'user' },
+    { userId, email, name, role, ...(schoolId ? { schoolId } : {}) },
     getJwtSecret(),
     { expiresIn: '7d' }
   );
