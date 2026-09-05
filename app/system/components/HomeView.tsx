@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CATEGORY_CONFIG, STATIC_TOPICS, SUBCATEGORIES_DATA } from '../constants';
 import { Category, ReadHistoryItem, TopicPreview } from '../types';
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface HomeViewProps {
   onTopicClick: (topic: string) => void;
@@ -203,7 +203,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   searchFilter,
   exploredCategories,
   onCategoryChange,
-  readHistory = [],
   onCategoryClick,
 }) => {
   const orderedCategories: Category[] = [
@@ -715,145 +714,73 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }
   }, []);
 
+  const activeSubcategories = SUBCATEGORIES_DATA[selectedCategory] || [];
+
   return (
     <div>
       {/* ── Hero Section ─────────────────────────────── */}
       <section className="tb-hero" aria-labelledby="hero-title">
-        <h1 id="hero-title" className="sr-only">ThinkBox</h1>
-        
-        {/* Recently Read strip */}
-        {readHistory.length > 0 && (
-          <div style={{ marginBottom: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-              <Clock size={16} color="var(--tb-text-muted)" />
-              <span style={{ fontFamily: 'var(--tb-font-heading)', fontSize: '15px', fontWeight: 700, color: 'var(--tb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recently Read</span>
-            </div>
-            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '6px' }}>
-              {[...readHistory].reverse().slice(0, 8).map((item, i) => (
-                <button
-                  key={i}
-                  onClick={() => onTopicClick(item.title)}
-                  style={{
-                    flexShrink: 0,
-                    background: 'rgba(255,255,255,0.85)',
-                    backdropFilter: 'blur(8px)',
-                    border: '2px solid rgba(255,255,255,0.6)',
-                    borderRadius: '14px',
-                    padding: '10px 16px',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                    maxWidth: '180px',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-                >
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--tb-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '3px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                    {CATEGORY_CONFIG[item.category as Category]?.icon || '📌'} {item.category}
-                  </div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--tb-text)', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.title}</div>
-                </button>
-              ))}
+        <div className="tb-hero-intro">
+          <span className="tb-hero-kicker">The children&apos;s encyclopedia</span>
+          <h1 id="hero-title" className="tb-hero-title">ThinkBox</h1>
+          <p className="tb-hero-lede">Explore everything. Ask better questions. Find your next fascinating thing.</p>
+        </div>
+
+        <div className="tb-home-stage">
+          <aside className="tb-stage-rail" aria-label="Explore subjects">
+            {leftCategories.map((cat) => (
+              <button
+                key={cat}
+                className={`tb-stage-category ${selectedCategory === cat ? 'tb-stage-category--active' : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+                aria-label={`${cat} category`}
+              >
+                <span className="tb-stage-category-icon" role="img" aria-hidden="true">{CATEGORY_CONFIG[cat].icon}</span>
+                <span>{categoryDisplayNames[cat]}</span>
+              </button>
+            ))}
+          </aside>
+
+          <div className="tb-stage-center">
+            <div className="tb-stage-menu" aria-label={`${categoryDisplayNames[selectedCategory]} topics`}>
+              <div className="tb-stage-menu-heading">
+                <div>
+                  <span className="tb-stage-menu-kicker">Explore subjects</span>
+                  <h2>{categoryDisplayNames[selectedCategory]}</h2>
+                </div>
+                <span className="tb-stage-menu-icon" aria-hidden="true">{CATEGORY_CONFIG[selectedCategory].icon}</span>
+              </div>
+              <p className="tb-stage-menu-description">{CATEGORY_CONFIG[selectedCategory].description}</p>
+              <div className="tb-stage-topic-list">
+                {activeSubcategories.map((subcategory) => (
+                  <button
+                    key={subcategory.id}
+                    className="tb-stage-topic"
+                    onClick={() => onCategoryClick?.(selectedCategory, subcategory.id)}
+                    aria-label={`Open ${subcategory.title}`}
+                  >
+                    <span>{subcategory.title}</span>
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Topic of the Day */}
-        {dailyTopic ? (
-             <div 
-                className="tb-daily-topic"
-                style={{
-                    backgroundColor: 'var(--tb-primary)',
-                    borderRadius: 'var(--tb-radius-xl)',
-                    padding: '40px',
-                    color: 'white',
-                    marginBottom: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    boxShadow: 'var(--tb-shadow-lg)',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                }}
-                onClick={() => onTopicClick(dailyTopic.title)}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-             >
-                <div style={{ position: 'relative', zIndex: 1, maxWidth: '65%' }}>
-                    <div style={{ 
-                        display: 'inline-block',
-                        background: 'rgba(255,255,255,0.2)',
-                        backdropFilter: 'blur(4px)',
-                        padding: '6px 16px',
-                        borderRadius: '20px',
-                        fontSize: '13px', 
-                        textTransform: 'uppercase', 
-                        letterSpacing: '1px', 
-                        fontWeight: 700, 
-                        marginBottom: '16px',
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
-                    }}>
-                        ⭐ Topic of the Day
-                    </div>
-                    <h2 style={{ 
-                        fontSize: 'clamp(2rem, 4vw, 3rem)', 
-                        fontFamily: 'var(--tb-font-heading)', 
-                        fontWeight: 700, 
-                        marginBottom: '12px',
-                        lineHeight: 1.1,
-                        textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                    }}>
-                        {dailyTopic.title}
-                    </h2>
-                    <p style={{ 
-                        fontSize: '18px', 
-                        opacity: 0.95, 
-                        fontWeight: 500,
-                        maxWidth: '550px',
-                        lineHeight: 1.6,
-                        marginBottom: '24px'
-                    }}>
-                        {dailyTopic.description}
-                    </p>
-                    <button style={{
-                        background: 'white',
-                        color: 'var(--tb-primary)',
-                        border: 'none',
-                        padding: '12px 28px',
-                        borderRadius: 'var(--tb-radius-full)',
-                        fontWeight: 800,
-                        fontSize: '16px',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        transition: 'transform 0.2s'
-                    }}>
-                        Start Exploring <ArrowRight size={18} strokeWidth={3} />
-                    </button>
-                </div>
-                
-                {/* Decorative Icon Background */}
-                <div style={{
-                    position: 'absolute',
-                    right: '-40px',
-                    bottom: '-40px',
-                    opacity: 0.15,
-                    fontSize: '280px',
-                    pointerEvents: 'none',
-                    userSelect: 'none',
-                    transform: 'rotate(-10deg)',
-                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.5))'
-                }}>
-                    {CATEGORY_CONFIG[dailyTopic.category as Category]?.icon || '✨'}
-                </div>
-             </div>
-        ) : (
-            <p className="tb-hero-subtitle">What do you want to explore today?</p>
-        )}
+          <aside className="tb-stage-rail" aria-label="More subjects">
+            {rightCategories.map((cat) => (
+              <button
+                key={cat}
+                className={`tb-stage-category ${selectedCategory === cat ? 'tb-stage-category--active' : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+                aria-label={`${cat} category`}
+              >
+                <span className="tb-stage-category-icon" role="img" aria-hidden="true">{CATEGORY_CONFIG[cat].icon}</span>
+                <span>{categoryDisplayNames[cat]}</span>
+              </button>
+            ))}
+          </aside>
+        </div>
       </section>
 
       {/* ── Encarta-style Navigation ─────────────────── */}

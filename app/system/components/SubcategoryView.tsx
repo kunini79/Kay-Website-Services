@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORY_CONFIG } from '../constants';
+import { getImageUrl } from '../services/geminiService';
 
 interface SubcategoryData {
   id: string;
@@ -34,6 +35,8 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
     }
     return subcategories[0]?.id || '';
   });
+  const [topicImages, setTopicImages] = useState<Record<string, string>>({});
+  const [subcategoryImages, setSubcategoryImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (initialSubcategoryId && subcategories.some((s) => s.id === initialSubcategoryId)) {
@@ -46,12 +49,36 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
   const activeSub = subcategories.find((s) => s.id === activeSubcategory);
   const topics = activeSub?.topics || [];
 
+  useEffect(() => {
+    let mounted = true;
+    const loadImages = async () => {
+      const entries = await Promise.all(
+        topics.map(async (topic) => [topic, await getImageUrl(topic, 320, 220)] as const)
+      );
+      if (mounted) setTopicImages(Object.fromEntries(entries));
+    };
+    loadImages();
+    return () => { mounted = false; };
+  }, [activeSubcategory, topics]);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadSubcategoryImages = async () => {
+      const entries = await Promise.all(
+        subcategories.map(async (sub) => [sub.id, await getImageUrl(sub.topics[0] || sub.title, 160, 100)] as const)
+      );
+      if (mounted) setSubcategoryImages(Object.fromEntries(entries));
+    };
+    loadSubcategoryImages();
+    return () => { mounted = false; };
+  }, [subcategories]);
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--tb-bg)', padding: '0' }}>
       {/* Category Header */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #58CC02 0%, #46A302 100%)',
+          background: 'linear-gradient(135deg, #82c93b 0%, #5f9f2d 100%)',
           padding: '24px 32px 20px',
           position: 'relative',
           overflow: 'hidden',
@@ -112,10 +139,10 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
         {/* Left Sidebar — Subcategory Tabs */}
         <aside
           style={{
-            width: '220px',
+            width: '188px',
             flexShrink: 0,
-            background: 'linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%)',
-            borderRight: '2px solid #A5D6A7',
+            background: 'linear-gradient(180deg, #edf7e9 0%, #d5eacd 100%)',
+            borderRight: '2px solid #a9cf9f',
             padding: '16px 0',
             overflowY: 'auto',
           }}
@@ -131,9 +158,9 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
                 gap: '10px',
                 padding: '14px 18px',
                 border: 'none',
-                borderLeft: activeSubcategory === sub.id ? '4px solid #58CC02' : '4px solid transparent',
+                borderLeft: activeSubcategory === sub.id ? '4px solid #8fc63d' : '4px solid transparent',
                 background: activeSubcategory === sub.id
-                  ? 'linear-gradient(90deg, rgba(88,204,2,0.15) 0%, transparent 100%)'
+                  ? 'linear-gradient(90deg, rgba(154,200,60,0.28) 0%, transparent 100%)'
                   : 'transparent',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -141,11 +168,11 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
                 fontFamily: 'var(--tb-font-heading)',
                 fontSize: '14px',
                 fontWeight: activeSubcategory === sub.id ? 800 : 600,
-                color: activeSubcategory === sub.id ? '#2E7D32' : '#4a4a4a',
+                color: activeSubcategory === sub.id ? '#4f8236' : 'var(--tb-brand-navy)',
               }}
               onMouseEnter={(e) => {
                 if (sub.id !== activeSubcategory) {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(88,204,2,0.08)';
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(154,200,60,0.14)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -154,7 +181,13 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
                 }
               }}
             >
-              <span style={{ fontSize: '22px', flexShrink: 0 }}>{sub.icon}</span>
+              <span style={{ width: '34px', height: '34px', flexShrink: 0, overflow: 'hidden', borderRadius: '9px', background: '#dcefd5' }}>
+                {subcategoryImages[sub.id] ? (
+                  <img src={subcategoryImages[sub.id]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ display: 'grid', width: '100%', height: '100%', placeItems: 'center', fontSize: '19px' }}>{sub.icon}</span>
+                )}
+              </span>
               <span style={{ lineHeight: 1.3 }}>{sub.title}</span>
             </button>
           ))}
@@ -193,8 +226,8 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-              gap: '16px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+              gap: '14px',
             }}
           >
             {topics.map((topic) => (
@@ -207,8 +240,8 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
                   alignItems: 'center',
                   gap: '8px',
                   padding: '16px 10px',
-                  background: '#fff',
-                  border: '2px solid #E5E5E5',
+                      background: '#fff',
+                      border: '2px solid #e0e6e8',
                   borderRadius: '14px',
                   cursor: 'pointer',
                   textAlign: 'center',
@@ -217,35 +250,37 @@ export const SubcategoryView: React.FC<SubcategoryViewProps> = ({
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = '#58CC02';
+                  el.style.borderColor = '#8fc63d';
                   el.style.transform = 'translateY(-3px)';
-                  el.style.boxShadow = '0 6px 20px rgba(88,204,2,0.2)';
-                  el.style.background = '#F0FFF0';
+                  el.style.boxShadow = '0 6px 20px rgba(111,157,37,0.18)';
+                  el.style.background = '#f6fbf2';
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = '#E5E5E5';
+                  el.style.borderColor = '#e0e6e8';
                   el.style.transform = 'translateY(0)';
                   el.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)';
                   el.style.background = '#fff';
                 }}
               >
-                {/* Topic emoji/icon placeholder */}
+                {/* Topic image */}
                 <div
                   style={{
-                    width: '56px',
-                    height: '56px',
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)',
+                    width: '100%',
+                    height: '92px',
+                    borderRadius: '10px',
+                    background: '#e9f4e5',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
-                    fontWeight: 800,
-                    color: '#2E7D32',
+                    overflow: 'hidden',
                   }}
                 >
-                  {topic.charAt(0).toUpperCase()}
+                  {topicImages[topic] ? (
+                    <img src={topicImages[topic]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '22px', color: '#6e9d25' }}>...</span>
+                  )}
                 </div>
 
                 {/* Topic name */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Search, Dice5, Backpack, Trophy, User } from 'lucide-react';
+import { Search, Dice5, Backpack, BookOpen, Trophy, User } from 'lucide-react';
 import { getGuideCharacter, UserSettings } from '../types';
 import { SettingsMenu } from './SettingsMenu';
 
@@ -18,6 +18,7 @@ interface HeaderProps {
   settings: UserSettings;
   onSettingsUpdate: (newSettings: UserSettings) => void;
   unlockedAchievementsCount?: number;
+  isHome?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   settings,
   onSettingsUpdate,
   unlockedAchievementsCount = 0,
+  isHome = false,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
   const guide = getGuideCharacter(userLevel || 1);
 
   return (
-    <header className="tb-navbar" role="banner">
+    <header className={`tb-navbar ${isHome ? 'tb-navbar--home' : ''}`} role="banner">
       <div className="tb-navbar-inner">
         {/* Logo */}
         <button
@@ -97,6 +99,15 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="View saved articles"
           >
             <Backpack size={22} />
+          </button>
+
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('tb-dictionary-open'))}
+            className="tb-btn-icon tb-btn-secondary"
+            title="Offline dictionary"
+            aria-label="Open offline dictionary"
+          >
+            <BookOpen size={21} />
           </button>
 
           <SettingsMenu settings={settings} onUpdate={onSettingsUpdate} />

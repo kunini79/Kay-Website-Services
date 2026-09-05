@@ -1,0 +1,446 @@
+THINKBOX TECHNICAL OVERVIEW
+Technical onboarding brief for a new founder
+
+Project: Kay Website Services / ThinkBox
+Repository root: c:\Users\dBABA\OneDrive\Desktop\Kay-Website-Services
+Product audience: learners approximately 6-14, schools, teachers, and administrators
+Current stack: Next.js 16 App Router, React 19, TypeScript, MongoDB/Mongoose
+
+======================================================================
+1. PRODUCT IN ONE PARAGRAPH
+======================================================================
+ThinkBox is an educational knowledge explorer inside the KayCorp website. Learners browse topic categories, search for topics, read structured articles, listen to text, take quizzes, earn XP, build streaks, save articles to a Backpack, and review their progress. The product is designed as an offline-first experience with local topic data, browser-local AI options, a local Ollama learning assistant, and an offline dictionary. Published content can also be managed by administrators and supported by teacher reporting workflows.
+
+The primary learner route is /system. The public product and school acquisition route is /products/thinkbox.
+
+======================================================================
+2. IMPORTANT USER FLOWS
+======================================================================
+A. School acquisition
+- A school or founder visits /products/thinkbox.
+- The visitor reviews plans/trial information.
+- A plan inquiry is submitted to /api/plan-inquiries.
+- The application also contains older demo-request flows; treat those as legacy unless verified in the current UI/API.
+
+B. Learner access
+- A learner or teacher signs in through /api/login.
+- Authentication is stored in an HTTP-only thinkbox_token cookie.
+- The token is a JWT and normally lasts seven days.
+- Successful access leads to /system.
+
+C. Learning session
+- The learner chooses a category, searches, or selects a random topic.
+- ThinkBox resolves an article through the content pipeline.
+- The learner reads the article, hears it through browser speech synthesis, opens related topics, saves the article, or takes its quiz.
+- Quiz results update XP, level, streak, mastery, achievements, localStorage, and cloud progress where configured.
+
+D. AI guide
+- The current-level ThinkBox character is the AI guide identity.
+- The character appears in the navigation and in the assistant launcher.
+- Clicking the character opens the assistant panel.
+- The assistant can answer about the current article, connect answers to article sections, and show Words to know.
+- The assistant can also perform direct dictionary definitions without Ollama.
+
+E. Dictionary
+- The assistant panel includes a Look up a word offline field.
+- ThinkBox-specific age-appropriate entries take priority.
+- The local WordNet 3.1 corpus provides broader noun, verb, adjective, and adverb definitions.
+- The authenticated API is GET /api/system/dictionary?word=astronomy.
+
+======================================================================
+3. MAIN ROUTES
+======================================================================
+Public/product routes:
+- /                         KayCorp marketing homepage
+- /products/thinkbox        ThinkBox school plans, trial, and login entry
+- /products/thinkbox/pitchdeck   Product/investor pitch deck
+- /thinkbox                 ThinkBox alias/redirect or static experience
+
+Learner routes:
+- /system                   Main ThinkBox learner application
+- /dashboard                Authenticated user dashboard
+- /forgot-password          Password recovery request
+- /reset-password           Password reset
+
+Admin/operations routes:
+- /admin/thinkbox           ThinkBox article management
+- /admin/thinkbox/reports   Learner reports and teacher assignments
+- /admin/demo-requests      Legacy demo request administration
+- /controller/[sessionId]   Pusher-backed session controller
+
+Important API groups:
+- /api/login, /api/logout, /api/verify-auth
+- /api/system/articles
+- /api/system/articles/[topicId]
+- /api/system/assistant
+- /api/system/dictionary
+- /api/user/progress
+- /api/admin/thinkbox-articles
+- /api/admin/thinkbox-reports
+- /api/admin/thinkbox-assignments
+- /api/plan-inquiries
+- /api/contact
+- /api/newsletter/subscribe
+- /api/feedback
+
+======================================================================
+4. FRONTEND ARCHITECTURE
+======================================================================
+The application uses Next.js App Router with React client components.
+
+Primary files:
+- app/system/page.tsx
+  The main client-side state owner and view state machine.
+- app/system/types.ts
+  Article, quiz, mastery, settings, achievement, avatar, and category types.
+- app/system/constants.tsx
+  Static categories, subcategories, and topic previews.
+- app/system/globals.css
+  ThinkBox-specific design system and responsive styles.
+- app/system/layout.tsx
+  ThinkBox route layout.
+
+Main view states:
+- HOME
+- SUBCATEGORIES
+- ARTICLE
+- LOADING
+- ERROR
+- BACKPACK
+- PROFILE
+
+Important components:
+- Header.tsx: navigation, search, XP, streak, profile, current-level AI character
+- HomeView.tsx: category/topic exploration
+- SubcategoryView.tsx: category drill-down
+- ArticleView.tsx: article display, hero media, sections, related topics, quiz
+- QuizView.tsx: quiz interaction and scoring
+- BackpackView.tsx: saved articles
+- ProfileView.tsx: progress, achievements, settings, mastery
+- AssistantPanel.tsx: local AI guide and dictionary UI
+- TextWithTTS.tsx: read-aloud control and inline vocabulary tooltips
+- DefinitionTooltip.tsx: older standalone tooltip implementation
+- AIModelStatus.tsx: local/browser AI status
+- LevelUpToast.tsx: level-up feedback
+
+Visual identity:
+- Fredoka/Nunito/OpenDyslexic font assets are included.
+- ThinkBox uses bright educational colors, category backgrounds, accessible focus states, and reduced-motion support.
+- Character assets are in public/ThinkBox/ThinkBox Characters.
+
+Current AI character mapping:
+- Levels 1-2: D-Baba
+- Levels 3-4: Mimi
+- Levels 5-6: Dogo
+- Levels 7-8: Steph
+- Level 9 and above: Badosh
+
+The mapping is implemented by getGuideCharacter() in app/system/types.ts.
+
+======================================================================
+5. ARTICLE AND CONTENT PIPELINE
+======================================================================
+The main article orchestration is app/system/services/geminiService.ts.
+
+Normal resolution order:
+1. Request a published article from /api/system/articles/[topicId].
+2. Try curated in-code article overrides.
+3. If the browser is offline, try public/offline/topics.json.
+4. For normal topics, retrieve a Wikipedia extract.
+5. For astronomy/space topics, retrieve NASA material.
+6. Use Gemini to structure source material into ThinkBox article JSON.
+7. Use OpenRouter as a fallback when configured.
+8. Use browser-local AI when it is prepared and available.
+9. Return a minimal offline topic article where possible.
+
+Curated offline topics include at least the explicitly supported overrides in geminiService.ts, including Seven Wonders and Yoruba. The Yoruba fallback was added so the topic does not fail when Wikipedia is unavailable or ambiguous.
+
+Article shape:
+- topicId
+- title
+- intro
+- funFact
+- sections: subtitle/content pairs
+- relatedTopics
+- category
+- imageSeed
+- ageRange
+- source metadata
+- reviewStatus
+- optional quiz questions
+
+Published repository content:
+- MongoDB model: lib/models/ThinkBoxArticle.ts
+- Access helpers: lib/thinkbox.ts
+- Only reviewStatus=published content should be presented as approved repository content.
+- Seed script: scripts/seed-thinkbox-articles.mjs
+
+Offline static data:
+- public/offline/topics.json
+- public/offline/topic-images/
+- app/system/services/offlineTopics.ts
+
+======================================================================
+6. AI ARCHITECTURE
+======================================================================
+There are three distinct AI/content paths. They should not be confused.
+
+A. Gemini/OpenRouter article generation
+- Used mainly to turn source material into structured educational articles.
+- Configuration is read in app/system/services/geminiService.ts.
+- Verify environment variable names in code before deployment; older README/setup documents may use different names.
+
+B. Browser-local AI
+- app/system/services/localAIService.ts
+- Supports Chrome built-in AI when available.
+- Supports Transformers.js and a browser model such as Xenova/Phi-3.5-mini-instruct.
+- Model preparation can require a large browser download and local browser storage.
+- This path is intended for client-side/offline article generation, subject to browser/device capability.
+
+C. Server-side local Ollama guide
+- lib/ollama.ts calls Ollama at http://127.0.0.1:11434.
+- Default model: llama3.2:3b.
+- The browser never calls Ollama directly; the Next.js server route does.
+- app/api/system/assistant/route.ts requires ThinkBox authentication.
+- Messages are limited to 2,000 characters.
+- History is limited to eight messages.
+- Rate limit is 20 requests per user/IP per hour using the current in-memory limiter.
+- Responses are requested in JSON mode.
+- Responses can include an article reference and vocabulary entries.
+- Unsafe request patterns are refused and the system prompt instructs the model not to bypass safety controls.
+- Learner prompts are not written to structured logs by default.
+
+Critical deployment boundary:
+A Vercel/cloud-hosted server cannot reach Ollama running on a developer's Windows desktop through 127.0.0.1. Local Ollama works when the Next.js server and Ollama run on the same machine. Production needs a private model host or an on-prem deployment with authentication, network controls, and persistent rate limiting. Ollama's port must not be exposed publicly.
+
+======================================================================
+7. OFFLINE DICTIONARY
+======================================================================
+ThinkBox includes two layers:
+
+A. Curated ThinkBox dictionary
+- File: lib/offlineDictionary.ts
+- Provides child-friendly definitions and examples.
+- Includes educational, science, history, culture, Yoruba, and mathematics terms.
+- Used by direct assistant definitions and inline article tooltips.
+
+B. WordNet 3.1 corpus
+- Package: wordnet-db
+- License: MIT package license plus the included Princeton WordNet license.
+- Stored locally under node_modules/wordnet-db/dict after npm install.
+- Parser: lib/wordnetDictionary.ts
+- Covers noun, verb, adjective, and adverb entries.
+- Cached in memory after first server lookup.
+- API route: app/api/system/dictionary/route.ts
+
+Direct assistant requests such as “What is astronomy?” use the offline dictionary path first and do not require Ollama. ThinkBox definitions take priority over WordNet so learner-facing wording remains simple.
+
+This is not copied Encarta content. Encarta is proprietary; WordNet is an independent lexical database.
+
+Current limitation: WordNet is a lexical database, not a full multimedia encyclopedia. It does not automatically provide Encarta-style pictures, pronunciation audio, rich usage notes, or complete child-level editorial treatment for every word. Those are product opportunities for a later licensed/content-authoring layer.
+
+======================================================================
+8. AUTHENTICATION AND SECURITY
+======================================================================
+Shared authentication helpers:
+- lib/auth.ts
+- verifyAuth() reads and validates thinkbox_token.
+- verifyToken() validates JWT signatures and expiry.
+- verifyAdminSession() validates the admin_token cookie.
+
+Roles include user, teacher, and admin. Passwords/PINs are bcrypt-hashed in the user models. Password setup uses a time-limited setup token.
+
+Current protections:
+- HTTP-only auth cookies
+- JWT expiry
+- Server-side authentication on the assistant and dictionary routes
+- Request validation and bounded message/history sizes
+- In-memory rate limiting
+- Localhost-only Ollama URL validation
+- Security headers in next.config.ts
+- Structured request logging in lib/logger.ts
+
+Risks requiring founder attention:
+- In-memory rate limiting does not coordinate across multiple production instances; use Redis or a managed limiter for production.
+- Review all progress endpoints so user identity always comes from the verified JWT rather than a client-supplied header.
+- Add stronger moderation/evaluation before allowing broad research workflows for children.
+- Treat article text as untrusted input when placing it into model context.
+- Do not expose Ollama port 11434 to the public network.
+- Review environment variable naming between README, deployment, and code.
+
+======================================================================
+9. PROGRESS, PERSISTENCE, AND CLOUD SYNC
+======================================================================
+Learner state is held in React state and localStorage keys including:
+- tb-xp
+- tb-level
+- tb-streak
+- tb-history
+- tb-backpack
+- tb-achievements
+- tb-topic-mastery
+- tb-user-id
+- tb-username
+
+Cloud synchronization:
+- Client helper: app/system/cloudSync.ts
+- API: app/api/user/progress/route.ts
+- Database connection: lib/db.ts
+- Model data is associated with the relevant learner record.
+- The client loads progress on startup, restores local storage, saves on changes, and attempts periodic sync.
+
+Offline-first behavior means a learner can retain a useful local session, but complete independence from MongoDB/authentication requires a separate local identity and data strategy. At present, “offline AI” means the model/dictionary/content can be local; the entire application is not automatically a standalone desktop app.
+
+======================================================================
+10. ADMIN AND TEACHER OPERATIONS
+======================================================================
+Article CMS:
+- UI: app/admin/thinkbox/page.tsx
+- API: app/api/admin/thinkbox-articles/route.ts
+- Item API: app/api/admin/thinkbox-articles/[id]/route.ts
+
+Administrators can create, edit, delete, review, and publish articles. They can edit sections, related topics, sources, age ranges, and quizzes.
+
+Reports and assignments:
+- Reports aggregate XP, streak, reading, quiz, accuracy, mastery, and review data.
+- Teacher/admin assignment workflows are under the admin ThinkBox routes and APIs.
+
+The CMS review status is important: AI-generated or imported material should pass human review before it is published to learners.
+
+======================================================================
+11. DATA AND DATABASE
+======================================================================
+- Database: MongoDB through Mongoose 8.
+- Connection cache: lib/db.ts.
+- ThinkBox article model: lib/models/ThinkBoxArticle.ts.
+- Learner account/progress model: lib/models/DemoUser.ts and related models.
+- Activity model: lib/models/ActivityLog.ts.
+
+MongoDB is required for the normal authenticated web application unless local fallback behavior is deliberately used. The database should be treated as the source for approved/published articles and cloud learner progress.
+
+======================================================================
+12. LOCAL DEVELOPMENT
+======================================================================
+Prerequisites:
+- Node.js 20+
+- npm 10+
+- MongoDB connection for normal authenticated flows
+- Ollama for the local AI guide
+
+Install dependencies:
+    npm install
+
+Start Ollama and confirm the model:
+    ollama run llama3.2:3b "Reply with the word ready"
+
+Start the Next.js app:
+    npm run dev
+
+Open:
+    http://localhost:3000/system
+
+The development server may choose another port such as 3001 if 3000 is busy. A .next/dev/lock error means another Next.js dev server is already running.
+
+Useful commands:
+    npm run dev
+    npm run build
+    npm run start
+    npm run lint
+    npx tsc --noEmit
+    npm run seed:thinkbox
+    npm run seed:thinkbox-access
+    npm run download:topic-images
+
+Local Ollama environment settings:
+    OLLAMA_BASE_URL=http://127.0.0.1:11434
+    OLLAMA_MODEL=llama3.2:3b
+
+Never commit secrets. Use .env.local for local environment values.
+
+======================================================================
+13. FOUNDER PRIORITIES
+======================================================================
+Priority 1: Trust and child safety
+- Define age bands and allowed research boundaries.
+- Establish human review for published articles.
+- Add a formal moderation/evaluation suite for Ollama outputs.
+- Make parent/teacher reporting and escalation pathways explicit.
+
+Priority 2: Reliable offline product
+- Decide whether “offline” means offline content only, offline AI only, or a full desktop/PWA deployment.
+- Package local content and dictionary data deliberately.
+- Add a local account/progress mode if internet-free schools are a target market.
+- Test low-memory Windows devices and mobile browsers.
+
+Priority 3: Content quality and differentiation
+- Build a reviewed curriculum map by age, subject, and learning objective.
+- Expand article coverage through reviewed content packs, not uncontrolled generation.
+- Add proper citation/source display and content freshness review.
+- Consider a licensed pronunciation/audio and richer dictionary data source.
+
+Priority 4: Production infrastructure
+- Move rate limiting to Redis or an equivalent shared store.
+- Derive every protected resource owner from verified auth claims.
+- Choose private Ollama hosting or on-prem school deployment.
+- Add monitoring for model latency, refusal rate, factuality, and failures.
+- Establish backups and restore tests for MongoDB.
+
+Priority 5: Founder metrics
+Track:
+- Weekly active learners
+- Article completion rate
+- Quiz completion and mastery movement
+- Search-to-article success rate
+- Dictionary lookup usage
+- Assistant questions per learner
+- Unsafe request/refusal rate
+- Offline session success rate
+- Teacher/admin review turnaround
+- School trial conversion
+
+======================================================================
+14. KEY FILE MAP
+======================================================================
+Learner application:
+- app/system/page.tsx
+- app/system/types.ts
+- app/system/constants.tsx
+- app/system/components/
+- app/system/services/geminiService.ts
+- app/system/services/offlineTopics.ts
+- app/system/services/localAIService.ts
+
+AI and dictionary:
+- lib/ollama.ts
+- lib/offlineDictionary.ts
+- lib/wordnetDictionary.ts
+- app/api/system/assistant/route.ts
+- app/api/system/dictionary/route.ts
+- app/system/components/AssistantPanel.tsx
+- app/system/components/TextWithTTS.tsx
+
+Content/database:
+- lib/db.ts
+- lib/thinkbox.ts
+- lib/models/ThinkBoxArticle.ts
+- scripts/seed-thinkbox-articles.mjs
+- public/offline/topics.json
+
+Auth/security:
+- lib/auth.ts
+- lib/logger.ts
+- utils/rateLimit.ts
+- next.config.ts
+
+Product/admin:
+- app/products/thinkbox/page.tsx
+- app/admin/thinkbox/
+- app/api/admin/thinkbox-articles/
+- app/api/admin/thinkbox-reports/
+
+======================================================================
+15. BOTTOM LINE
+======================================================================
+ThinkBox is currently a Next.js educational platform with a functioning learner shell, article/content pipeline, quizzes and progression, database-backed publishing, browser/local fallback paths, a local Ollama learning guide, and a real offline WordNet dictionary layer. The strongest near-term work is not adding more generic AI features; it is making offline boundaries explicit, securing progress ownership, reviewing AI content, expanding curated curriculum coverage, and choosing the production deployment model for local AI.
+
+This overview describes the implementation state found in the repository. It should be updated whenever the authentication model, content pipeline, AI hosting model, or offline product definition changes.

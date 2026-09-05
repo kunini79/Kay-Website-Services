@@ -13,6 +13,7 @@ import { Loader } from './components/Loader';
 import { SystemErrorBoundary } from './components/SystemErrorBoundary';
 import { AIModelStatus } from './components/AIModelStatus';
 import { AssistantPanel } from './components/AssistantPanel';
+import { DictionaryPanel } from './components/DictionaryPanel';
 import { fetchArticle } from './services/geminiService';
 import { STATIC_TOPICS, SUBCATEGORIES_DATA } from './constants';
 import { AlertCircle } from 'lucide-react';
@@ -546,11 +547,13 @@ export default function SystemPage() {
             settings={settings}
             onSettingsUpdate={setSettings}
             unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
+            isHome={viewState === ViewState.HOME}
           />
           <main className="tb-system-main">
           {/* Offline/Local AI status badge — fixed bottom-right */}
           <AIModelStatus alwaysShow={false} />
             <AssistantPanel article={currentArticle} userLevel={userLevel} />
+            <DictionaryPanel />
             {/* Feedback Modal */}
             {feedbackOpen && (
               <div style={{
