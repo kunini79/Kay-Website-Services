@@ -80,6 +80,14 @@
 
 .tb-assistant-identity { display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--tb-text-muted); font-size: 11px; font-weight: 700; }
 .tb-assistant-identity img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--tb-yellow); }
+.tb-dictionary-form { display: flex; align-items: center; gap: 6px; margin: 0 12px 10px; padding: 6px 8px; border: 1px solid var(--tb-border); border-radius: 12px; background: var(--tb-bg); color: var(--tb-text-muted); }
+.tb-dictionary-form input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--tb-text); font: inherit; font-size: 12px; }
+.tb-dictionary-form button { border: 0; border-radius: 8px; padding: 6px 8px; background: var(--tb-yellow); color: var(--tb-text); cursor: pointer; font: 700 11px var(--tb-font-heading); }
+.tb-dictionary-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+.tb-dictionary-results { display: flex; flex-direction: column; gap: 8px; margin: 0 12px 10px; padding: 10px; border-left: 3px solid var(--tb-yellow); background: #fffbeb; color: var(--tb-text); font-size: 12px; line-height: 1.4; }
+.tb-dictionary-results p { margin: 2px 0; }
+.tb-dictionary-results em { color: var(--tb-text-muted); font-size: 11px; }
+.tb-dictionary-results small { color: var(--tb-text-muted); }
 
 .tb-assistant-messages {
   display: flex;

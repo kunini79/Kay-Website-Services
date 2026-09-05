@@ -1,37 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Volume2, Pause, Volume1 } from "lucide-react";
+import { lookupDictionary } from '@/lib/offlineDictionary';
 
 interface TooltipProps {
   word: string;
 }
 
-const DICTIONARY: Record<string, string> = {
-  photosynthesis: "How plants turn sunlight into food.",
-  ecosystem: "A community of living things working together.",
-  civilization: "A complex society with cities and government.",
-  democracy: "A system where people vote for their leaders.",
-  gravity: "The force that pulls things toward the ground.",
-  atmosphere: "The layer of air surrounding our planet.",
-  herbivore: "An animal that only eats plants.",
-  carnivore: "An animal that eats meat.",
-  endangered: "At risk of disappearing forever.",
-  constellation: "A group of stars that forms a picture.",
-  mammal: "Warm-blooded animal that feeds milk to its babies.",
-  amphibian: "Animal that can live on both land and water.",
-  hieroglyphics: "Ancient Egyptian picture writing.",
-  pharaoh: "A king of ancient Egypt.",
-  innovation: "A new idea or invention.",
-  technology: "Tools and machines that solve problems.",
-  satellite: "An object that orbits around a planet.",
-  telescope: "A tool to see things far away in space.",
-  volcano: "A mountain that erupts with hot lava.",
-  migration: "Moving from one place to another.",
-};
-
 const DefinitionTooltip: React.FC<TooltipProps> = ({ word }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const cleanWord = word.toLowerCase().replace(/[.,;!?()]/g, '');
-  const definition = DICTIONARY[cleanWord];
+  const cleanWord = word.toLowerCase().replace(/[.,;!?()]/g, "");
+  const definition = lookupDictionary(cleanWord)?.meaning;
 
   // If dictionary entry exists, show tooltip
   if (definition) {
@@ -163,7 +141,7 @@ const TextWithTTS: React.FC<TTSProps> = ({ content, title, className }) => {
         {words.map((word, i) => {
           const cleanWord = word.toLowerCase().replace(/[.,;!?()]/g, "");
           // Check our dictionary for complex words
-          const isComplex = !!DICTIONARY[cleanWord];
+          const isComplex = Boolean(lookupDictionary(cleanWord));
 
           return (
             <React.Fragment key={i}>

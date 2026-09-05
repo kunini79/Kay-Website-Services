@@ -11,6 +11,7 @@
 - **Authentication**: JWT (signed cookies for admin, HTTP-only cookies for users)
 - **AI Content**: Google Gemini + OpenRouter fallback for article generation
 - **Learning Assistant**: Optional local Ollama model, grounded in published ThinkBox articles
+- **Offline Dictionary**: ThinkBox definitions plus the MIT-licensed WordNet 3.1 corpus
 - **Email**: Resend for transactional mail
 - **Real-time**: Pusher for WebSocket events
 - **Deployment**: Vercel (with MongoDB Atlas for production)
@@ -90,6 +91,11 @@ learner prompts. `OLLAMA_BASE_URL` is deliberately restricted to localhost so th
 feature cannot become a server-side proxy to an arbitrary network host. Do not expose
 Ollama's port publicly. For production, use a private model host with authentication,
 network egress controls, persistent rate limiting, and an independent moderation layer.
+
+The offline dictionary is available through authenticated `GET /api/system/dictionary?word=astronomy`.
+It uses ThinkBox's age-appropriate entries first, then searches the local WordNet 3.1 corpus
+for broader noun, verb, adjective, and adverb definitions. It does not copy Encarta content;
+WordNet is a separate MIT-licensed lexical database bundled with the application.
 
 ### Generating Secrets
 

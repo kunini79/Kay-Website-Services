@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Article, getGuideCharacter } from '../types';
-import { Loader2, Send, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { BookOpen, Loader2, Send, ShieldCheck, Sparkles, X } from 'lucide-react';
 
 interface AssistantPanelProps {
   article: Article | null;
@@ -20,6 +20,10 @@ interface VocabularyItem {
   example: string;
 }
 
+interface DictionaryEntry extends VocabularyItem {
+  partOfSpeech?: string;
+}
+
 export const AssistantPanel: React.FC<AssistantPanelProps> = ({ article, userLevel }) => {
   const guide = getGuideCharacter(userLevel);
   const [open, setOpen] = useState(false);
@@ -29,6 +33,9 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ article, userLev
   const [error, setError] = useState<string | null>(null);
   const [vocabulary, setVocabulary] = useState<VocabularyItem[]>([]);
   const [articleReference, setArticleReference] = useState<string | null>(null);
+  const [dictionaryWord, setDictionaryWord] = useState('');
+  const [dictionaryEntries, setDictionaryEntries] = useState<DictionaryEntry[]>([]);
+  const [dictionaryLoading, setDictionaryLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -83,6 +90,21 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ article, userLev
     }
   }
 
+  async function lookupWord(event: React.FormEvent) {
+    event.preventDefault();
+    const word = dictionaryWord.trim();
+    if (!word || dictionaryLoading) return;
+    setDictionaryLoading(true);
+    setDictionaryEntries([]);
+    try {
+      const response = await fetch(`/api/system/dictionary?word=${encodeURIComponent(word)}`);
+      const data = await response.json() as { entries?: DictionaryEntry[] };
+      setDictionaryEntries(data.entries || []);
+    } finally {
+      setDictionaryLoading(false);
+    }
+  }
+
   return (
     <div className="tb-assistant tb-print-hide">
       {open && (
@@ -105,6 +127,31 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ article, userLev
             <img src={guide.image} alt={`${guide.name}, level ${userLevel} guide`} />
             <span>Level {userLevel} guide</span>
           </div>
+
+          <form className="tb-dictionary-form" onSubmit={lookupWord}>
+            <BookOpen size={16} aria-hidden="true" />
+            <input
+              value={dictionaryWord}
+              onChange={(event) => setDictionaryWord(event.target.value)}
+              placeholder="Look up a word offline"
+              aria-label="Look up a word in the offline dictionary"
+              maxLength={80}
+            />
+            <button type="submit" disabled={dictionaryLoading || !dictionaryWord.trim()}>
+              {dictionaryLoading ? <Loader2 className="tb-assistant-spin" size={15} /> : 'Define'}
+            </button>
+          </form>
+          {dictionaryEntries.length > 0 && (
+            <div className="tb-dictionary-results">
+              {dictionaryEntries.map((entry, index) => (
+                <div key={`${entry.word}-${entry.partOfSpeech || index}`}>
+                  <strong>{entry.word}</strong>{entry.partOfSpeech && <em> · {entry.partOfSpeech}</em>}
+                  <p>{entry.meaning}</p>
+                  {entry.example && <small>Example: {entry.example}</small>}
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="tb-assistant-messages" aria-live="polite">
             {messages.length === 0 && (
