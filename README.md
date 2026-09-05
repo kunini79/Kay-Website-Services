@@ -10,6 +10,7 @@
 - **Database**: MongoDB via Mongoose 8
 - **Authentication**: JWT (signed cookies for admin, HTTP-only cookies for users)
 - **AI Content**: Google Gemini + OpenRouter fallback for article generation
+- **Learning Assistant**: Optional local Ollama model, grounded in published ThinkBox articles
 - **Email**: Resend for transactional mail
 - **Real-time**: Pusher for WebSocket events
 - **Deployment**: Vercel (with MongoDB Atlas for production)
@@ -76,7 +77,19 @@ NEXT_PUBLIC_PUSHER_CLUSTER=us2
 
 # NASA API key (for space imagery in ThinkBox)
 NASA_API_KEY=DEMO_KEY  # DEMO_KEY works for dev; get free key at api.nasa.gov
+
+# Local-only ThinkBox learning assistant (Ollama must be running on this machine)
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3.2:3b
 ```
+
+The ThinkBox assistant is available through `POST /api/system/assistant`. The route
+keeps Ollama server-side, requires the authenticated ThinkBox cookie, limits message
+size and request volume, grounds responses in published articles, and does not log
+learner prompts. `OLLAMA_BASE_URL` is deliberately restricted to localhost so this
+feature cannot become a server-side proxy to an arbitrary network host. Do not expose
+Ollama's port publicly. For production, use a private model host with authentication,
+network egress controls, persistent rate limiting, and an independent moderation layer.
 
 ### Generating Secrets
 
@@ -134,6 +147,10 @@ npm run start
 
 # Download offline topic thumbnails (optional, for ThinkBox offline mode)
 npm run download:topic-images
+
+# Start Ollama in another terminal, then download a small local model
+ollama serve
+ollama pull llama3.2:3b
 ```
 
 ---

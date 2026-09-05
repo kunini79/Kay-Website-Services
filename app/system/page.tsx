@@ -12,6 +12,7 @@ import { LevelUpToast } from './components/LevelUpToast';
 import { Loader } from './components/Loader';
 import { SystemErrorBoundary } from './components/SystemErrorBoundary';
 import { AIModelStatus } from './components/AIModelStatus';
+import { AssistantPanel } from './components/AssistantPanel';
 import { fetchArticle } from './services/geminiService';
 import { STATIC_TOPICS, SUBCATEGORIES_DATA } from './constants';
 import { AlertCircle } from 'lucide-react';
@@ -549,6 +550,7 @@ export default function SystemPage() {
           <main className="tb-system-main">
           {/* Offline/Local AI status badge — fixed bottom-right */}
           <AIModelStatus alwaysShow={false} />
+            <AssistantPanel article={currentArticle} userLevel={userLevel} />
             {/* Feedback Modal */}
             {feedbackOpen && (
               <div style={{

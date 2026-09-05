@@ -119,6 +119,11 @@ export const avatars: Avatar[] = [
   { id: 'steph', name: 'Steph', image: '/ThinkBox/ThinkBox Characters/Steph.jpg', unlockAchievement: 'streak_20' },
   { id: 'badosh', name: 'Badosh', image: '/ThinkBox/ThinkBox Characters/Badosh.jpg', unlockAchievement: 'streak_20' },
 ];
+
+export function getGuideCharacter(level: number): Avatar {
+  const characterIndex = Math.min(avatars.length - 1, Math.max(0, Math.floor((level - 1) / 2)));
+  return avatars[characterIndex];
+}
 export type Achievement = {
   id: string;
   icon: string;

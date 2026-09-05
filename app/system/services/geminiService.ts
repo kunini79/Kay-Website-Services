@@ -246,6 +246,39 @@ const TOPIC_TO_WIKIPEDIA_MAP: Record<string, string> = {
 const getCuratedArticleOverride = (topic: string): Article | null => {
   const normalized = topic.toLowerCase();
 
+  if (normalized === 'yoruba' || normalized.includes('yoruba people') || normalized.includes('yoruba culture')) {
+    return {
+      title: 'The Yoruba',
+      category: Category.PEOPLE,
+      intro:
+        'The Yoruba are a large cultural group from West Africa, especially Nigeria, Benin, and Togo. They are connected by related languages, shared history, rich arts, and traditions that have also spread around the world through migration and the African diaspora.',
+      funFact:
+        'Yoruba is both the name of a people and the name of the language spoken by many Yoruba people.',
+      sections: [
+        {
+          subtitle: 'Where They Live',
+          content:
+            'Many Yoruba people live in southwestern Nigeria, as well as parts of Benin and Togo. Important Yoruba cities include Ile-Ife, Ibadan, Oyo, and Lagos. Yoruba communities can also be found in many other countries.',
+        },
+        {
+          subtitle: 'Language and History',
+          content:
+            'Yoruba is a tonal language, which means that changes in pitch can change the meaning of a word. Yoruba history includes important kingdoms and city-states, including Ife and Oyo. Ile-Ife is especially known for its historic art and spiritual importance.',
+        },
+        {
+          subtitle: 'Arts and Traditions',
+          content:
+            'Yoruba artists are well known for sculpture, beadwork, textiles, music, drumming, dance, and storytelling. Yoruba beliefs and cultural practices have influenced communities in the Caribbean and the Americas as well as West Africa.',
+        },
+      ],
+      relatedTopics: ['West Africa', 'Nigeria', 'African Languages', 'African Art'],
+      source: {
+        type: 'editorial',
+        title: 'ThinkBox curated overview',
+      },
+    };
+  }
+
   if (
     normalized.includes('seven wonders') ||
     normalized.includes('7 wonders') ||

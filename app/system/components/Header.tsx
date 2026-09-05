@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Search, Dice5, Backpack, Trophy, User } from 'lucide-react';
-import { UserSettings } from '../types';
+import { getGuideCharacter, UserSettings } from '../types';
 import { SettingsMenu } from './SettingsMenu';
 
 interface HeaderProps {
@@ -41,6 +41,8 @@ export const Header: React.FC<HeaderProps> = ({
       onSearch(searchFilter);
     }
   };
+
+  const guide = getGuideCharacter(userLevel || 1);
 
   return (
     <header className="tb-navbar" role="banner">
@@ -85,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        {/* Right section: Settings + Backpack + Streak + Avatar + Feedback */}
+        {/* Right section: Settings + Backpack + AI guide + Streak + Avatar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             onClick={onBackpack}
@@ -99,15 +101,15 @@ export const Header: React.FC<HeaderProps> = ({
 
           <SettingsMenu settings={settings} onUpdate={onSettingsUpdate} />
 
-          {/* Feedback Button */}
+          {/* Current-level AI guide */}
           <button
             className="tb-btn-icon tb-btn-secondary"
-            title="Send Feedback or Suggestion"
-            aria-label="Feedback"
+            title={`${guide.name}, your Level ${userLevel || 1} AI guide`}
+            aria-label={`Open ${guide.name}, your Level ${userLevel || 1} AI guide`}
             style={{ position: 'relative' }}
-            onClick={() => window.dispatchEvent(new CustomEvent('tb-feedback-open'))}
+            onClick={() => window.dispatchEvent(new CustomEvent('tb-assistant-open'))}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#58CC02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <img className="tb-header-guide-image" src={guide.image} alt="" aria-hidden="true" />
           </button>
 
           {/* XP Display */}
