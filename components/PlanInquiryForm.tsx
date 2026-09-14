@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { AlertCircle, CheckCircle, Loader2, Send } from 'lucide-react';
 
 const planOptions = [
+  { value: 'individual-license', label: 'Individual Software License', price: 'N9,999 one-time (up to 3 users, +N5,000/extra user)' },
   { value: 'standard-campus-lab', label: 'Standard Campus Lab', price: 'N650,000 - N850,000 / year' },
-  { value: 'premium-campus', label: 'Premium / Multi-Arm Campus', price: 'N1,200,000 - N1,800,000 / year' },
   { value: 'network-schools', label: 'Network / Group of Schools', price: 'N2,500,000+ / year' },
   { value: 'turnkey-kit', label: 'Turnkey Hardware + Software Kit', price: 'N1,500,000 setup + N500,000 / year' },
 ];
@@ -16,7 +16,7 @@ export default function PlanInquiryForm() {
     email: '',
     phone: '',
     organisation: '',
-    selectedPlan: 'standard-campus-lab',
+    selectedPlan: 'individual-license',
     billingPreference: 'annual',
     message: '',
   });

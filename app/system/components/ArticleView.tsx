@@ -36,6 +36,10 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
 
   useEffect(() => {
+    if (article.isCurriculumNote) {
+      setHeroLoading(false);
+      return;
+    }
     let isMounted = true;
     const loadHeroImage = async () => {
       try {
@@ -54,7 +58,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [imageSeed]);
+  }, [imageSeed, article.isCurriculumNote]);
 
   const sectionColors = ['#0D9488', '#F97316', '#FCD34D', '#14B8A6'];
 
@@ -92,112 +96,185 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
       </div>
       <h1 className="tb-print-title">{article.title}</h1>
 
-      {/* Hero Header with Carousel */}
-      <div className="tb-article-hero" style={{ position: 'relative', borderRadius: 'var(--tb-radius-xl)', overflow: 'hidden', boxShadow: 'var(--tb-shadow-lg)', marginBottom: '32px' }}>
-        {heroLoading ? (
-            <div style={{ aspectRatio: '16/9', width: '100%', background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="text-gray-400 font-bold">Loading visuals...</span>
-            </div>
-        ) : (
-          <div className="embla" ref={emblaRef} style={{ overflow: 'hidden', height: '100%', aspectRatio: '16/9' }}>
-            <div className="embla__container" style={{ display: 'flex', height: '100%' }}>
-              {(heroImages.length > 0 ? heroImages : ['/placeholder.jpg']).map((src, index) => (
-                 <div className="embla__slide" key={index} style={{ flex: '0 0 100%', minWidth: 0, position: 'relative' }}>
-                    <img
-                      src={src}
-                      alt={`${article.title} - view ${index + 1}`}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        filter: 'brightness(0.7)',
-                      }}
-                      onError={(e) => (e.currentTarget.style.display = 'none')}
-                    />
-                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Title Overlay */}
+      {/* Hero Header / Banner */}
+      {article.isCurriculumNote ? (
         <div
           style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            padding: '40px 32px',
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            background: 'linear-gradient(135deg, #15803d 0%, #166534 100%)',
+            borderRadius: 'var(--tb-radius-xl)',
+            padding: '32px 28px',
+            color: 'white',
+            boxShadow: 'var(--tb-shadow-md)',
+            marginBottom: '32px',
             display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            pointerEvents: 'none'
+            flexDirection: 'column',
+            gap: '16px',
           }}
         >
-          <div style={{ pointerEvents: 'auto' }}>
-            <div style={{ marginBottom: '16px' }}>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    background: 'var(--tb-yellow)',
-                    color: 'var(--tb-text)',
-                    padding: '4px 14px',
-                    borderRadius: 'var(--tb-radius-full)',
-                    fontFamily: 'var(--tb-font-heading)',
-                    fontWeight: 700,
-                    fontSize: '12px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  {article.category}
-                </span>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h1
+          <div>
+            <span
+              style={{
+                display: 'inline-block',
+                background: '#58CC02',
+                color: '#ffffff',
+                padding: '6px 16px',
+                borderRadius: 'var(--tb-radius-full)',
+                fontFamily: 'var(--tb-font-heading)',
+                fontWeight: 800,
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+              }}
+            >
+              📚 ACADEMIC LESSON NOTE • {article.gradeLabel || article.category}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
+            <h1
+              style={{
+                fontFamily: 'var(--tb-font-heading)',
+                fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
+                fontWeight: 700,
+                color: 'white',
+                margin: 0,
+                lineHeight: 1.15,
+              }}
+            >
+              {article.title}
+            </h1>
+            {onToggleSave && (
+              <button
+                onClick={onToggleSave}
                 style={{
-                    fontFamily: 'var(--tb-font-heading)',
-                    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                    fontWeight: 700,
-                    color: 'white',
-                    margin: 0,
-                    lineHeight: 1.1,
+                  background: isSaved ? 'var(--tb-primary)' : 'rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(4px)',
+                  border: isSaved ? '2px solid var(--tb-primary-light)' : '2px solid rgba(255,255,255,0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: isSaved ? '0 4px 12px rgba(88, 204, 2, 0.4)' : 'none'
                 }}
-                >
-                {article.title}
-                </h1>
-                
-                {onToggleSave && (
-                    <button
-                        onClick={onToggleSave}
+                title={isSaved ? "Saved to Backpack" : "Save to Backpack"}
+              >
+                {isSaved ? <Check size={24} strokeWidth={3} /> : <Bookmark size={24} />}
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="tb-article-hero" style={{ position: 'relative', borderRadius: 'var(--tb-radius-xl)', overflow: 'hidden', boxShadow: 'var(--tb-shadow-lg)', marginBottom: '32px' }}>
+          {heroLoading ? (
+              <div style={{ aspectRatio: '16/9', width: '100%', background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span className="text-gray-400 font-bold">Loading visuals...</span>
+              </div>
+          ) : (
+            <div className="embla" ref={emblaRef} style={{ overflow: 'hidden', height: '100%', aspectRatio: '16/9' }}>
+              <div className="embla__container" style={{ display: 'flex', height: '100%' }}>
+                {(heroImages.length > 0 ? heroImages : ['/placeholder.jpg']).map((src, index) => (
+                   <div className="embla__slide" key={index} style={{ flex: '0 0 100%', minWidth: 0, position: 'relative' }}>
+                      <img
+                        src={src}
+                        alt={`${article.title} - view ${index + 1}`}
                         style={{
-                            pointerEvents: 'auto',
-                            background: isSaved ? 'var(--tb-primary)' : 'rgba(255,255,255,0.2)',
-                            backdropFilter: 'blur(4px)',
-                            border: isSaved ? '2px solid var(--tb-primary-light)' : '2px solid rgba(255,255,255,0.4)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            width: '48px',
-                            height: '48px',
-                            borderRadius: '50%',
-                            color: 'white',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            boxShadow: isSaved ? '0 4px 12px rgba(88, 204, 2, 0.4)' : 'none'
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          filter: 'brightness(0.7)',
                         }}
-                        title={isSaved ? "Saved to Backpack" : "Save to Backpack"}
-                    >
-                        {isSaved ? <Check size={24} strokeWidth={3} /> : <Bookmark size={24} />}
-                    </button>
-                )}
+                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                      />
+                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Title Overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              padding: '40px 32px',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              pointerEvents: 'none'
+            }}
+          >
+            <div style={{ pointerEvents: 'auto' }}>
+              <div style={{ marginBottom: '16px' }}>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      background: 'var(--tb-yellow)',
+                      color: 'var(--tb-text)',
+                      padding: '4px 14px',
+                      borderRadius: 'var(--tb-radius-full)',
+                      fontFamily: 'var(--tb-font-heading)',
+                      fontWeight: 700,
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                    }}
+                  >
+                    {article.category}
+                  </span>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                  <h1
+                  style={{
+                      fontFamily: 'var(--tb-font-heading)',
+                      fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                      fontWeight: 700,
+                      color: 'white',
+                      margin: 0,
+                      lineHeight: 1.1,
+                  }}
+                  >
+                  {article.title}
+                  </h1>
+                  
+                  {onToggleSave && (
+                      <button
+                          onClick={onToggleSave}
+                          style={{
+                              pointerEvents: 'auto',
+                              background: isSaved ? 'var(--tb-primary)' : 'rgba(255,255,255,0.2)',
+                              backdropFilter: 'blur(4px)',
+                              border: isSaved ? '2px solid var(--tb-primary-light)' : '2px solid rgba(255,255,255,0.4)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              width: '48px',
+                              height: '48px',
+                              borderRadius: '50%',
+                              color: 'white',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              boxShadow: isSaved ? '0 4px 12px rgba(88, 204, 2, 0.4)' : 'none'
+                          }}
+                          title={isSaved ? "Saved to Backpack" : "Save to Backpack"}
+                      >
+                          {isSaved ? <Check size={24} strokeWidth={3} /> : <Bookmark size={24} />}
+                      </button>
+                  )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Intro Section with TTS */}
       <div className="tb-article-body mb-8">
@@ -240,8 +317,11 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
           </div>
         )}
 
-         {/* Fun Fact Card */}
-         <DidYouKnow fact={article.funFact} />
+         {/* Fun Fact / Key Concept Card */}
+         <DidYouKnow
+           fact={article.funFact}
+           title={article.isCurriculumNote ? '📌 Key Memory Concept & Rule' : 'Did You Know?'}
+         />
       </div>
 
       {/* Article Sections */}
@@ -255,6 +335,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 articleTitle={article.title}
                 articleImageSeed={imageSeed}
                 accentColor={sectionColors[idx % sectionColors.length]}
+                isCurriculumNote={article.isCurriculumNote}
               />
             ))
           ) : (
@@ -342,6 +423,7 @@ interface SectionBlockProps {
   articleTitle: string;
   articleImageSeed: string;
   accentColor: string;
+  isCurriculumNote?: boolean;
 }
 
 const SectionBlock: React.FC<SectionBlockProps> = ({
@@ -350,12 +432,13 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   articleTitle,
   articleImageSeed,
   accentColor,
+  isCurriculumNote = false,
 }) => {
   const [sectionImages, setSectionImages] = useState<string[]>([]);
   const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
-    if (index % 2 === 0) {
+    if (!isCurriculumNote && index % 2 === 0) {
       let isMounted = true;
       const loadImage = async () => {
         try {
@@ -375,7 +458,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
     } else {
       setImageLoading(false);
     }
-  }, [articleImageSeed, index, section.subtitle]);
+  }, [articleImageSeed, index, isCurriculumNote, section.subtitle]);
 
   return (
     <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -399,11 +482,13 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
         <div style={{
           fontSize: '16px',
           color: 'var(--tb-text)',
+          lineHeight: '1.7',
+          whiteSpace: 'pre-line',
         }}>
           <TextWithTTS content={section.content} />
         </div>
       </div>
-      {index % 2 === 0 && (
+      {!isCurriculumNote && index % 2 === 0 && (
         <div
           style={{
             width: '260px',

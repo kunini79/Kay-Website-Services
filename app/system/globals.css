@@ -859,9 +859,9 @@ input:checked + .tb-switch-slider:before {
   margin: 0 auto;
   padding: 34px 24px 46px;
   overflow: visible;
-  background: linear-gradient(145deg, #f7a51e 0%, var(--tb-brand-yellow) 52%, #ffe18a 100%);
+  background: transparent;
   border-radius: 0 0 0 16%;
-  box-shadow: 0 16px 30px rgba(224, 139, 0, 0.16);
+  box-shadow: none;
 }
 
 .tb-hero-intro { position: relative; z-index: 1; max-width: 680px; margin: 0 auto 24px; text-align: center; }
@@ -996,6 +996,11 @@ input:checked + .tb-switch-slider:before {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.tb-system-main--home {
+  min-height: calc(100vh - 138px);
+  background: url('/ThinkBox/background.jpg') center / cover fixed;
 }
 
 .tb-navbar--home {
@@ -1299,6 +1304,176 @@ input:checked + .tb-switch-slider:before {
   color: var(--tb-text-muted);
 }
 
+.tb-curriculum {
+  max-width: 1200px;
+  margin: 46px auto 0;
+  padding: 28px;
+  border: 2px solid #d9e9d0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f7fff3 0%, #ffffff 72%);
+  box-shadow: 0 10px 28px rgba(64, 105, 49, 0.08);
+}
+
+.tb-curriculum-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tb-curriculum-heading h2 {
+  margin: 4px 0 6px;
+  color: #214b28;
+  font-family: var(--tb-font-heading);
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.tb-curriculum-heading p {
+  margin: 0;
+  color: #49634d;
+  font-family: var(--tb-font-body);
+  font-weight: 600;
+}
+
+.tb-curriculum-range {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #e5f6d9;
+  color: #39751f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tb-grade-picker {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 8px;
+  margin: 24px 0 20px;
+}
+
+.tb-grade-picker__button {
+  min-height: 42px;
+  border: 1px solid #cfe0c6;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #49634d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tb-grade-picker__button:hover,
+.tb-grade-picker__button--active {
+  border-color: #6eb82e;
+  background: #6eb82e;
+  color: #ffffff;
+}
+
+.tb-curriculum-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tb-curriculum-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e0eadc;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.tb-curriculum-card--active {
+  border-color: #9ccc7c;
+  box-shadow: 0 6px 16px rgba(64, 105, 49, 0.1);
+}
+
+.tb-curriculum-card__stage {
+  color: #6a9f51;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tb-curriculum-card h3 {
+  margin: 0;
+  color: #214b28;
+  font-family: var(--tb-font-heading);
+  font-size: 1.08rem;
+}
+
+.tb-curriculum-subject {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #214b28;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tb-curriculum-subject:hover,
+.tb-curriculum-subject:focus-visible {
+  color: #6eb82e;
+}
+
+.tb-curriculum-subject svg {
+  flex-shrink: 0;
+  transition: transform 160ms ease;
+}
+
+.tb-curriculum-card--active .tb-curriculum-subject svg {
+  transform: rotate(90deg);
+}
+
+.tb-curriculum-lessons {
+  margin-top: 12px;
+}
+
+.tb-curriculum-lesson {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 0 0;
+  border: 0;
+  border-top: 1px solid #edf2eb;
+  background: transparent;
+  color: #315d38;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tb-curriculum-lesson strong,
+.tb-curriculum-lesson small {
+  display: block;
+}
+
+.tb-curriculum-lesson strong {
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.tb-curriculum-lesson small {
+  margin-top: 4px;
+  color: #66806a;
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.tb-curriculum-lesson:hover strong {
+  color: #6eb82e;
+}
+
 @media (max-width: 1024px) {
   .tb-encarta-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -1312,6 +1487,10 @@ input:checked + .tb-switch-slider:before {
 
   .tb-encarta-category-icon {
     font-size: 24px;
+  }
+
+  .tb-curriculum-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
 }
@@ -1379,6 +1558,11 @@ input:checked + .tb-switch-slider:before {
   .tb-hero-logo-wrap { height: 170px; }
   .tb-hero-title img { margin-top: -78px; }
   .tb-hero-lede { font-size: 0.95rem; }
+  .tb-curriculum { margin: 32px 12px 0; padding: 20px 16px; }
+  .tb-curriculum-heading { display: block; }
+  .tb-curriculum-range { display: inline-block; margin-top: 14px; }
+  .tb-grade-picker { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .tb-curriculum-grid { grid-template-columns: 1fr; }
   .tb-daily-topic { min-height: 300px; padding: 30px 24px; }
   .tb-daily-topic-copy { max-width: 82%; }
   .tb-daily-topic-art { right: -8px; font-size: 10rem; }
@@ -1619,13 +1803,9 @@ input:checked + .tb-switch-slider:before {
 }
 
 /* ThinkBox landing palette */
-.tb-hero {
-  background: linear-gradient(145deg, #7fbd2f 0%, var(--tb-brand-lime) 52%, #d9ed8b 100%);
-}
-
-.tb-hero-kicker { color: #315d28; }
-.tb-hero-title { color: #214b28; }
-.tb-hero-lede { color: #315d38; }
+.tb-hero-kicker { color: #6eb82e; }
+.tb-hero-title { color: #6eb82e; }
+.tb-hero-lede { color: #6eb82e; }
 .tb-stage-menu {
   border-color: #4f9827;
   background: linear-gradient(145deg, #3f922d 0%, #72bd38 68%, #b3d962 100%);

@@ -549,7 +549,7 @@ export default function SystemPage() {
             unlockedAchievementsCount={achievements.filter(a => a.unlockedAt).length}
             isHome={viewState === ViewState.HOME}
           />
-          <main className="tb-system-main">
+          <main className={`tb-system-main ${viewState === ViewState.HOME ? 'tb-system-main--home' : ''}`}>
           {/* Offline/Local AI status badge — fixed bottom-right */}
           <AIModelStatus alwaysShow={false} />
             <AssistantPanel article={currentArticle} userLevel={userLevel} />

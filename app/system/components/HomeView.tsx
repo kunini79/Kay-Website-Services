@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { ACADEMIC_CURRICULUM } from '../curriculum';
 import { CATEGORY_CONFIG, STATIC_TOPICS, SUBCATEGORIES_DATA } from '../constants';
 import { Category, ReadHistoryItem, TopicPreview } from '../types';
 import { ArrowRight } from 'lucide-react';
@@ -233,6 +234,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   };
 
   const [selectedCategory, setSelectedCategory] = useState<Category>(Category.ANIMALS);
+  const [selectedGrade, setSelectedGrade] = useState(3);
+  const [selectedCurriculumSubject, setSelectedCurriculumSubject] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [publishedTopics, setPublishedTopics] = useState<PublishedTopic[]>([]);
 
@@ -300,6 +303,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
   useEffect(() => {
     setSelectedTopic(null);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    setSelectedCurriculumSubject(null);
+  }, [selectedGrade]);
 
   useEffect(() => {
     if (!selectedTopic) return;
@@ -715,6 +722,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   }, []);
 
   const activeSubcategories = SUBCATEGORIES_DATA[selectedCategory] || [];
+  const selectedCurriculum = ACADEMIC_CURRICULUM.find((curriculum) => curriculum.grade === selectedGrade);
 
   return (
     <div>
@@ -905,6 +913,72 @@ export const HomeView: React.FC<HomeViewProps> = ({
           Explored categories today: {Array.from(exploredCategories).join(', ')}
         </p>
       )}
+
+      <section className="tb-curriculum" aria-labelledby="curriculum-title">
+        <div className="tb-curriculum-heading">
+          <div>
+            <span className="tb-stage-menu-kicker">School learning path</span>
+            <h2 id="curriculum-title">Academic Curriculum</h2>
+            <p>Follow lessons from Grade 3 through Grade 12, alongside the ThinkBox encyclopedia.</p>
+          </div>
+          <span className="tb-curriculum-range">Grades 3–12</span>
+        </div>
+
+        <div className="tb-grade-picker" role="tablist" aria-label="Choose a grade">
+          {ACADEMIC_CURRICULUM.map((curriculum) => (
+            <button
+              key={curriculum.grade}
+              className={selectedGrade === curriculum.grade ? 'tb-grade-picker__button tb-grade-picker__button--active' : 'tb-grade-picker__button'}
+              onClick={() => setSelectedGrade(curriculum.grade)}
+              role="tab"
+              aria-selected={selectedGrade === curriculum.grade}
+            >
+              {curriculum.grade}
+            </button>
+          ))}
+        </div>
+
+        {selectedCurriculum && (
+          <div className="tb-curriculum-grid">
+            {selectedCurriculum.subjects.map((subject) => (
+              <article
+                className={`tb-curriculum-card ${selectedCurriculumSubject === subject.name ? 'tb-curriculum-card--active' : ''}`}
+                key={subject.name}
+              >
+                <span className="tb-curriculum-card__stage">{selectedCurriculum.stage}</span>
+                <button
+                  className="tb-curriculum-subject"
+                  onClick={() => setSelectedCurriculumSubject(
+                    selectedCurriculumSubject === subject.name ? null : subject.name
+                  )}
+                  aria-expanded={selectedCurriculumSubject === subject.name}
+                >
+                  <h3>{subject.name}</h3>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </button>
+                {selectedCurriculumSubject === subject.name && (
+                  <div className="tb-curriculum-lessons" aria-label={`${subject.name} lessons`}>
+                    {subject.lessons.map((lesson) => (
+                      <button
+                        className="tb-curriculum-lesson"
+                        key={lesson.title}
+                        onClick={() => onTopicClick(lesson.query)}
+                        aria-label={`Open Grade ${selectedGrade} lesson: ${lesson.title}`}
+                      >
+                        <span>
+                          <strong>{lesson.title}</strong>
+                          <small>{lesson.description}</small>
+                        </span>
+                        <ArrowRight size={16} aria-hidden="true" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

@@ -3,9 +3,10 @@ import { Lightbulb } from 'lucide-react';
 
 interface DidYouKnowProps {
   fact: string;
+  title?: string;
 }
 
-export const DidYouKnow: React.FC<DidYouKnowProps> = ({ fact }) => {
+export const DidYouKnow: React.FC<DidYouKnowProps> = ({ fact, title = 'Did You Know?' }) => {
   return (
     <div
       style={{
@@ -47,7 +48,7 @@ export const DidYouKnow: React.FC<DidYouKnowProps> = ({ fact }) => {
           marginBottom: '6px',
         }}
       >
-        Did You Know?
+        {title}
       </h4>
       <p
         style={{

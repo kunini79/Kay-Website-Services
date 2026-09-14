@@ -4,6 +4,7 @@ import { STATIC_TOPICS } from "../constants";
 import { getOfflineTopic, toArticleFromOffline } from './offlineTopics';
 import { enrichArticleMetadata, getCanonicalTopicId, getImageSeed } from './knowledge';
 import { isLocalAIReady, generateLocalArticle } from './localAIService';
+import { getDynamicCurriculumNote } from './curriculumNotes';
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 const openRouterApiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '';
@@ -842,6 +843,12 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
   }
 
   try {
+    const curriculumNote = getDynamicCurriculumNote(topic);
+    if (curriculumNote) {
+      contentCache.set(cacheKey, curriculumNote);
+      return curriculumNote;
+    }
+
     // Approved repository content is authoritative; AI remains the resilient fallback.
     try {
       const repositoryTopicId = getCanonicalTopicId(parseTopicQuery(topic).baseTopic);
@@ -915,9 +922,30 @@ export const fetchArticle = async (topic: string): Promise<Article> => {
       sourceImageSeed = wikiHit.resolvedTitle;
     }
 
-    // Use Gemini to structure source content into ThinkBox format
+    // Use Gemini to structure source content into ThinkBox or Academic Curriculum format
     const model = "gemini-2.5-flash";
-    const prompt = `
+    const isCurriculumQuery = /(primary\s*\d|jss\s*\d|ss\s*\d|grade\s*\d+)/i.test(topic);
+
+    const prompt = isCurriculumQuery
+      ? `Generate comprehensive ACADEMIC CURRICULUM LESSON NOTES for "${topic}".
+      Do NOT write a general encyclopedia essay.
+      Source Content:
+      ${sourceContent.substring(0, 2000)}
+
+      Requirements:
+      - intro: Lesson Objectives stating clearly what students will learn.
+      - funFact: Key Memory Concept, Formula, or Rule for exam preparation.
+      - sections: 4 structured sections:
+        1) 1. Core Definitions & Vocabulary
+        2) 2. Detailed Explanations & Step-by-Step Worked Examples
+        3) 3. Key Revision Takeaways
+        4) 4. Practice Exercises & Solutions
+      - Suggest 3 related academic curriculum topics.
+      - Generate a 3-question multiple-choice curriculum quiz based on the lesson notes.
+      - Category: Academic Curriculum
+
+      Return pure JSON with: title, category, intro, funFact, sections (array with subtitle and content), relatedTopics (array), quiz (array)`
+      : `
       Take this ${sourceName} source content about "${topic}" and structure it for an 8-12 year old educational app (ThinkBox).
       ${focusArea ? `Focus the explanation on this subtopic: "${focusArea}" while still keeping a clear overview.` : ''}
 

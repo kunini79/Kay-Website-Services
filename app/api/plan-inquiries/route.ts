@@ -10,6 +10,7 @@ const planLabels = {
   'premium-campus': 'Premium / Multi-Arm Campus',
   'network-schools': 'Network / Group of Schools',
   'turnkey-kit': 'Turnkey Hardware + Software Kit',
+  'individual-license': 'Individual Software License',
 } as const;
 
 type PlanKey = keyof typeof planLabels;

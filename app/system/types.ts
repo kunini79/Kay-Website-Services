@@ -38,12 +38,32 @@ export interface Article {
   };
   reviewStatus?: 'ai-draft' | 'review' | 'published' | 'needs-update';
   quiz?: QuizQuestion[];
+  isCurriculumNote?: boolean;
+  gradeLabel?: string;
 }
 
 export interface TopicPreview {
   title: string;
   category: string;
   description: string;
+}
+
+export interface CurriculumLesson {
+  title: string;
+  description: string;
+  query: string;
+}
+
+export interface CurriculumSubject {
+  name: string;
+  lessons: CurriculumLesson[];
+}
+
+export interface GradeCurriculum {
+  grade: number;
+  label: string;
+  stage: string;
+  subjects: CurriculumSubject[];
 }
 
 export interface Subcategory {

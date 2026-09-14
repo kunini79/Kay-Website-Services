@@ -5,7 +5,7 @@ export interface IPlanInquiry extends Document {
   email: string;
   phone?: string;
   organisation: string;
-  selectedPlan: 'standard-campus-lab' | 'premium-campus' | 'network-schools' | 'turnkey-kit';
+  selectedPlan: 'standard-campus-lab' | 'premium-campus' | 'network-schools' | 'turnkey-kit' | 'individual-license';
   billingPreference: 'annual' | 'termly' | 'discuss';
   message?: string;
   status: 'new' | 'contacted' | 'converted' | 'closed';
@@ -29,7 +29,7 @@ const planInquirySchema = new Schema<IPlanInquiry>(
     selectedPlan: {
       type: String,
       required: [true, 'A plan is required'],
-      enum: ['standard-campus-lab', 'premium-campus', 'network-schools', 'turnkey-kit'],
+      enum: ['standard-campus-lab', 'premium-campus', 'network-schools', 'turnkey-kit', 'individual-license'],
     },
     billingPreference: {
       type: String,
